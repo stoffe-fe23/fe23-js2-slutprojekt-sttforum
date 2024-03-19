@@ -5,7 +5,7 @@ import ForumApp from "./ForumApp.ts";
 
 // Ignorera Typescript-gnäll här tills vidare, Parcel-bildklydd för testning. 
 // Ta bort sen. Ska förhoppningsvis funka sen när bildlänkarna kommer från servern och inte blir kvaddade av Parcel. 
-import userIcon from "../images/user-icon.png";
+// import userIcon from "../images/user-icon.png";
 
 
 type UserAuthor = {
@@ -106,7 +106,7 @@ export default class Message {
             id: this.id,
             authorId: this.author.id,
             authorName: this.author.userName,
-            authorPicture: this.author.picture.length ? this.author.picture : userIcon,
+            authorPicture: this.author.picture.length ? this.author.picture : new URL('../images/user-icon.png', import.meta.url).toString(),
             authorLink: `/user/profile/${this.id}`,
             message: this.message ?? "",
             date: htmlUtilities.dateTimeToString(this.date)
