@@ -9,7 +9,6 @@ import Message from "./Message.ts";
 import ForumApp from "./ForumApp.ts";
 import * as htmlUtilities from "./htmlUtilities.ts";
 import { ThreadDisplayInfo, ForumThreadAPI } from "./TypeDefs.ts";
-import { testMessage1, testMessage2, testMessage3 } from "./testdata1.ts";
 
 
 
