@@ -8,13 +8,10 @@
 import Message from "./Message.ts";
 import ForumApp from "./ForumApp.ts";
 import * as htmlUtilities from "./htmlUtilities.ts";
+import { ThreadDisplayInfo, ForumThreadAPI } from "./TypeDefs.ts";
 import { testMessage1, testMessage2, testMessage3 } from "./testdata1.ts";
 
 
-type ThreadDisplayInfo = {
-    title: string,
-    date: string,
-}
 
 export default class Thread {
     public readonly id: string;
@@ -24,25 +21,33 @@ export default class Thread {
     public active: boolean;
     private app: ForumApp;
 
-    constructor(app: ForumApp, threadId: string) {
+    static async create(app: ForumApp, threadId: string, threadData: ForumThreadAPI) {
+        if (!threadData) {
+            threadData = await app.api.getJson(`forum/thread/get/${threadId}`);
+        }
+
+        const obj = new Thread(app, threadId, threadData);
+
+        if (threadData.posts && threadData.posts.length) {
+            for (const post of threadData.posts) {
+                const newMessage = await Message.create(app, "", post);
+                obj.posts.push(newMessage);
+            }
+        }
+        return obj;
+    }
+
+
+    constructor(app: ForumApp, threadId: string, threadData: ForumThreadAPI) {
         this.app = app;
-
-        // TODO: Load thread info from server
-        this.id = threadId;
-        this.title = (threadId == "1" ? "Thread title: Lorem Ipsum!" : "En annan tråd...")
-        this.date = Date.now();
-        this.active = true;
-
+        this.id = threadData.id;
+        this.title = threadData.title;
+        this.date = threadData.date;
+        this.active = threadData.active;
         this.posts = [];
 
-        // TODO: Load message info from server
-        // hardcoded Dummy test messages for 2 threads...  remove. 
-        const dummyData = (threadId == "1" ? [testMessage1, testMessage2] : [testMessage3]);
-
-        for (const messageData of dummyData) {
-            this.posts.push(new Message(this.app, messageData));
-        }
     }
+
 
     // Generate HTML to display this discussion thread
     public display(targetContainer: HTMLElement, isShowingPosts: boolean = true): HTMLElement {

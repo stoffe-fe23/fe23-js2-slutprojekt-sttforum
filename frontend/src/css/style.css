@@ -57,3 +57,16 @@ footer {
     color: white;
     padding: 1rem;
 }
+
+#page-home,
+#page-forum,
+#page-users {
+    display: none;
+}
+
+
+#page-home.show,
+#page-forum.show,
+#page-users.show {
+    display: block;
+}

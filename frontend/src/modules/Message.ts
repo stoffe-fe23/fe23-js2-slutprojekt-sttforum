@@ -8,37 +8,13 @@
 import User from "./User";
 import * as htmlUtilities from './htmlUtilities.ts';
 import ForumApp from "./ForumApp.ts";
+import { UserAuthor, MessageDisplayInfo, ForumMessageAPI } from "./TypeDefs.ts";
 
 
 // Ignorera Typescript-gnäll här tills vidare, Parcel-bildklydd för testning. 
 // Ta bort sen. Ska förhoppningsvis funka sen när bildlänkarna kommer från servern och inte blir kvaddade av Parcel. 
 // import userIcon from "../images/user-icon.png";
 
-
-type UserAuthor = {
-    id: string,
-    userName: string,
-    picture: string
-}
-
-export type MessageData = {
-    id: string,
-    author: UserAuthor,
-    message: string,
-    deleted: boolean,
-    date: number,
-    replies: MessageData[]
-}
-
-type MessageDisplayInfo = {
-    id: string,
-    authorId: string,
-    authorName: string,
-    authorPicture: string,
-    authorLink: string,
-    message: string,
-    date: string;
-}
 
 export default class Message {
     public id: string;
@@ -49,26 +25,40 @@ export default class Message {
     public replies: Message[];
     private app: ForumApp;
 
-    // Create message object and fill it with the specified data, if any is assigned.
-    constructor(app: ForumApp, messageData: MessageData | null) {
-        this.app = app;
-        if (messageData) {
-            this.id = messageData.id;
-            this.author = messageData.author ?? { id: 0, userName: "Unknown", picture: "" };
-            this.message = messageData.message ?? "";
-            this.deleted = messageData.deleted ?? false;
-            this.date = messageData.date;
+    // Load data from the server into this message. (if needing to load a single specific message)
+    static async create(app: ForumApp, messageId: string = "", messageData: ForumMessageAPI) {
+        if (!messageData && messageId.length) {
+            messageData = await app.api.getJson(`forum/message/get/${messageId}`);
+        }
 
-            // Build replies to this message
+        const obj = new Message(app, messageId, messageData);
+
+        for (const reply of messageData.replies) {
+            const newMessage = await Message.create(app, "", reply);
+            obj.replies.push(newMessage);
+        }
+        return obj;
+
+    }
+
+    // Create message object and fill it with the specified data, if any is assigned.
+    constructor(app: ForumApp, messageId: string = "", messageData: ForumMessageAPI | null) {
+        this.app = app;
+        this.id = messageId;
+        if (messageData) {
+            this.author = messageData.author;
+            this.author.picture = app.mediaUrl + 'userpictures/' + this.author.picture;
+            this.message = messageData.message;
+            this.deleted = messageData.deleted;
+            this.date = messageData.date;
             this.replies = [];
-            for (const reply of messageData.replies) {
-                this.replies.push(new Message(this.app, reply));
-            }
         }
     }
 
+
+
     // Create a new message by the currently logged in user and save it to the server. 
-    public create(message: string) {
+    public newMessage(message: string) {
         this.date = Date.now();
         this.author = {
             id: this.app.user.id,
@@ -82,10 +72,6 @@ export default class Message {
         this.save();
     }
 
-    // Load data from the server into this message. (if needing to load a single specific message)
-    public load(messageId: string): void {
-        // TODO: Load message info from the server into this object...
-    }
 
     // Save this message to the server.
     public save(): void {
@@ -96,8 +82,8 @@ export default class Message {
 
     // Create a reply to this message 
     public addReply(messageText: string): string {
-        const newReply: Message = new Message(this.app, null);
-        newReply.create(messageText);
+        const newReply: Message = new Message(this.app, "", null);
+        newReply.newMessage(messageText);
         this.replies.push(newReply);
         return newReply.id;
     }

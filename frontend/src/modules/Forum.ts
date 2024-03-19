@@ -8,11 +8,7 @@
 import Thread from "./Thread";
 import ForumApp from "./ForumApp";
 import * as htmlUtilities from "./htmlUtilities";
-
-type ForumDisplayInfo = {
-    name: string,
-    icon: string,
-};
+import { ForumDisplayInfo, ForumAPI, ForumThreadAPI, ForumMessageAPI } from "./TypeDefs.ts";
 
 
 export default class Forum {
@@ -22,20 +18,28 @@ export default class Forum {
     public icon: string;
     private app: ForumApp;
 
+    static async create(app: ForumApp, forumId: string) {
+        const forumData: ForumAPI = await app.api.getJson(`forum/get/${forumId}`);
+        const obj = new Forum(app, forumData.id);
+        obj.name = forumData.name;
+        obj.icon = app.mediaUrl + 'forumicons/' + forumData.icon;
+        obj.threads = [];
+
+        if (forumData.threads && forumData.threads.length) {
+            for (const thread of forumData.threads) {
+                const newThread = await Thread.create(app, "0", thread);
+                obj.threads.push(newThread);
+            }
+        }
+        return obj;
+    }
+
+    // Constructor takes the forum ID and loads info from server into the object. 
     constructor(app: ForumApp, forumId: string) {
         this.app = app;
-
-        // TODO: Load forum info from the server
-        // Hardcoded for testing... 
         this.id = forumId;
-        this.name = "Testforum";
-        this.icon = new URL('../images/forum-icon.png', import.meta.url).toString(); // require('../images/forum-icon.png');
-
-        // TODO: Load threads from this forum from server
-        this.threads = [];
-        // hardcoded dummy threads for testing.
-        this.threads.push(new Thread(this.app, "1"));
-        this.threads.push(new Thread(this.app, "2"));
+        console.log("Loaded forum data...", this);
+        // this.icon = new URL('../images/forum-icon.png', import.meta.url).toString();
     }
 
     // Generate HTML to display the threads in this forum
@@ -57,12 +61,12 @@ export default class Forum {
 
     // Create and return a button for navigating to this forum
     public getButton(): HTMLElement {
-        const values: ForumDisplayInfo = {
+        const forumData: ForumDisplayInfo = {
             name: this.name,
             icon: this.icon,
         };
         const attributes = { "data-forumid": this.id };
-        const forumButton = htmlUtilities.createHTMLFromTemplate("tpl-forum-button", null, values, attributes);
+        const forumButton = htmlUtilities.createHTMLFromTemplate("tpl-forum-button", null, forumData, attributes);
         return forumButton;
     }
 }
