@@ -1,33 +1,49 @@
+/*
+    Slutprojekt Javascript 2 (FE23 Grit Academy)
+    Grupp : TTSForum
+
+    main.ts
+    Main script for the page. Initialize the forum and handle sub-pages. 
+*/
+
 import Navigo from "navigo";
 import ForumApp from "./modules/ForumApp";
 import * as htmlUtilities from "./modules/htmlUtilities";
 
-const router = new Navigo("/");
+const pageRouter = new Navigo("/");
 const forumApp = new ForumApp('http://localhost:3000');
 
 const contentBox = document.querySelector("#page-content") as HTMLElement;
 
-router.on("/", () => {
-    console.log("NAV:", "Startsida");
+
+//////////////////////////////////////////////////////////////////////////////////
+// Start page - show info about the forum etc? 
+pageRouter.on("/", () => {
     htmlUtilities.createHTMLElement("div", "Startsidan!", contentBox);
 });
 
-router.on("/forums", () => {
-    console.log("NAV:", "Forum");
-    htmlUtilities.createHTMLElement("div", "Forum!", contentBox);
+
+//////////////////////////////////////////////////////////////////////////////////
+// Show the forum list page
+pageRouter.on("/forums", () => {
     forumApp.showforumPicker();
 });
 
-router.on("/users", () => {
-    console.log("NAV:", "Användarlista");
+
+//////////////////////////////////////////////////////////////////////////////////
+// Show a list of all the registered users
+pageRouter.on("/users", () => {
     htmlUtilities.createHTMLElement("div", "Användarlista!", contentBox);
 
 });
 
-router.on("/user/:userid", (route) => {
-    console.log("NAV:", "Användarprofil", route!.data!.userid);
-    htmlUtilities.createHTMLElement("div", "Användarprofil: " + route!.data!.userid, contentBox);
+
+//////////////////////////////////////////////////////////////////////////////////
+// Show the public profile for the user with the specified ID
+pageRouter.on("/user/:userid", (routeInfo) => {
+    htmlUtilities.createHTMLElement("div", "Användarprofil: " + routeInfo!.data!.userid, contentBox);
 });
 
-router.resolve();
+
+pageRouter.resolve();
 

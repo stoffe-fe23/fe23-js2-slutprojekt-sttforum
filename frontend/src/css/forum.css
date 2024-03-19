@@ -1,0 +1,75 @@
+/*
+    Slutprojekt Javascript 2 (FE23 Grit Academy)
+    Grupp : TTSForum
+
+    forum.css
+    Stylesheet for displaying and managing forums, threads and messages.
+*/
+
+.forum-icon {
+    max-width: 100px;
+    height: auto;
+}
+
+.forum-icon-big {
+    max-width: 300px;
+    height: auto;
+}
+
+.forum-message {
+    background-color: lightgray;
+    color: black;
+    margin: 0.5rem;
+    padding: 0.5rem;
+}
+
+.forum-message-header {
+    display: grid;
+    gap: 0 0.6rem;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+        "authoricon authorname"
+        "authoricon postdate";
+}
+
+.forum-message-replies {
+    border-left: 1px solid blue;
+}
+
+.forum-thread {
+    background-color: rgb(48, 48, 48);
+    color: white;
+    margin: 0.5rem;
+    padding: 0.5rem;
+}
+
+.forum-header {
+    display: flex;
+    gap: 2rem;
+    justify-content: flex-start;
+}
+
+.forum-header h2 {
+    font-size: 4rem;
+    margin: 0;
+}
+
+.author-picture {
+    grid-area: authoricon;
+    max-width: 40px;
+    height: auto;
+}
+
+a.author-name {
+    grid-area: authorname;
+}
+
+a.author-name span {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.forum-message-date {
+    grid-area: postdate;
+    font-size: 0.8em;
+}

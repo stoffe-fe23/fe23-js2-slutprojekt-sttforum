@@ -1,3 +1,10 @@
+/*
+    Slutprojekt Javascript 2 (FE23 Grit Academy)
+    Grupp : TTSForum
+
+    User.ts
+    Class for managing the currently logged-in user and displaying/editing their profile. 
+*/
 
 export default class User {
     public readonly id: string;

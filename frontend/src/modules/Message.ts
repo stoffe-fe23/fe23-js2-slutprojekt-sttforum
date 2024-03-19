@@ -1,3 +1,10 @@
+/*
+    Slutprojekt Javascript 2 (FE23 Grit Academy)
+    Grupp : TTSForum
+
+    Message.ts
+    Class for managing a message in a thread or in reply to another message. 
+*/
 import User from "./User";
 import * as htmlUtilities from './htmlUtilities.ts';
 import ForumApp from "./ForumApp.ts";

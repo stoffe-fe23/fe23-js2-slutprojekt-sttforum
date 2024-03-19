@@ -1,3 +1,11 @@
+/*
+    Slutprojekt Javascript 2 (FE23 Grit Academy)
+    Grupp : TTSForum
+
+    RestApi.ts
+    Class for making requests to the server REST API endpoints. 
+*/
+
 // Parameters when doing an API request
 export type APIQueryParams = Record<string, string | Array<string>> | null;
 

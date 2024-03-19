@@ -1,3 +1,10 @@
+/*
+    Slutprojekt Javascript 2 (FE23 Grit Academy)
+    Grupp : TTSForum
+
+    ForumApp.ts
+    Main controller class for the Forum. Manage forums, track the logged-in user and provide interface for server requests.
+*/
 import Forum from "./Forum.ts";
 import User from "./User.ts";
 import RestApi from "./RestApi.ts";

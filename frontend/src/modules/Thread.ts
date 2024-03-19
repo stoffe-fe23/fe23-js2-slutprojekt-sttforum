@@ -1,3 +1,10 @@
+/*
+    Slutprojekt Javascript 2 (FE23 Grit Academy)
+    Grupp : TTSForum
+
+    Thread.ts
+    Class for managing a discussion and displaying its messages. 
+*/
 import Message from "./Message.ts";
 import ForumApp from "./ForumApp.ts";
 import * as htmlUtilities from "./htmlUtilities.ts";

@@ -1,4 +1,10 @@
+/*
+    Slutprojekt Javascript 2 (FE23 Grit Academy)
+    Grupp : TTSForum
 
+    htmlUtilities.ts
+    Generic tool/utility functionality for building/editing HTML elements. 
+*/
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 // Create HTML elements based on a HTML template, inserting values into the new element.
