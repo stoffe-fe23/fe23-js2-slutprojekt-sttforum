@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="./css/style.css">
+        <script src="./main.ts" type="module"></script>
+        <title>Forum</title>
+    </head>
+    <body>
+        <header>
+            <h1>Hello World</h1>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/forums">Forums</a></li>
+                    <li><a href="/users">Users</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <!-- Main container for page content inserted by the scripts -->
+            <div id="page-content"></div>
+        </main>
+        <footer>
+            This is the footer.
+        </footer>
+    </body>
+    <!-- Template for a forum button -->
+    <template id="tpl-forum-button">
+        <button class="forum-button" data-forumid="0">
+            <img class="forum-icon-big" src="images/forum-icon.png" data-template="icon">
+            <div data-template="name"></div>
+        </button>
+    </template>
+    <!-- Template for a forum -->
+    <template id="tpl-forum">
+        <section class="forum" data-forumid="0">
+            <div class="forum-header">
+                <img class="forum-icon" src="images/forum-icon.png" data-template="icon">
+                <h2 data-template="name"></h2>
+            </div>
+            <div class="forum-threads" data-template="threads">
+            </div>
+        </section>
+    </template>
+    <!-- Template for a forum thread -->
+    <template id="tpl-forum-thread">
+        <section class="forum-thread" data-threadid="0">
+            <h3 data-template="title">Thread subject</h3>
+            <div class="forum-thread-date" data-template="date"></div>
+            <div class="forum-thread-messages" data-template="posts"></div>
+        </section>
+    </template>
+    <!-- Template for a forum thread message -->
+    <template id="tpl-forum-message">
+        <article class="forum-message" data-messageid="0">
+            <div class="forum-message-header">
+                <img class="author-picture" src="images/user-icon.png" data-template="authorPicture">
+                <a class="author-name" href="#" data-template="authorLink"><span data-template="authorName"></span></a>
+                <div class="forum-message-date" data-template="date"></div>
+            </div>
+            <div class="forum-message-text" data-template="message"></div>
+            <div class="forum-message-replies" data-template="replies"></div>
+        </article>
+    </template>
+</html>

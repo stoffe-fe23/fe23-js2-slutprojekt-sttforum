@@ -1,0 +1,21 @@
+{
+  "name": "fe23-js2-slutprojekt-frontend",
+  "version": "1.0.0",
+  "description": "Javscript 2 slutprojekt - frontend sida",
+  "type": "module",
+  "scripts": {
+    "dev": "parcel serve ./src/index.html --dist-dir ./dist",
+    "build": "parcel build ./src/index.html --dist-dir ./docs --public-url ./",
+    "clean": "del-cli ./.parcel-cache ./docs ./dist"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "del-cli": "^5.1.0",
+    "parcel": "^2.12.0"
+  },
+  "dependencies": {
+    "navigo": "^8.11.1"
+  }
+}
