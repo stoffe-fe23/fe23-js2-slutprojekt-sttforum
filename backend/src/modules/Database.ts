@@ -7,6 +7,7 @@
     Initializes storage and caches data from files in the storage property. 
 */
 import DataStore from "./Datastore.js";
+import crypto from 'crypto';
 import { User, ForumMessage, ForumThread, Forum, ForumInfo, ForumThreadInfo } from "./TypeDefs.js";
 
 
@@ -23,6 +24,47 @@ class Database {
         this.storage.loadForums();
         this.storage.loadUsers();
     }
+
+
+    // Find the user with the specified userid
+    public getUser(userId: string): User | null {
+        const foundUser = this.storage.userDB.find((checkUser) => checkUser.id == userId);
+        return foundUser ?? null;
+    }
+
+    // Find the user with the specified userid
+    public getUserByName(userName: string): User | null {
+        const foundUser = this.storage.userDB.find((checkUser) => checkUser.name == userName);
+        return foundUser ?? null;
+    }
+
+    // Find the user with the specified userid
+    public getUserByToken(token: string): User | null {
+        const foundUser = this.storage.userDB.find((checkUser) => (checkUser.token == token) && token.length && checkUser.token.length);
+        return foundUser ?? null;
+    }
+
+    public addUser(userName: string, password: string, email: string) {
+        if (this.getUserByName(userName)) {
+            throw new Error("The specified user name is already taken or not allowed for use.");
+        }
+
+        crypto.pbkdf2(password, "Very salty here 2!?", 310000, 32, 'sha256', (error, hashedPassword) => {
+            if (error) {
+                throw error;
+            }
+            const newUser: User = {
+                id: crypto.randomUUID(),
+                name: userName,
+                email: email,
+                picture: "user-icon.png",
+                password: hashedPassword.toString(),
+                token: ""
+            };
+            this.storage.userDB.push(newUser);
+        });
+    }
+
 
 
     // Create a new forum empty with the specified name and icon.
@@ -123,13 +165,6 @@ class Database {
         else {
             throw new Error("Unable to find a valid user to set as author of new reply.");
         }
-    }
-
-
-    // Find the user with the specified userid
-    public getUser(userId: string): User | null {
-        const foundUser = this.storage.userDB.find((checkUser) => checkUser.id == userId);
-        return foundUser ?? null;
     }
 
 

@@ -7,6 +7,7 @@
     Initializes storage and caches data from files in the storage property.
 */
 import DataStore from "./Datastore.js";
+import crypto from 'crypto';
 // TODO: Better error handling and parameter validation. 
 class Database {
     constructor() {
@@ -15,6 +16,40 @@ class Database {
     initialize() {
         this.storage.loadForums();
         this.storage.loadUsers();
+    }
+    // Find the user with the specified userid
+    getUser(userId) {
+        const foundUser = this.storage.userDB.find((checkUser) => checkUser.id == userId);
+        return foundUser ?? null;
+    }
+    // Find the user with the specified userid
+    getUserByName(userName) {
+        const foundUser = this.storage.userDB.find((checkUser) => checkUser.name == userName);
+        return foundUser ?? null;
+    }
+    // Find the user with the specified userid
+    getUserByToken(token) {
+        const foundUser = this.storage.userDB.find((checkUser) => (checkUser.token == token) && token.length && checkUser.token.length);
+        return foundUser ?? null;
+    }
+    addUser(userName, password, email) {
+        if (this.getUserByName(userName)) {
+            throw new Error("The specified user name is already taken or not allowed for use.");
+        }
+        crypto.pbkdf2(password, "Very salty here 2!?", 310000, 32, 'sha256', (error, hashedPassword) => {
+            if (error) {
+                throw error;
+            }
+            const newUser = {
+                id: crypto.randomUUID(),
+                name: userName,
+                email: email,
+                picture: "user-icon.png",
+                password: hashedPassword.toString(),
+                token: ""
+            };
+            this.storage.userDB.push(newUser);
+        });
     }
     // Create a new forum empty with the specified name and icon.
     addForum(forumName, forumIcon) {
@@ -106,11 +141,6 @@ class Database {
         else {
             throw new Error("Unable to find a valid user to set as author of new reply.");
         }
-    }
-    // Find the user with the specified userid
-    getUser(userId) {
-        const foundUser = this.storage.userDB.find((checkUser) => checkUser.id == userId);
-        return foundUser ?? null;
     }
     // Get data about all available forums (but not their content)
     getForumList() {

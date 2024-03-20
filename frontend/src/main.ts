@@ -16,6 +16,28 @@ const forumApp = new ForumApp('http://localhost:3000/api');
 const pageHome = document.querySelector("#page-home") as HTMLElement;
 const pageForum = document.querySelector("#page-forum") as HTMLElement;
 const pageUsers = document.querySelector("#page-users") as HTMLElement;
+const loginDialog = document.querySelector("#user-login") as HTMLDialogElement;
+
+
+loginDialog.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    if (event.submitter!.id == "button-cancel") {
+        loginDialog.close();
+    }
+    else {
+        // TODO: Do login with server...
+    }
+});
+
+(document.querySelector("#login-form") as HTMLFormElement).addEventListener("submit", (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget as HTMLFormElement);
+    forumApp.api.postJson("/login/password", formData).then((response) => {
+        console.log("POSTED!", response);
+    });
+});
+
 
 // Load available forums from the server.
 forumApp.load().then(() => {
@@ -48,6 +70,12 @@ pageRouter.on("/users", () => {
     pageHome.classList.remove("show");
     pageForum.classList.remove("show");
     pageUsers.classList.add("show");
+});
+
+//////////////////////////////////////////////////////////////////////////////////
+// Show a list of all the registered users
+pageRouter.on("/login", () => {
+    loginDialog.showModal();
 });
 
 

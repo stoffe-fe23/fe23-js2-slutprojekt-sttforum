@@ -9,7 +9,9 @@
 export type User = {
     id: string,
     name: string,
+    email: string,
     picture: string,
+    password: string,
     token: string | null
 }
 

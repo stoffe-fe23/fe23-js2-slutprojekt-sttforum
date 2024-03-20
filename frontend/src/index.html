@@ -42,6 +42,13 @@
         <footer>
             This is the footer.
         </footer>
+        <dialog id="user-login">
+            <form id="login-form">
+                <input type="text" name="username" id="login-username" placeholder="User name" min-length="2" max-length="20" required>
+                <input type="password" name="password" id="login-password" placeholder="Password" min-length="6" max-length="40" required>
+                <button id="button-login">Log in</button><button id="button-cancel">Cancel</button>
+            </form>
+        </dialog>
     </body>
     <!-- Template for a forum button -->
     <template id="tpl-forum-button">
