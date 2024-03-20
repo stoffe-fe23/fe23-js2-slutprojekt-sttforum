@@ -49,6 +49,13 @@
                 <button id="button-login">Log in</button><button id="button-cancel">Cancel</button>
             </form>
         </dialog>
+        <dialog id="message-form">
+            <form>
+                <input type="hidden" id="reply-thredId" name="threadId">
+                <textarea id="message-form-text" placeholder="Write your message here" name="message"></textarea><button id="message-send-btn">Send</button> <button id="message-form-cancel-btn">Cancel</button>
+            </form>
+
+        </dialog>
     </body>
     <!-- Template for a forum button -->
     <template id="tpl-forum-button">
@@ -85,6 +92,7 @@
                 <div class="forum-message-date" data-template="date"></div>
             </div>
             <div class="forum-message-text" data-template="message"></div>
+            <form class="forum-message-buttons"><button class="reply-btn">Reply</button></form>
             <div class="forum-message-replies" data-template="replies"></div>
         </article>
     </template>

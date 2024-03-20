@@ -108,6 +108,10 @@ export default class Message {
 
         const thisMessageElem = htmlUtilities.createHTMLFromTemplate("tpl-forum-message", targetContainer, values, attributes, true);
         const repliesElement = thisMessageElem.querySelector(`.forum-message-replies`) as HTMLElement;
+        const replyBtns = thisMessageElem.querySelector(".forum-message-buttons") as HTMLFormElement;
+        replyBtns.addEventListener("submit", this.onMessageButtonsSubmit.bind(this));
+
+
 
         // Bara för testning, ta bort och styla ordentligt sen.
         thisMessageElem.style.marginLeft = `${replyDepth}rem`;
@@ -118,4 +122,17 @@ export default class Message {
         }
         return thisMessageElem;
     }
+    private onMessageButtonsSubmit(event) {
+        event.preventDefault();
+        if (event.submitter.classList.contains("reply-btn")) {
+            const messageForm = document.querySelector("#message-form") as HTMLFormElement;
+            const threadIdElement = messageForm.querySelector("#reply-thredId") as HTMLInputElement;
+            messageForm.showModal()
+
+            const threadId = event.currentTarget.closest("section").dataset.threadid;
+            threadIdElement.value = threadId;
+            console.log("threadid", threadId, messageForm, threadIdElement)
+        }
+    }
 }
+
