@@ -9,6 +9,7 @@
 import DataStore from "./Datastore.js";
 import crypto from 'crypto';
 import { User, ForumMessage, ForumThread, Forum, ForumInfo, ForumThreadInfo } from "./TypeDefs.js";
+import { generatePasswordHash, generateRandomSalt } from "./password.js";
 
 
 // TODO: Better error handling and parameter validation. 
@@ -44,25 +45,23 @@ class Database {
         return foundUser ?? null;
     }
 
-    public addUser(userName: string, password: string, email: string) {
+    public addUser(userName: string, password: string, email: string): User {
         if (this.getUserByName(userName)) {
             throw new Error("The specified user name is already taken or not allowed for use.");
         }
 
-        crypto.pbkdf2(password, "Very salty here 2!?", 310000, 32, 'sha256', (error, hashedPassword) => {
-            if (error) {
-                throw error;
-            }
-            const newUser: User = {
-                id: crypto.randomUUID(),
-                name: userName,
-                email: email,
-                picture: "user-icon.png",
-                password: hashedPassword.toString(),
-                token: ""
-            };
-            this.storage.userDB.push(newUser);
-        });
+        const token = generateRandomSalt();
+        const newUser: User = {
+            id: crypto.randomUUID(),
+            name: userName,
+            email: email,
+            picture: "user-icon.png",
+            password: generatePasswordHash(password, token),
+            token: token
+        };
+        this.storage.userDB.push(newUser);
+        this.storage.saveUsers();
+        return newUser;
     }
 
 

@@ -15,6 +15,13 @@ export type User = {
     token: string | null
 }
 
+export type UserData = {
+    id: string,
+    name: string,
+    email: string,
+    picture: string
+}
+
 export type ForumAuthor = {
     id: string,
     userName: string,
