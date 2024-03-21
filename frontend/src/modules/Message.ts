@@ -126,23 +126,24 @@ export default class Message {
         event.preventDefault();
         if (event.submitter.classList.contains("reply-btn")) {
             const messageDialog = document.querySelector("#message-dialog") as HTMLDialogElement;
-            const threadIdElement = messageDialog.querySelector("#reply-thredId") as HTMLInputElement;
+            const threadIdElement = messageDialog.querySelector("#reply-threadId") as HTMLInputElement;
             const messageForm = document.querySelector("#message-form") as HTMLFormElement;
             messageDialog.showModal();
 
-            const threadId = event.currentTarget.closest("section").dataset.threadid;
+            const threadId = event.currentTarget.closest("section").dataset.threadid; 
             threadIdElement.value = threadId;
             console.log("threadid", threadId, messageDialog, threadIdElement);
 
             messageForm.addEventListener("submit", (event) => {
                 event.preventDefault();
-                const formData = new FormData(messageForm);
-                console.log(formData);
-                console.log(event.currentTarget);
+                
+                // const formData = new FormData(event.currentTarget as HTMLFormElement);
+                // console.log(formData);
+                // console.log(event.currentTarget);
                 
                 // this.app.api.postJson("forum/message/create", formData);
 
-                messageDialog.close();
+                // messageDialog.close();
                 
             })
         }

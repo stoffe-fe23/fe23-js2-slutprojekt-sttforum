@@ -51,7 +51,7 @@
         </dialog>
         <dialog id="message-dialog">
             <form id="message-form">
-                <input type="hidden" id="reply-thredId" name="threadId">
+                <input type="hidden" id="reply-threadId" name="threadId">
                 <textarea id="message-form-text" placeholder="Write your message here" name="message"></textarea>
                 <button id="message-send-btn">Send</button>
                 <button id="message-form-cancel-btn">Cancel</button>
@@ -73,8 +73,7 @@
                 <img class="forum-icon" src="images/forum-icon.png" data-template="icon">
                 <h2 data-template="name"></h2>
             </div>
-            <div class="forum-threads" data-template="threads">
-            </div>
+            <div class="forum-threads" data-template="threads"></div>
         </section>
     </template>
     <!-- Template for a forum thread -->
@@ -94,7 +93,9 @@
                 <div class="forum-message-date" data-template="date"></div>
             </div>
             <div class="forum-message-text" data-template="message"></div>
-            <form class="forum-message-buttons"><button class="reply-btn">Reply</button></form>
+            <form class="forum-message-buttons">
+                <button class="reply-btn">Reply</button>
+            </form>
             <div class="forum-message-replies" data-template="replies"></div>
         </article>
     </template>
