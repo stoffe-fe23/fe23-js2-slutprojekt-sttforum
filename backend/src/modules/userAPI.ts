@@ -3,11 +3,12 @@
     Grupp : TTSForum
 
     forumAPI.ts
-    API endpoints for managing users and profiles.
+    API endpoint routes for managing users and profiles.
 */
-import { Router } from "express";
+import { Router, Request, Response, NextFunction } from 'express';
 import dataStorage from "./Database.js";
 import { UserData } from "./TypeDefs.js";
+import { isLoggedIn, isOwner, isAdmin } from "./permissions.js";
 
 
 
@@ -15,13 +16,15 @@ import { UserData } from "./TypeDefs.js";
 const userAPI = Router();
 
 
-userAPI.get('/list', (req, res) => {
+// Get a list of all registered users. 
+userAPI.get('/list', isLoggedIn, (req: Request, res: Response) => {
     console.log("TODO: Users list");
     res.json({ message: `TODO: Users list` });
 });
 
 
-userAPI.post("/register", (req, res) => {
+// POST target of form to register a new user account.
+userAPI.post("/register", (req: Request, res: Response) => {
     try {
         const newUser = dataStorage.addUser(req.body.username, req.body.password, req.body.email);
         if (newUser) {

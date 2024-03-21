@@ -6,12 +6,13 @@
     Main script for the Node.js/Express server. Set up served resources and listen for client connections. 
 */
 import express from "express";
+import { Request, Response, NextFunction } from 'express';
 import cors from "cors";
 import forumAPI from "./modules/forumAPI.js";
 import userAPI from "./modules/userAPI.js";
 import dataStorage from "./modules/Database.js";
 import { sessionSetup, passport } from "./modules/authentication.js";
-
+import { isLoggedIn, isAdmin } from "./modules/permissions.js";
 
 const app = express();
 
@@ -34,8 +35,22 @@ app.use('/api/forum', forumAPI);
 app.use('/api/user', userAPI);
 
 
+// Test route: user logged in with admin permissions
+app.get("/test/:testid", (req: Request, res: Response) => {
+    res.json({ message: "Test!", method: req.method, badi: req.body, params: req.params, path: req.path, url: req.url });
+});
+// Test route: user logged in
+app.get("/protected", isLoggedIn, (req: Request, res: Response) => {
+    res.json({ message: "Authenticated!" });
+});
+// Test route: user logged in with admin permissions
+app.get("/admin", isAdmin, (req: Request, res: Response) => {
+    res.json({ message: "Administrator!" });
+});
+
+
 // General error handler
-app.use((err, req, res, next) => {
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     console.log("Server error:", err);
     res.status(500);
     res.json({ error: err.message });
