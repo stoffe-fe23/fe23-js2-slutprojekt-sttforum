@@ -8,11 +8,11 @@
 import Forum from "./Forum.ts";
 import User from "./User.ts";
 import RestApi from "./RestApi.ts";
-import { ForumInfoAPI } from "./TypeDefs.ts";
+import { ForumInfoAPI, UserData, StatusResponseAPI } from "./TypeDefs.ts";
 
 export default class ForumApp {
     public api: RestApi;
-    public user: User;
+    public user: User | null;
     public forums: Forum[];
     public mediaUrl: string;
 
@@ -20,54 +20,123 @@ export default class ForumApp {
     constructor(apiUrl: string) {
         // Object for making requests to the server/API.
         this.api = new RestApi(apiUrl);
+        this.forums = [];
 
         const mediaUrl = new URL(apiUrl);
         this.mediaUrl = `${mediaUrl.protocol}//${mediaUrl.hostname}:${mediaUrl.port}/media/`;
-
-        // TODO: Check if a user is logged on here before doing this, or initialize empty user.
-        // Hardcode a user for testing, for now... 
-        this.user = new User("f9258ea6-89c5-46b6-8577-9df9c343dc96");
     }
 
     public async load(): Promise<void> {
-        const forumList: ForumInfoAPI[] = await this.api.getJson(`forum/list`);
+        try {
+            await this.loadCurrentUser();
 
-        this.forums = [];
-        if (forumList && forumList.length) {
-            for (const forum of forumList) {
-                const newForum = await Forum.create(this, forum.id);
-                this.forums.push(newForum);
+            if (this.isLoggedIn()) {
+                return await this.loadForums();
+            }
+        }
+        catch (error) {
+            console.error("ForumApp load error: ", error.message);
+        }
+    }
+
+    public async loadCurrentUser(): Promise<void> {
+        // Fetch current user if logged in
+        this.user = null;
+        const apiResponse: StatusResponseAPI = await this.api.getJson("user/current");
+
+        if (apiResponse.data && apiResponse.message == "User") {
+            this.user = new User(apiResponse.data as UserData);
+            console.log("User is logged in: ", this.user.userName);
+        }
+        else if (apiResponse.message == "No User") {
+            console.log("User not logged in.");
+        }
+        else {
+            throw new Error("Unable to load current user data.");
+        }
+    }
+
+    public async loadForums(): Promise<void> {
+        try {
+            const forumList: ForumInfoAPI[] = await this.api.getJson(`forum/list`);
+            this.forums = [];
+            if (forumList && forumList.length) {
+                for (const forum of forumList) {
+                    const newForum = await Forum.create(this, forum.id);
+                    if (newForum) {
+                        this.forums.push(newForum);
+                    }
+                }
+            }
+        }
+        catch (error) {
+            if (error.status) {
+                if (error.status == 401) {
+                    console.log("ForumApp load - Not authorized to access forums.");
+                }
+                else {
+                    console.error("ForumApp load error: ", error.message);
+                }
             }
         }
     }
 
+    public isLoggedIn(): boolean {
+        return this.user ? true : false;
+    }
 
+    public async userLogin(loginName: string, loginPass: string) {
+        const postData = {
+            username: loginName,
+            password: loginPass
+        };
+        console.log("LESIGH", postData);
+        const response: StatusResponseAPI = await this.api.postJson("user/login", postData);
+        console.log("UL RESPONSE DATA", response);
+        if (response && response.message && (response.message == "Login successful")) {
+            console.log("UL LOGIN SUCCESS");
+            await this.loadCurrentUser();
+            await this.loadForums();
+        }
+        else {
+            console.log("Login failed! ", response);
+        }
+    }
 
     // Show buttons to select a forum to view
     public showforumPicker(outBox: HTMLElement): void {
         // Show buttons for all available forums
         outBox.innerHTML = "";
-
-        for (const forum of this.forums) {
-            const forumButton = forum.getButton();
-            if (forumButton) {
-                outBox.appendChild(forumButton);
-                forumButton.addEventListener("click", (event) => {
-                    const forumId = (event.currentTarget as HTMLButtonElement).dataset.forumid!.toString();
-                    if (forumId) {
-                        this.displayForum(forumId, outBox);
-                    }
-                });
+        if (this.isLoggedIn()) {
+            for (const forum of this.forums) {
+                const forumButton = forum.getButton();
+                if (forumButton) {
+                    outBox.appendChild(forumButton);
+                    forumButton.addEventListener("click", (event) => {
+                        const forumId = (event.currentTarget as HTMLButtonElement).dataset.forumid!.toString();
+                        if (forumId) {
+                            this.displayForum(forumId, outBox);
+                        }
+                    });
+                }
             }
+        }
+        else {
+            throw new Error("You must be logged in the view the forums.");
         }
     }
 
     // Display the threads/posts in the specified forum
     public displayForum(forumId: string, outBox: HTMLElement): void {
-        const foundForum = this.forums.find((forum) => forum.id == forumId);
-        if (foundForum) {
-            outBox.innerHTML = "";
-            foundForum.display(outBox);
+        if (this.isLoggedIn()) {
+            const foundForum = this.forums.find((forum) => forum.id == forumId);
+            if (foundForum) {
+                outBox.innerHTML = "";
+                foundForum.display(outBox);
+            }
+        }
+        else {
+            throw new Error("You must be logged in the view the forums.");
         }
     }
 }

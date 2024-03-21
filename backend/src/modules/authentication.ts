@@ -44,9 +44,13 @@ export const sessionSetup = session({
     resave: false,
     saveUninitialized: true,
     cookie: {
-        maxAge: 1000 * 60 * 60 * 24
+        sameSite: false,
+        maxAge: 1000 * 60 * 60 * 24,
+        httpOnly: false,
+        secure: false,
     }
 });
+
 
 // Configure name of the fields in the login form.
 const passportCustomFields = {
@@ -79,7 +83,7 @@ passport.use(new LocalStrategy(passportCustomFields, verifyLogin));
 // fields (configurable in passportCustomFields if needed).
 userAPI.post("/login", passport.authenticate('local'), (req: Request, res: Response, next: NextFunction) => {
     console.log("LOGIN", req.session.passport.user);
-    res.json({ message: `Login request successful!` });
+    res.json({ message: `Login successful` });
 });
 
 
@@ -90,7 +94,7 @@ userAPI.get("/logout", isLoggedIn, (req: Request, res: Response, next: NextFunct
         if (error) {
             return next(error);
         }
-        res.json({ message: `Log off successful!` });
+        res.json({ message: `Logout successful` });
     });
 });
 
@@ -99,6 +103,7 @@ userAPI.get("/logout", isLoggedIn, (req: Request, res: Response, next: NextFunct
 function verifyLogin(username: string, password: string, returnCallback: Function) {
     try {
         const user = dataStorage.getUserByName(username);
+        console.log("VERIFY", username, user);
         if (user) {
             try {
                 if (user.password != generatePasswordHash(password, user.token)) {

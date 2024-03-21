@@ -5,3 +5,8 @@
     user.css
     Stylesheet for displaying and managing user profiles.
 */
+
+
+#login-form input {
+    display: block;
+}

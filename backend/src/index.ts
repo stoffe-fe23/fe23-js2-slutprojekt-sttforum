@@ -16,23 +16,38 @@ import { isLoggedIn, isAdmin } from "./modules/permissions.js";
 
 const app = express();
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+// This will block fetch() from sending cookies :(
+// app.use(cors());
+
+// Have to hardcode it instead for now... unless there is a better solution.
+app.use((req: Request, res: Response, next: NextFunction) => {
+    res.set("Access-Control-Allow-Origin", req.headers.host);
+    res.set("Access-Control-Allow-Credentials", "true");
+    //     res.set("Access-Control-Allow-Headers", "Content-Type,X-Requested-With");
+    res.set("Access-Control-Allow-Methods", "PUT,PATCH,POST,GET,DELETE,OPTIONS");
+    next();
+});
 
 app.use(sessionSetup);
 app.use(passport.initialize());
 app.use(passport.session());
 
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 // Serve images and other static files in the "media" folder at the root path: http://localhost:3000/media
 app.use('/media', express.static('media'));
+
+// Serve the forum API endpoints at the path:  http://localhost:3000/api/user
+app.use('/api/user', userAPI);
 
 // Serve the forum API endpoints at the path:  http://localhost:3000/api/forum
 app.use('/api/forum', forumAPI);
 
-// Serve the forum API endpoints at the path:  http://localhost:3000/api/user
-app.use('/api/user', userAPI);
+
+
+app.use(express.static('../frontend/docs'));
 
 
 // Test route: user logged in with admin permissions

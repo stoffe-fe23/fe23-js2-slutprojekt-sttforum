@@ -18,20 +18,26 @@ export default class Forum {
     public icon: string;
     private app: ForumApp;
 
-    static async create(app: ForumApp, forumId: string) {
-        const forumData: ForumAPI = await app.api.getJson(`forum/get/${forumId}`);
-        const obj = new Forum(app, forumData.id);
-        obj.name = forumData.name;
-        obj.icon = app.mediaUrl + 'forumicons/' + forumData.icon;
-        obj.threads = [];
+    static async create(app: ForumApp, forumId: string): Promise<Forum | null> {
+        // Only logged in users may see the forum content. 
+        if (app.isLoggedIn()) {
+            const forumData: ForumAPI = await app.api.getJson(`forum/get/${forumId}`);
+            const obj = new Forum(app, forumData.id);
+            obj.name = forumData.name;
+            obj.icon = forumData.icon.length ? app.mediaUrl + 'forumicons/' + forumData.icon : new URL('../images/forum-icon.png', import.meta.url).toString();
+            obj.threads = [];
 
-        if (forumData.threads && forumData.threads.length) {
-            for (const thread of forumData.threads) {
-                const newThread = await Thread.create(app, "0", thread);
-                obj.threads.push(newThread);
+            if (forumData.threads && forumData.threads.length) {
+                for (const thread of forumData.threads) {
+                    const newThread = await Thread.create(app, "0", thread);
+                    if (newThread) {
+                        obj.threads.push(newThread);
+                    }
+                }
             }
+            return obj;
         }
-        return obj;
+        return null;
     }
 
     // Constructor takes the forum ID and loads info from server into the object. 
@@ -43,7 +49,7 @@ export default class Forum {
     }
 
     // Generate HTML to display the threads in this forum
-    public display(targetContainer: HTMLElement): HTMLElement {
+    public display(targetContainer: HTMLElement, isShowingPosts: boolean = true): HTMLElement {
         const values: ForumDisplayInfo = {
             name: this.name,
             icon: this.icon,
@@ -52,8 +58,10 @@ export default class Forum {
         const forumElement = htmlUtilities.createHTMLFromTemplate("tpl-forum", targetContainer, values, attributes);
         const threadsElement = forumElement.querySelector(`.forum-threads`) as HTMLElement;
 
-        for (const thread of this.threads) {
-            thread.display(threadsElement);
+        if (isShowingPosts) {
+            for (const thread of this.threads) {
+                thread.display(threadsElement);
+            }
         }
 
         return forumElement;

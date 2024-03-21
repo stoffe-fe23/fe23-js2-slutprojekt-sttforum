@@ -25,29 +25,52 @@ export default class Message {
     public replies: Message[];
     private app: ForumApp;
 
-    // Load data from the server into this message. (if needing to load a single specific message)
-    static async create(app: ForumApp, messageId: string = "", messageData: ForumMessageAPI) {
-        if (!messageData && messageId.length) {
-            messageData = await app.api.getJson(`forum/message/get/${messageId}`);
+    // Factory method to load message data from the server and return a message object with it. 
+    static async create(app: ForumApp, messageId: string = "", messageData: ForumMessageAPI): Promise<Message | null> {
+        if (app.isLoggedIn()) {
+            if (!messageData && messageId.length) {
+                messageData = await app.api.getJson(`forum/message/get/${messageId}`);
+            }
+
+            const obj = new Message(app, messageData);
+
+            for (const reply of messageData.replies) {
+                const newMessage = await Message.create(app, "", reply);
+                if (newMessage) {
+                    obj.replies.push(newMessage);
+                }
+            }
+            return obj;
         }
+        return null;
+    }
 
-        const obj = new Message(app, messageId, messageData);
+    // Factory method creating a new message on the server and returning the new message object.
+    static async new(app: ForumApp, targetId: string, messageText: string, messageType: 'message' | 'reply' = 'message'): Promise<Message | null> {
+        if (app.isLoggedIn() && messageText.length) {
+            const messageData = {
+                message: messageText,
+                threadId: targetId
+            };
+            const replyData = {
+                message: messageText,
+                messageId: targetId
+            };
 
-        for (const reply of messageData.replies) {
-            const newMessage = await Message.create(app, "", reply);
-            obj.replies.push(newMessage);
+            const newMessageData: ForumMessageAPI = await app.api.postJson(`message/create`, messageType == 'reply' ? replyData : messageData);
+            return new Message(app, newMessageData);
         }
-        return obj;
-
+        return null;
     }
 
     // Create message object and fill it with the specified data, if any is assigned.
-    constructor(app: ForumApp, messageId: string = "", messageData: ForumMessageAPI | null) {
+    constructor(app: ForumApp, messageData: ForumMessageAPI | null) {
         this.app = app;
-        this.id = messageId;
+
         if (messageData) {
+            this.id = messageData.id;
             this.author = messageData.author;
-            this.author.picture = app.mediaUrl + 'userpictures/' + this.author.picture;
+            this.author.picture = this.author.picture.length ? app.mediaUrl + 'userpictures/' + this.author.picture : new URL('../images/user-icon.png', import.meta.url).toString();
             this.message = messageData.message;
             this.deleted = messageData.deleted;
             this.date = messageData.date;
@@ -55,46 +78,31 @@ export default class Message {
         }
     }
 
-
-
-    // Create a new message by the currently logged in user and save it to the server. 
-    public newMessage(message: string) {
-        this.date = Date.now();
-        this.author = {
-            id: this.app.user.id,
-            userName: this.app.user.userName,
-            picture: this.app.user.picture
+    // Add a new reply to this message
+    public async addReply(messageText: string) {
+        if (this.app.isLoggedIn()) {
+            const message = await Message.new(this.app, this.id, messageText, 'reply');
+            if (message) {
+                this.replies.push(message);
+            }
+            else {
+                throw new Error(`An error occurred when replying to message. (${this.id})`);
+            }
         }
-        this.message = message;
-        this.deleted = false;
-        this.replies = [];
-
-        this.save();
-    }
-
-
-    // Save this message to the server.
-    public save(): void {
-        // TODO: Update/save this message to the server
-        // app.api.postJson('message/save', this);
-        this.id = "0"; // Assign value of ID returned from server here
-    }
-
-    // Create a reply to this message 
-    public addReply(messageText: string): string {
-        const newReply: Message = new Message(this.app, "", null);
-        newReply.newMessage(messageText);
-        this.replies.push(newReply);
-        return newReply.id;
     }
 
     // Mark this message as deleted
     public delete(isDeleted: boolean = true): void {
         this.deleted = isDeleted == true;
+        // TODO: Uppdatera på server.... ... !!!!
     }
 
     // Generate HTML to display this message
     public display(targetContainer: HTMLElement, replyDepth: number = 0): HTMLElement {
+        if (!this.app.isLoggedIn()) {
+            throw new Error("You must be logged on to view the forum messages.");
+        }
+
         let values: MessageDisplayInfo = {
             id: this.id,
             authorId: this.author.id,

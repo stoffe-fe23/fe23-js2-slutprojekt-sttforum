@@ -21,9 +21,9 @@
             <h1>TTS Forum</h1>
             <nav>
                 <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/forums">Forums</a></li>
-                    <li><a href="/users">Users</a></li>
+                    <li><a href="/" data-navigo>Home</a></li>
+                    <li><a href="/forums" data-navigo>Forums</a></li>
+                    <li><a href="/users" data-navigo>Users</a></li>
                 </ul>
             </nav>
         </header>
@@ -46,7 +46,7 @@
             <form id="login-form">
                 <input type="text" name="username" id="login-username" placeholder="User name" min-length="2" max-length="20" required>
                 <input type="password" name="password" id="login-password" placeholder="Password" min-length="6" max-length="40" required>
-                <button id="button-login">Log in</button><button id="button-cancel">Cancel</button>
+                <button id="button-login">Log in</button><button id="button-cancel" formnovalidate>Cancel</button>
             </form>
         </dialog>
         <dialog id="message-form">
@@ -71,6 +71,7 @@
                 <img class="forum-icon" src="images/forum-icon.png" data-template="icon">
                 <h2 data-template="name"></h2>
             </div>
+            <div class="forum-breadcrumb"></div>
             <div class="forum-threads" data-template="threads">
             </div>
         </section>

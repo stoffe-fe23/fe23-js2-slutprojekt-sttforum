@@ -23,7 +23,7 @@ export function isLoggedIn(req: Request, res: Response, next: NextFunction) {
     }
 
     res.status(401);
-    res.json({ error: "You are not authorized to access this functionality." });
+    res.json({ error: "401 You are not authorized to access this functionality." });
 
 }
 
@@ -41,7 +41,7 @@ export function isAdmin(req: Request, res: Response, next: NextFunction) {
     }
 
     res.status(401);
-    res.json({ error: "Not authorized." });
+    res.json({ error: "401 Not Authorized" });
 }
 
 
@@ -49,9 +49,6 @@ export function isAdmin(req: Request, res: Response, next: NextFunction) {
 // Check if the user is logged in and is the owner of a particular resource, or 
 // has administrator permissions. 
 export function isOwner(req: Request, res: Response, next: NextFunction) {
-    // TODO: Check method, look in req.body / req.params for a message ID value,
-    // look up the resource in question and see if the req.user is the "author". 
-    // res.json({ message: "Test!", method: req.method, badi: req.body, params: req.params, path: req.path, url: req.url });
     try {
         if (req.isAuthenticated()) {
             if (req.user && (req.user as ForumUser).admin) {
@@ -74,5 +71,5 @@ export function isOwner(req: Request, res: Response, next: NextFunction) {
     }
 
     res.status(401);
-    res.json({ error: "Not authorized." });
+    res.json({ error: "401 Not Authorized" });
 }

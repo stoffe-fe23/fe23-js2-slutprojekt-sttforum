@@ -7,7 +7,7 @@
 */
 import { Router, Request, Response, NextFunction } from 'express';
 import dataStorage from "./Database.js";
-import { UserData } from "./TypeDefs.js";
+import { UserData, ForumUser } from "./TypeDefs.js";
 import { isLoggedIn, isOwner, isAdmin } from "./permissions.js";
 
 
@@ -22,6 +22,25 @@ userAPI.get('/list', isLoggedIn, (req: Request, res: Response) => {
     res.json({ message: `TODO: Users list` });
 });
 
+userAPI.get('/current', (req: Request, res: Response) => {
+    console.log("REQ USER", req.user, req.isAuthenticated());
+    if (req.user) {
+        const sessionUser = req.user as ForumUser;
+        const currentUser: UserData = {
+            id: sessionUser.id,
+            name: sessionUser.name,
+            email: sessionUser.email,
+            picture: sessionUser.picture,
+            admin: sessionUser.admin
+        }
+
+        res.json({ message: `User`, data: currentUser });
+    }
+    else {
+        res.json({ message: "No User" });
+    }
+});
+
 
 // POST target of form to register a new user account.
 userAPI.post("/register", (req: Request, res: Response) => {
@@ -32,8 +51,10 @@ userAPI.post("/register", (req: Request, res: Response) => {
                 id: newUser.id,
                 name: newUser.name,
                 email: newUser.email,
-                picture: newUser.picture
+                picture: newUser.picture,
+                admin: false
             }
+            res.status(201);
             res.json({ message: `New user added.`, data: newUserData });
         }
         else {
