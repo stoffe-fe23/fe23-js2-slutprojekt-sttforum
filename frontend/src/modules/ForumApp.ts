@@ -45,7 +45,8 @@ export default class ForumApp {
         const apiResponse: StatusResponseAPI = await this.api.getJson("user/current");
 
         if (apiResponse.data && apiResponse.message == "User") {
-            this.user = new User(apiResponse.data as UserData);
+            this.user = new User(this, apiResponse.data as UserData);
+            this.displayCurrentUser();
             console.log("User is logged in: ", this.user.userName);
         }
         else if (apiResponse.message == "No User") {
@@ -90,11 +91,9 @@ export default class ForumApp {
             username: loginName,
             password: loginPass
         };
-        console.log("LESIGH", postData);
+
         const response: StatusResponseAPI = await this.api.postJson("user/login", postData);
-        console.log("UL RESPONSE DATA", response);
         if (response && response.message && (response.message == "Login successful")) {
-            console.log("UL LOGIN SUCCESS");
             await this.loadCurrentUser();
             await this.loadForums();
         }
@@ -137,6 +136,21 @@ export default class ForumApp {
         }
         else {
             throw new Error("You must be logged in the view the forums.");
+        }
+    }
+
+    public displayCurrentUser() {
+        const userBox = document.querySelector("#current-user") as HTMLElement;
+        const userImage = userBox.querySelector("#user-image") as HTMLImageElement;
+        const userName = userBox.querySelector("#user-name") as HTMLDivElement;
+
+        if (this.isLoggedIn() && this.user && userBox) {
+            userName.innerText = this.user.userName;
+            userImage.src = this.user.picture;
+        }
+        else {
+            userName.innerText = "Log in";
+            userImage.src = new URL('../images/user-icon.png', import.meta.url).toString();
         }
     }
 }

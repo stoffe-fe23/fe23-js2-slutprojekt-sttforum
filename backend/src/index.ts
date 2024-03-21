@@ -21,9 +21,9 @@ const app = express();
 
 // Have to hardcode it instead for now... unless there is a better solution.
 app.use((req: Request, res: Response, next: NextFunction) => {
-    res.set("Access-Control-Allow-Origin", req.headers.host);
+    res.set("Access-Control-Allow-Origin", 'http://localhost:1234');
     res.set("Access-Control-Allow-Credentials", "true");
-    //     res.set("Access-Control-Allow-Headers", "Content-Type,X-Requested-With");
+    res.set("Access-Control-Allow-Headers", "Content-Type,X-Requested-With");
     res.set("Access-Control-Allow-Methods", "PUT,PATCH,POST,GET,DELETE,OPTIONS");
     next();
 });
