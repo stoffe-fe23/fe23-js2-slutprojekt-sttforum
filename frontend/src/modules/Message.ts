@@ -125,13 +125,25 @@ export default class Message {
     private onMessageButtonsSubmit(event) {
         event.preventDefault();
         if (event.submitter.classList.contains("reply-btn")) {
+            const messageDialog = document.querySelector("#message-dialog") as HTMLFormElement;
+            const threadIdElement = messageDialog.querySelector("#reply-thredId") as HTMLInputElement;
             const messageForm = document.querySelector("#message-form") as HTMLFormElement;
-            const threadIdElement = messageForm.querySelector("#reply-thredId") as HTMLInputElement;
-            messageForm.showModal()
+            messageDialog.showModal()
 
             const threadId = event.currentTarget.closest("section").dataset.threadid;
             threadIdElement.value = threadId;
-            console.log("threadid", threadId, messageForm, threadIdElement)
+            console.log("threadid", threadId, messageDialog, threadIdElement);
+
+            messageForm.addEventListener("submit", (event) => {
+                event.preventDefault();
+                const formData = new FormData(messageForm);
+                console.log(formData);
+
+                
+
+                messageDialog.close();
+                
+            })
         }
     }
 }
