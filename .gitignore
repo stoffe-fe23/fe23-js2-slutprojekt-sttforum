@@ -6,5 +6,6 @@ frontend/.parcel-cache
 frontend/dist
 frontend/package-lock.json
 backend/package-lock.json
+backend/sessions
 package-lock.json
 .DS_Store

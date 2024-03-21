@@ -3,12 +3,15 @@
     Grupp : TTSForum
 
     Database.ts
-    Class and global object for reading and writing subsets of data in the JSON "database" files. 
+    Database abstraction layer. 
+    Class and global object for reading and writing subsets of data in the database. 
+    Currently uses simple JSON file storage, but should be replaced with an actual database.
     Initializes storage and caches data from files in the storage property. 
 */
 import DataStore from "./Datastore.js";
 import crypto from 'crypto';
-import { User, ForumMessage, ForumThread, Forum, ForumInfo, ForumThreadInfo } from "./TypeDefs.js";
+import { ForumUser, ForumMessage, ForumThread, Forum, ForumInfo, ForumThreadInfo } from "./TypeDefs.js";
+import { generatePasswordHash, generateRandomSalt } from "./password.js";
 
 
 // TODO: Better error handling and parameter validation. 
@@ -23,46 +26,46 @@ class Database {
     public initialize(): void {
         this.storage.loadForums();
         this.storage.loadUsers();
+        console.log("Data storage initialized");
     }
 
 
     // Find the user with the specified userid
-    public getUser(userId: string): User | null {
+    public getUser(userId: string): ForumUser | null {
         const foundUser = this.storage.userDB.find((checkUser) => checkUser.id == userId);
         return foundUser ?? null;
     }
 
     // Find the user with the specified userid
-    public getUserByName(userName: string): User | null {
+    public getUserByName(userName: string): ForumUser | null {
         const foundUser = this.storage.userDB.find((checkUser) => checkUser.name == userName);
         return foundUser ?? null;
     }
 
     // Find the user with the specified userid
-    public getUserByToken(token: string): User | null {
+    public getUserByToken(token: string): ForumUser | null {
         const foundUser = this.storage.userDB.find((checkUser) => (checkUser.token == token) && token.length && checkUser.token.length);
         return foundUser ?? null;
     }
 
-    public addUser(userName: string, password: string, email: string) {
+    public addUser(userName: string, password: string, email: string): ForumUser {
         if (this.getUserByName(userName)) {
             throw new Error("The specified user name is already taken or not allowed for use.");
         }
 
-        crypto.pbkdf2(password, "Very salty here 2!?", 310000, 32, 'sha256', (error, hashedPassword) => {
-            if (error) {
-                throw error;
-            }
-            const newUser: User = {
-                id: crypto.randomUUID(),
-                name: userName,
-                email: email,
-                picture: "user-icon.png",
-                password: hashedPassword.toString(),
-                token: ""
-            };
-            this.storage.userDB.push(newUser);
-        });
+        const token = generateRandomSalt();
+        const newUser: ForumUser = {
+            id: crypto.randomUUID(),
+            name: userName,
+            email: email,
+            picture: "user-icon.png",
+            password: generatePasswordHash(password, token),
+            token: token,
+            admin: false
+        };
+        this.storage.userDB.push(newUser);
+        this.storage.saveUsers();
+        return newUser;
     }
 
 

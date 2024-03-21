@@ -3,8 +3,10 @@
     Grupp : TTSForum
 
     Datastore.ts
-    Class for reading and writing data from the "database" JSON files.
-    Caches data from files on server startup in the forumDB and userDB properties.
+    "Fake database".
+    Class for reading and writing data from the JSON files in the "storage" folder.
+    Forum posts and users are kept in separate files.
+    Caches data from files on server startup in the forumDB and userDB properties for quicker access.
 */
 import fs from 'fs/promises';
 import fsync from 'fs';
@@ -20,7 +22,6 @@ export default class DataStore {
         }
         this.forumDB = [];
         this.userDB = [];
-        console.log("Data storage initialized");
     }
     // Init: Load forum data (synchronous since we do not want to do anything else before this is done)
     loadForums() {

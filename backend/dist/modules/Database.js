@@ -3,11 +3,14 @@
     Grupp : TTSForum
 
     Database.ts
-    Class and global object for reading and writing subsets of data in the JSON "database" files.
+    Database abstraction layer.
+    Class and global object for reading and writing subsets of data in the database.
+    Currently uses simple JSON file storage, but should be replaced with an actual database.
     Initializes storage and caches data from files in the storage property.
 */
 import DataStore from "./Datastore.js";
 import crypto from 'crypto';
+import { generatePasswordHash, generateRandomSalt } from "./password.js";
 // TODO: Better error handling and parameter validation. 
 class Database {
     constructor() {
@@ -16,6 +19,7 @@ class Database {
     initialize() {
         this.storage.loadForums();
         this.storage.loadUsers();
+        console.log("Data storage initialized");
     }
     // Find the user with the specified userid
     getUser(userId) {
@@ -36,20 +40,19 @@ class Database {
         if (this.getUserByName(userName)) {
             throw new Error("The specified user name is already taken or not allowed for use.");
         }
-        crypto.pbkdf2(password, "Very salty here 2!?", 310000, 32, 'sha256', (error, hashedPassword) => {
-            if (error) {
-                throw error;
-            }
-            const newUser = {
-                id: crypto.randomUUID(),
-                name: userName,
-                email: email,
-                picture: "user-icon.png",
-                password: hashedPassword.toString(),
-                token: ""
-            };
-            this.storage.userDB.push(newUser);
-        });
+        const token = generateRandomSalt();
+        const newUser = {
+            id: crypto.randomUUID(),
+            name: userName,
+            email: email,
+            picture: "user-icon.png",
+            password: generatePasswordHash(password, token),
+            token: token,
+            admin: false
+        };
+        this.storage.userDB.push(newUser);
+        this.storage.saveUsers();
+        return newUser;
     }
     // Create a new forum empty with the specified name and icon.
     addForum(forumName, forumIcon) {

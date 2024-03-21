@@ -6,13 +6,21 @@
     Type alias definitions. 
 */
 
-export type User = {
+export type ForumUser = {
     id: string,
     name: string,
     email: string,
     picture: string,
     password: string,
-    token: string | null
+    token: string | null,
+    admin: boolean
+}
+
+export type UserData = {
+    id: string,
+    name: string,
+    email: string,
+    picture: string
 }
 
 export type ForumAuthor = {

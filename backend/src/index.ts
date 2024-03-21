@@ -6,68 +6,23 @@
     Main script for the Node.js/Express server. Set up served resources and listen for client connections. 
 */
 import express from "express";
-import session from "express-session";
+import { Request, Response, NextFunction } from 'express';
 import cors from "cors";
 import forumAPI from "./modules/forumAPI.js";
 import userAPI from "./modules/userAPI.js";
 import dataStorage from "./modules/Database.js";
-import passport from 'passport';
-import LocalStrategy from 'passport-local';
-import crypto from 'crypto';
-
+import { sessionSetup, passport } from "./modules/authentication.js";
+import { isLoggedIn, isAdmin } from "./modules/permissions.js";
 
 const app = express();
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-passport.use(new LocalStrategy(function verify(username: string, password: string, cb) {
-    try {
-        const user = dataStorage.getUserByName(username);
-        if (user) {
-            crypto.pbkdf2(password, "Very salty here 2!?", 310000, 32, 'sha256', (error, hashedPassword) => {
-                if (error) {
-                    return cb(error);
-                }
-                if (!crypto.timingSafeEqual(Buffer.from(user.password), hashedPassword)) {
-                    return cb(null, false, { message: 'Incorrect username or password.' });
-                }
-                return cb(null, user);
-            });
-        }
-        else {
-            return cb(null, false, { message: 'Incorrect username or password.' });
-        }
-    }
-    catch (error) {
-        return cb(error);
-    }
-}));
-
-userAPI.post('/api/login/password', passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/login'
-}));
-
-passport.serializeUser(function (user, cb) {
-    console.log("Serialize");
-    process.nextTick(function () {
-        cb(null, { id: user.id, username: user.username });
-    });
-});
-
-passport.deserializeUser(function (user, cb) {
-    console.log("Deserialize");
-    process.nextTick(function () {
-        return cb(null, user);
-    });
-});
-
-app.use(session({
-    secret: 'Salty for the session cookie id...',
-    resave: false,
-    saveUninitialized: false
-}));
-app.use(passport.authenticate('session'));
+app.use(sessionSetup);
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 // Serve images and other static files in the "media" folder at the root path: http://localhost:3000/media
@@ -80,7 +35,22 @@ app.use('/api/forum', forumAPI);
 app.use('/api/user', userAPI);
 
 
-app.use((err, req, res, next) => {
+// Test route: user logged in with admin permissions
+app.get("/test/:testid", (req: Request, res: Response) => {
+    res.json({ message: "Test!", method: req.method, badi: req.body, params: req.params, path: req.path, url: req.url });
+});
+// Test route: user logged in
+app.get("/protected", isLoggedIn, (req: Request, res: Response) => {
+    res.json({ message: "Authenticated!" });
+});
+// Test route: user logged in with admin permissions
+app.get("/admin", isAdmin, (req: Request, res: Response) => {
+    res.json({ message: "Administrator!" });
+});
+
+
+// General error handler
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     console.log("Server error:", err);
     res.status(500);
     res.json({ error: err.message });
