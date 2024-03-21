@@ -60,6 +60,22 @@
             </form>
 
         </dialog>
+        <dialog id="user-profile">
+            <form id="user-profile-form">
+                <img src="images/user-icon.png" id="user-profile-picture-view" alt="Profile picture">
+                <h2>User profile</h2>
+                <input type="text" id="user-profile-name" name="username" value="" placeholder="Your username" required>
+                <input type="email" id="user-profile-email" name="email" value="" placeholder="Your e-mail address" required>
+                <input type="password" id="user-profile-password" name="password" value="" placeholder="Change password">
+                <input type="password" id="user-profile-password-confirm" name="password-confirm" value="" placeholder="Confirm password">
+                <input type="file" id="user-profile-picture" name="picture" value="">
+                <div class="profile-buttons">
+                    <button id="user-profile-submit">Save</button>
+                    <button formnovalidate>Close</button>
+                    <button id="user-profile-logout" formnovalidate>Log off</button>
+                </div>
+            </form>
+        </dialog>
     </body>
     <!-- Template for a forum button -->
     <template id="tpl-forum-button">

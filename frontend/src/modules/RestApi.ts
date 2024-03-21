@@ -76,7 +76,26 @@ export default class RestApi {
     async postJson<Type>(urlPath: string = '', formData: APIQueryData = null, queryParams: APIQueryParams = null): Promise<Type> {
         let response = await fetch(this.buildRequestUrl(urlPath, queryParams), this.getFetchOptions("POST", formData ?? {}));
         let result = await response.json();
-        console.log("VAD ÄR FEL?", result);
+        if (!response.ok) {
+            this.handleResponseErrors(response, result);
+        }
+        this.lastRequest.method = 'POST';
+        return result as Type;
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Send POST request to API with a file upload
+    // formData.append("picture", event.target.files[0]);
+    async postFile<Type>(urlPath: string = '', formData: FormData, queryParams: APIQueryParams = null): Promise<Type> {
+        const options: RequestInit = {
+            method: 'POST',
+            credentials: "include",
+            /* headers: { "Content-Type": "multipart/form-data" }, */
+            body: formData,
+        };
+        let response = await fetch(this.buildRequestUrl(urlPath, queryParams), options);
+        let result = await response.json();
         if (!response.ok) {
             this.handleResponseErrors(response, result);
         }

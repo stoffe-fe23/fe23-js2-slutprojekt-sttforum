@@ -52,10 +52,11 @@ app.use(express.static('../frontend/docs'));
 
 // Test route: user logged in with admin permissions
 app.get("/test/:testid", (req: Request, res: Response) => {
-    res.json({ message: "Test!", method: req.method, badi: req.body, params: req.params, path: req.path, url: req.url });
+    res.json({ message: "Test!", method: req.method, body: req.body, params: req.params, path: req.path, url: req.url });
 });
 // Test route: user logged in
 app.get("/protected", isLoggedIn, (req: Request, res: Response) => {
+    console.log("HEADER", req.socket.remoteAddress);
     res.json({ message: "Authenticated!" });
 });
 // Test route: user logged in with admin permissions

@@ -19,6 +19,7 @@ const pageForum = document.querySelector("#page-forum") as HTMLElement;
 const pageUsers = document.querySelector("#page-users") as HTMLElement;
 const loginDialog = document.querySelector("#user-login") as HTMLDialogElement;
 
+
 console.log("PAGE LOADED!");
 
 (document.querySelector("#login-form") as HTMLFormElement).addEventListener("submit", (event) => {
@@ -39,6 +40,34 @@ console.log("PAGE LOADED!");
         });
     }
     loginDialog.close();
+});
+
+(document.querySelector("#current-user") as HTMLElement).addEventListener("click", (event) => {
+    if (forumApp.isLoggedIn() && forumApp.user) {
+        const profileDialog = document.querySelector("#user-profile") as HTMLDialogElement;
+        const nameField = document.querySelector("#user-profile-name") as HTMLInputElement;
+        const emailField = document.querySelector("#user-profile-email") as HTMLInputElement;
+        const pictureView = document.querySelector("#user-profile-picture-view") as HTMLImageElement;
+
+        nameField.value = forumApp.user.userName;
+        emailField.value = forumApp.user.email;
+        pictureView.src = forumApp.user.picture;
+
+        profileDialog.showModal();
+    }
+    else {
+        // TODO: Move the login form here... 
+    }
+});
+
+(document.querySelector("#user-profile-form") as HTMLFormElement).addEventListener("submit", (event) => {
+    event.preventDefault();
+    const profileDialog = document.querySelector("#user-profile") as HTMLDialogElement;
+    const formData = new FormData(event.currentTarget as HTMLFormElement);
+    forumApp.api.postFile("user/profile/update", formData).then((result) => {
+        console.log("Profile update", profile / update);
+    });
+    profileDialog.close();
 });
 
 

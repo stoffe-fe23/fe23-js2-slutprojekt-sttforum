@@ -6,6 +6,8 @@
     API endpoint routes for managing users and profiles.
 */
 import { Router, Request, Response, NextFunction } from 'express';
+import fs from 'fs';
+import multer from "multer";
 import dataStorage from "./Database.js";
 import { UserData, ForumUser } from "./TypeDefs.js";
 import { isLoggedIn, isOwner, isAdmin } from "./permissions.js";
@@ -14,6 +16,37 @@ import { isLoggedIn, isOwner, isAdmin } from "./permissions.js";
 
 // Router for the /api/user path endpoints 
 const userAPI = Router();
+
+const validFileTypes = { 'image/jpeg': '.jpg', 'image/gif': '.gif', 'image/png': '.png', 'image/webp': '.webp' };
+
+let storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, '../backend/media/userpictures/')
+    },
+    filename: function (req, file, cb) {
+        let extension: string = (Object.keys(validFileTypes).includes(file.mimetype) ? validFileTypes[file.mimetype] : '');
+        if (req.user && (req.user as ForumUser).id) {
+            const userId = (req.user as ForumUser).id;
+            cb(null, userId + extension);
+        }
+        else {
+            cb(null, Date.now() + extension);
+        }
+    }
+});
+
+const userPictureUpload = multer({
+    storage: storage,
+    fileFilter: function (req, file, cb) {
+        if (!Object.keys(validFileTypes).includes(file.mimetype)) {
+            return cb(new Error('Only images are allowed'));
+        }
+        cb(null, true);
+    },
+    limits: {
+        fileSize: 512 * 512
+    }
+});
 
 
 // Get a list of all registered users. 
@@ -66,6 +99,14 @@ userAPI.post("/register", (req: Request, res: Response) => {
         res.status(400);
         res.json({ error: "Error trying to create new user. " + error.message });
     }
+});
+
+
+userAPI.post("/profile/update", userPictureUpload.single('picture'), (req: Request, res: Response) => {
+    // TODO: Update user profile.
+    // req.file - the profile picture
+    // req.body - other form fields
+    console.log("TODO: Profile update", req.body, req.file);
 });
 
 
