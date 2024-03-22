@@ -48,9 +48,18 @@
         </footer>
         <dialog id="user-login">
             <form id="login-form">
+                <h2>Log in</h2>
                 <input type="text" name="username" id="login-username" placeholder="User name" min-length="2" max-length="20" required>
                 <input type="password" name="password" id="login-password" placeholder="Password" min-length="6" max-length="40" required>
                 <button id="button-login">Log in</button><button id="button-cancel" formnovalidate>Cancel</button>
+            </form>
+            <form id="user-register-form">
+                <h2>Register new user</h2>
+                <input type="text" id="user-register-name" name="username" value="" placeholder="Your username" required>
+                <input type="email" id="user-register-email" name="email" value="" placeholder="Your e-mail address" required>
+                <input type="password" id="user-register-password" name="password" value="" placeholder="Choose a password">
+                <input type="password" id="user-register-password-confirm" name="password-confirm" value="" placeholder="Confirm password">
+                <button id="user-register-submit">Register</button>
             </form>
         </dialog>
         <dialog id="message-form">

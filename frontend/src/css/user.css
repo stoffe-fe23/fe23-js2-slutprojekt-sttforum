@@ -50,3 +50,13 @@
 .profile-buttons {
     margin-top: 1.5rem;
 }
+
+#user-register-form,
+#login-form {
+    display: block;
+}
+
+#user-register-form.hide,
+#login-form.hide {
+    display: none;
+}

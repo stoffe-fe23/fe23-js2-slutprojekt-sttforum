@@ -81,6 +81,29 @@ console.log("PAGE LOADED!");
 });
 
 
+(document.querySelector("#user-register-form") as HTMLFormElement).addEventListener("submit", (event) => {
+    event.preventDefault();
+    console.log("Register form submit");
+    if ((event.submitter as HTMLButtonElement).id == "user-register-submit") {
+        const formData = new FormData(event.currentTarget as HTMLFormElement);
+        forumApp.userRegister(
+            formData.get("username") as string,
+            formData.get("password") as string,
+            formData.get("password-confirm") as string,
+            formData.get("email") as string).then(() => {
+                console.log("Login");
+                alert("User account created!");
+                pageRouter.navigate('/login');
+
+            }).catch((error) => {
+                console.error("Login error", error.message);
+
+            });
+    }
+    loginDialog.close();
+});
+
+
 // Initialize the forums and load current user (if already logged in)
 forumApp.load().then(() => {
     if (forumApp.isLoggedIn()) {

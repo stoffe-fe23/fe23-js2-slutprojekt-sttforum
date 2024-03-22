@@ -139,7 +139,7 @@ export default class ForumApp {
         }
     }
 
-    public displayCurrentUser() {
+    public displayCurrentUser(): void {
         const userBox = document.querySelector("#current-user") as HTMLElement;
         const userImage = userBox.querySelector("#user-image") as HTMLImageElement;
         const userName = userBox.querySelector("#user-name") as HTMLDivElement;
@@ -154,12 +154,32 @@ export default class ForumApp {
         }
     }
 
-    public async userLogoff() {
+    public async userLogoff(): Promise<void> {
         if (this.isLoggedIn()) {
             const response: StatusResponseAPI = await this.api.getJson("user/logout");
             this.user = null;
             this.displayCurrentUser();
             console.log("User logoff", response);
+        }
+    }
+
+    public async userRegister(username: string, password: string, passwordConfirm: string, email: string): Promise<void> {
+        if (password.length && passwordConfirm.length && (password == passwordConfirm)) {
+            const newUserData = {
+                username: username,
+                password: password,
+                email: email
+            }
+            const response: StatusResponseAPI = await this.api.postJson("user/register", newUserData);
+            if (response && response.message && response.data) {
+                // Maybe require account confirmation first? 
+                // const newUser = new User(this, response.data as UserData);
+                // this.user = newUser;
+                console.log("User Register", response.data);
+            }
+        }
+        else {
+            throw new Error("The passwords do not match. Try again.")
         }
     }
 }
