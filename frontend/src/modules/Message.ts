@@ -80,6 +80,7 @@ export default class Message {
 
     // Add a new reply to this message
     public async addReply(messageText: string) {
+        
         if (this.app.isLoggedIn()) {
             const message = await Message.new(this.app, this.id, messageText, 'reply');
             if (message) {
@@ -134,24 +135,31 @@ export default class Message {
         event.preventDefault();
         if (event.submitter.classList.contains("reply-btn")) {
             const messageDialog = document.querySelector("#message-dialog") as HTMLDialogElement;
-            const threadIdElement = messageDialog.querySelector("#reply-threadId") as HTMLInputElement;
+            // const threadIdElement = messageDialog.querySelector("#reply-threadId") as HTMLInputElement;
             const messageForm = document.querySelector("#message-form") as HTMLFormElement;
+
+            const messageIdElement = messageDialog.querySelector("#reply-messageId") as HTMLInputElement;
+            const messagedId = event.currentTarget.closest("article").dataset.messageid; 
+            messageIdElement.value = messagedId;
+            console.log("messageid", messagedId, messageDialog, messageIdElement);
             messageDialog.showModal();
 
-            const threadId = event.currentTarget.closest("section").dataset.threadid; 
-            threadIdElement.value = threadId;
-            console.log("threadid", threadId, messageDialog, threadIdElement);
+            // const threadId = event.currentTarget.closest("section").dataset.threadid; 
+            // threadIdElement.value = threadId;
+            // console.log("threadid", threadId, messageDialog, threadIdElement);
 
             messageForm.addEventListener("submit", (event) => {
                 event.preventDefault();
                 
-                // const formData = new FormData(event.currentTarget as HTMLFormElement);
-                // console.log(formData);
-                // console.log(event.currentTarget);
+                const formData = new FormData(event.currentTarget as HTMLFormElement);
+                const messageText = formData.get("message") as string
+                console.log(messageText);
                 
+                this.addReply(messageText);
+         
                 // this.app.api.postJson("forum/message/create", formData);
-
-                // messageDialog.close();
+                
+                messageDialog.close();
                 
             })
         }

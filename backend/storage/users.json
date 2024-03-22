@@ -34,5 +34,14 @@
         "password": "f7bdfab9488034db3aed95c8183abcb2da3111bb0c90944af88d8bbdf0f98403126610dc87c8a7a0f6a407c86c8d3dba222fff513736a91713a40a6699a385b3",
         "token": "22378c33a08209846bfcc21fb64d8ba4d24a3876a953232e24f8d6398094e792",
         "admin": false
+    },
+    {
+        "id": "ab9c7d19-188b-4884-92cc-5fdde95a6509",
+        "name": "Ton",
+        "email": "tonskater@hotmail.com",
+        "picture": "user-icon.png",
+        "password": "eac5190bc0982e02bfcca1ed067670fa90e5bc2c41716b15378f5d10290c471c0b4d37dd37ead83ebf7807fe94be943475acc56fb54db8ce64a8d9bcfe2f53f7",
+        "token": "052f572e534495f4c6ff6bf20787706d2f5a24d59a2b045bcbb7f4b89029426d",
+        "admin": false
     }
 ]
