@@ -17,8 +17,8 @@ import { isLoggedIn, isOwner, isAdmin } from "./permissions.js";
 // Router for the /api/user path endpoints 
 const userAPI = Router();
 
+// Setup for upload of user profile pictures.
 const validFileTypes = { 'image/jpeg': '.jpg', 'image/gif': '.gif', 'image/png': '.png', 'image/webp': '.webp' };
-
 let storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, '../backend/media/userpictures/')
@@ -34,12 +34,11 @@ let storage = multer.diskStorage({
         }
     }
 });
-
 const userPictureUpload = multer({
     storage: storage,
     fileFilter: function (req, file, cb) {
         if (!Object.keys(validFileTypes).includes(file.mimetype)) {
-            return cb(new Error('Only images are allowed'));
+            return cb(new Error('The profile picture must be in JPG, PNG, GIF or WEBP format.'));
         }
         cb(null, true);
     },
@@ -102,10 +101,27 @@ userAPI.post("/register", (req: Request, res: Response) => {
 });
 
 
-userAPI.post("/profile/update", userPictureUpload.single('picture'), (req: Request, res: Response) => {
-    // TODO: Update user profile.
-    // req.file - the profile picture
-    // req.body - other form fields
+// POST target of form to update user profile. 
+userAPI.post("/profile/update", isLoggedIn, userPictureUpload.single('picture'), (req: Request, res: Response) => {
+    try {
+        if (req.user && (req.user as ForumUser).id) {
+            if (!req.body.password.length || (req.body.password && req.body['password-confirm'] && (req.body.password.length > 3) && (req.body.password == req.body['password-confirm']))) {
+                const userObj = dataStorage.editUser((req.user as ForumUser).id, req.body.username, req.body.password, req.body.email, req.file.filename);
+
+                // TODO: If picture or name changes, update all posts with this author and change picture/name there too. 
+                res.status(200);
+                res.json({ message: `User profile updated.`, data: userObj });
+            }
+        }
+        else {
+            res.status(404);
+            res.json({ error: "Error updating user profile. User not found" });
+        }
+    }
+    catch (error) {
+        res.status(500);
+        res.json({ error: "Error trying to save user profile. " + error.message });
+    }
     console.log("TODO: Profile update", req.body, req.file);
 });
 

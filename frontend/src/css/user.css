@@ -41,3 +41,12 @@
 #user-profile-form input {
     display: block;
 }
+
+#user-profile-picture-view {
+    max-width: 200px;
+    border-radius: 50%;
+}
+
+.profile-buttons {
+    margin-top: 1.5rem;
+}

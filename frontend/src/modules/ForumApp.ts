@@ -153,4 +153,13 @@ export default class ForumApp {
             userImage.src = new URL('../images/user-icon.png', import.meta.url).toString();
         }
     }
+
+    public async userLogoff() {
+        if (this.isLoggedIn()) {
+            const response = await this.api.getJson("user/logout")
+            this.user = null;
+            this.displayCurrentUser();
+            console.log("User logoff", response);
+        }
+    }
 }

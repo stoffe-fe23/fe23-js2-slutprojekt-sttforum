@@ -56,17 +56,25 @@ console.log("PAGE LOADED!");
         profileDialog.showModal();
     }
     else {
-        // TODO: Move the login form here... 
+        loginDialog.showModal();
     }
 });
 
+// Submit handler for edit user profile form
 (document.querySelector("#user-profile-form") as HTMLFormElement).addEventListener("submit", (event) => {
     event.preventDefault();
     const profileDialog = document.querySelector("#user-profile") as HTMLDialogElement;
-    const formData = new FormData(event.currentTarget as HTMLFormElement);
-    forumApp.api.postFile("user/profile/update", formData).then((result) => {
-        console.log("Profile update", profile / update);
-    });
+    if ((event.submitter as HTMLButtonElement).id == "user-profile-submit") {
+        const formData = new FormData(event.currentTarget as HTMLFormElement);
+        forumApp.api.postFile("user/profile/update", formData).then((result) => {
+            console.log("Profile update");
+            forumApp.displayCurrentUser();
+        });
+    }
+    else if ((event.submitter as HTMLButtonElement).id == "user-profile-logout") {
+
+    }
+
     profileDialog.close();
 });
 
