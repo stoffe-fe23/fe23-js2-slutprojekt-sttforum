@@ -22,6 +22,7 @@ const loginDialog = document.querySelector("#user-login") as HTMLDialogElement;
 
 console.log("PAGE LOADED!");
 
+// Handler for submitting the login form 
 (document.querySelector("#login-form") as HTMLFormElement).addEventListener("submit", (event) => {
     event.preventDefault();
     console.log("Login form submit");
@@ -42,6 +43,7 @@ console.log("PAGE LOADED!");
     loginDialog.close();
 });
 
+// Handler for clicking on the User button in the top left corner
 (document.querySelector("#current-user") as HTMLElement).addEventListener("click", (event) => {
     if (forumApp.isLoggedIn() && forumApp.user) {
         const profileDialog = document.querySelector("#user-profile") as HTMLDialogElement;
@@ -74,13 +76,16 @@ console.log("PAGE LOADED!");
     else if ((event.submitter as HTMLButtonElement).id == "user-profile-logout") {
         forumApp.userLogoff().then(() => {
             console.log("User logged off!");
+            pageRouter.navigate('/');
+            pageForum.innerHTML = "";
+            htmlUtilities.createHTMLElement("div", `You must be <a href="/login" data-navigo>logged in</a> to view the forums.`, pageForum, 'error-not-logged-in', null, true);
         });
     }
 
     profileDialog.close();
 });
 
-
+// New user registration form submit
 (document.querySelector("#user-register-form") as HTMLFormElement).addEventListener("submit", (event) => {
     event.preventDefault();
     console.log("Register form submit");
