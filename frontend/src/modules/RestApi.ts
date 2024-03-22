@@ -5,6 +5,7 @@
     RestApi.ts
     Class for making requests to the server REST API endpoints. 
 */
+import { UserData } from "./TypeDefs.js";
 
 // Parameters when doing an API request
 export type APIQueryParams = Record<string, string | Array<string>> | null;
@@ -18,6 +19,12 @@ export type APILastRequest = {
     url: URL | null,
     method: 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'None',
     options: RequestInit | undefined
+}
+
+export type APIStatusResponse = {
+    response: UserData,
+    status: number,
+    ok: boolean
 }
 
 
@@ -40,7 +47,7 @@ export default class RestApi {
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     // Send GET request to API
     async getJson<Type>(urlPath: string = '', queryParams: APIQueryParams = null): Promise<Type> {
-        const response = await fetch(this.buildRequestUrl(urlPath, queryParams));
+        const response = await fetch(this.buildRequestUrl(urlPath, queryParams), this.getFetchOptions("GET", {}));
         const result = await response.json();
         if (!response.ok) {
             this.handleResponseErrors(response, result);
@@ -50,11 +57,44 @@ export default class RestApi {
         return result as Type;
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Special version of GET without error handler, returning the response code along with the result.
+    async getWithStatusJson(urlPath: string = '', queryParams: APIQueryParams = null): Promise<APIStatusResponse> {
+        const response = await fetch(this.buildRequestUrl(urlPath, queryParams));
+        const result = await response.json();
+        const resultData: APIStatusResponse = {
+            response: result,
+            status: response.status,
+            ok: response.ok
+        }
+        return resultData;
+    }
+
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     // Send POST request to API
     async postJson<Type>(urlPath: string = '', formData: APIQueryData = null, queryParams: APIQueryParams = null): Promise<Type> {
         let response = await fetch(this.buildRequestUrl(urlPath, queryParams), this.getFetchOptions("POST", formData ?? {}));
+        let result = await response.json();
+        if (!response.ok) {
+            this.handleResponseErrors(response, result);
+        }
+        this.lastRequest.method = 'POST';
+        return result as Type;
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Send POST request to API with a file upload
+    // formData.append("picture", event.target.files[0]);
+    async postFile<Type>(urlPath: string = '', formData: FormData, queryParams: APIQueryParams = null): Promise<Type> {
+        const options: RequestInit = {
+            method: 'POST',
+            credentials: "include",
+            /* headers: { "Content-Type": "multipart/form-data" }, */
+            body: formData,
+        };
+        let response = await fetch(this.buildRequestUrl(urlPath, queryParams), options);
         let result = await response.json();
         if (!response.ok) {
             this.handleResponseErrors(response, result);
@@ -192,9 +232,14 @@ export default class RestApi {
     private getFetchOptions(reqMethod: string, formData: APIQueryData): RequestInit {
         const options: RequestInit = {
             method: reqMethod,
+            credentials: "include",
             headers: { "Content-Type": "application/json" },
             body: (formData instanceof FormData ? this.formdataToJson(formData) : JSON.stringify(formData)),
         };
+        if (reqMethod == "GET") {
+            delete options.body;
+        }
+
         this.lastRequest.options = options;
         return options;
     }

@@ -3,7 +3,7 @@
         "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
         "name": "Stoffe",
         "email": "kb@gritacademy.se",
-        "picture": "user-icon.png",
+        "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png",
         "password": "9432b98415c44fb1eeba3dd25e490f4505c1347f78b59a010ac00f6d5026eda6e12f34ea170ba02afe65e4323cedf0948b032f5146e3451bcee03947e583f57a",
         "token": "a6d733f24cc670996b2b9c2076c332de789ea3a5da05765c67903656f614307b",
         "admin": true
@@ -24,6 +24,15 @@
         "picture": "user-icon.png",
         "password": "0b535418945683fe38c46708f111a7ce4dac903be0d819a6d1a8a21e0311e8baaa71089a4e9c8d2f9b312fda816525f1fb3c15e9146ea32e09dc2822c718d27e",
         "token": "9c6f0c14894c0f2ca016bba80779b531bc6eb1bc7f1c5f26d8e3acf4e8f54534",
+        "admin": false
+    },
+    {
+        "id": "69333cc1-43bc-48d0-8a81-f119d1dd5366",
+        "name": "Kalle Anka",
+        "email": "ka@example.com",
+        "picture": "user-icon.png",
+        "password": "f7bdfab9488034db3aed95c8183abcb2da3111bb0c90944af88d8bbdf0f98403126610dc87c8a7a0f6a407c86c8d3dba222fff513736a91713a40a6699a385b3",
+        "token": "22378c33a08209846bfcc21fb64d8ba4d24a3876a953232e24f8d6398094e792",
         "admin": false
     }
 ]

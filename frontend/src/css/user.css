@@ -5,3 +5,58 @@
     user.css
     Stylesheet for displaying and managing user profiles.
 */
+
+
+#login-form input {
+    display: block;
+}
+
+
+#current-user {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 0.5rem 1rem 0.5rem 0.8rem;
+    cursor: pointer;
+    background-color: black;
+    border-radius: 0 0 35px 0;
+}
+
+#user-image {
+    max-width: 64px;
+    height: auto;
+    border-radius: 50%;
+}
+
+#user-name {
+    color: white;
+    font-weight: 700;
+    padding: 0 0.5rem;
+}
+
+#user-profile-form input {
+    display: block;
+}
+
+#user-profile-picture-view {
+    max-width: 200px;
+    border-radius: 50%;
+}
+
+.profile-buttons {
+    margin-top: 1.5rem;
+}
+
+#user-register-form,
+#login-form {
+    display: block;
+}
+
+#user-register-form.hide,
+#login-form.hide {
+    display: none;
+}

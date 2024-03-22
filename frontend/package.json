@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "parcel serve ./src/index.html --dist-dir ./dist",
+    "prebuild": "del-cli ./.parcel-cache ./docs ./dist",
     "build": "parcel build ./src/index.html --dist-dir ./docs --public-url ./",
     "clean": "del-cli ./.parcel-cache ./docs ./dist"
   },

@@ -10,7 +10,7 @@
 */
 import DataStore from "./Datastore.js";
 import crypto from 'crypto';
-import { ForumUser, ForumMessage, ForumThread, Forum, ForumInfo, ForumThreadInfo } from "./TypeDefs.js";
+import { ForumUser, ForumMessage, ForumThread, Forum, ForumInfo, ForumThreadInfo, UserData } from "./TypeDefs.js";
 import { generatePasswordHash, generateRandomSalt } from "./password.js";
 
 
@@ -66,6 +66,26 @@ class Database {
         this.storage.userDB.push(newUser);
         this.storage.saveUsers();
         return newUser;
+    }
+
+    public editUser(userId: string, userName: string = "", password: string = "", email: string = "", picture: string = "") {
+        const userObj = this.getUser(userId);
+        if (userObj) {
+            userObj.name = userName.length ? userName : userObj.name;
+            userObj.email = email.length ? email : userObj.email;
+            userObj.password = password.length ? generatePasswordHash(password, userObj.token) : userObj.password;
+            userObj.picture = picture.length ? picture : userObj.picture;
+            this.storage.saveUsers();
+
+            const userData: UserData = {
+                id: userObj.id,
+                name: userObj.name,
+                email: userObj.email,
+                picture: userObj.picture,
+                admin: userObj.admin
+            };
+            return userData;
+        }
     }
 
 

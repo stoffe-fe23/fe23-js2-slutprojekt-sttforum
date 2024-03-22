@@ -18,12 +18,16 @@
     </head>
     <body>
         <header>
+            <div id="current-user">
+                <img id="user-image" src="./images/user-icon.png" alt="Profile picture">
+                <div id="user-name">Log in</div>
+            </div>
             <h1>TTS Forum</h1>
             <nav>
                 <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/forums">Forums</a></li>
-                    <li><a href="/users">Users</a></li>
+                    <li><a href="/" data-navigo>Home</a></li>
+                    <li><a href="/forums" data-navigo>Forums</a></li>
+                    <li><a href="/users" data-navigo>Users</a></li>
                 </ul>
             </nav>
         </header>
@@ -44,9 +48,18 @@
         </footer>
         <dialog id="user-login">
             <form id="login-form">
+                <h2>Log in</h2>
                 <input type="text" name="username" id="login-username" placeholder="User name" min-length="2" max-length="20" required>
                 <input type="password" name="password" id="login-password" placeholder="Password" min-length="6" max-length="40" required>
-                <button id="button-login">Log in</button><button id="button-cancel">Cancel</button>
+                <button id="button-login">Log in</button><button id="button-cancel" formnovalidate>Cancel</button>
+            </form>
+            <form id="user-register-form">
+                <h2>Register new user</h2>
+                <input type="text" id="user-register-name" name="username" value="" placeholder="Your username" required>
+                <input type="email" id="user-register-email" name="email" value="" placeholder="Your e-mail address" required>
+                <input type="password" id="user-register-password" name="password" value="" placeholder="Choose a password">
+                <input type="password" id="user-register-password-confirm" name="password-confirm" value="" placeholder="Confirm password">
+                <button id="user-register-submit">Register</button>
             </form>
         </dialog>
         <dialog id="message-dialog">
@@ -57,6 +70,22 @@
                 <button id="message-form-cancel-btn">Cancel</button>
             </form>
 
+        </dialog>
+        <dialog id="user-profile">
+            <form id="user-profile-form">
+                <img src="images/user-icon.png" id="user-profile-picture-view" alt="Profile picture">
+                <h2>User profile</h2>
+                <input type="text" id="user-profile-name" name="username" value="" placeholder="Your username" required>
+                <input type="email" id="user-profile-email" name="email" value="" placeholder="Your e-mail address" required>
+                <input type="password" id="user-profile-password" name="password" value="" placeholder="Change password">
+                <input type="password" id="user-profile-password-confirm" name="password-confirm" value="" placeholder="Confirm password">
+                <input type="file" id="user-profile-picture" name="picture" value="">
+                <div class="profile-buttons">
+                    <button id="user-profile-submit">Save</button>
+                    <button formnovalidate>Close</button>
+                    <button id="user-profile-logout" formnovalidate>Log off</button>
+                </div>
+            </form>
         </dialog>
     </body>
     <!-- Template for a forum button -->
@@ -73,7 +102,9 @@
                 <img class="forum-icon" src="images/forum-icon.png" data-template="icon">
                 <h2 data-template="name"></h2>
             </div>
-            <div class="forum-threads" data-template="threads"></div>
+            <div class="forum-breadcrumb"></div>
+            <div class="forum-threads" data-template="threads">
+            </div>
         </section>
     </template>
     <!-- Template for a forum thread -->

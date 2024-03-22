@@ -38,16 +38,13 @@ export type UserAuthor = {
     picture: string
 }
 
-/*
-export type MessageData = {
+export type UserData = {
     id: string,
-    author: UserAuthor,
-    message: string,
-    deleted: boolean,
-    date: number,
-    replies: MessageData[]
+    name: string,
+    email: string,
+    picture: string,
+    admin: boolean
 }
-*/
 
 export type MessageDisplayInfo = {
     id: string,
@@ -68,3 +65,8 @@ export type ForumDisplayInfo = {
     name: string,
     icon: string,
 };
+
+export type StatusResponseAPI = {
+    message: string,
+    data?: object
+}

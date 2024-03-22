@@ -8,6 +8,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import dataStorage from "./Database.js";
 import { isLoggedIn, isOwner, isAdmin } from "./permissions.js";
+import { ForumInfo, ForumUser } from "./TypeDefs.js";
 
 // Router for the /api/forum path endpoints 
 const forumAPI = Router();
@@ -23,7 +24,6 @@ const forumAPI = Router();
 // Get list of all available forums
 forumAPI.get('/list', (req: Request, res: Response) => {
     const forumList = dataStorage.getForumList();
-    console.log("Getting forum list", forumList);
     if (forumList) {
         res.json(forumList);
     }
@@ -66,6 +66,29 @@ forumAPI.get('/get/:forumId', isLoggedIn, (req: Request, res: Response) => {
     catch (error) {
         res.status(500);
         res.json({ error: `Error! Unable to load forum. (${error.message})` });
+    }
+});
+
+// Get information about forum with the specified ID
+forumAPI.get('/data/:forumId', (req: Request, res: Response) => {
+    try {
+        const forum = dataStorage.getForum(req.params.forumId);
+        if (forum) {
+            const forumData: ForumInfo = {
+                id: forum.id,
+                name: forum.name,
+                icon: forum.icon,
+                threadCount: forum.threads.length
+            }
+            res.json(forumData);
+        }
+        else {
+            throw new Error(`No forum was found with forum ID ${req.params.forumId}.`);
+        }
+    }
+    catch (error) {
+        res.status(500);
+        res.json({ error: `Error! Unable to load forum data. (${error.message})` });
     }
 });
 
@@ -117,6 +140,7 @@ forumAPI.post('/create', isAdmin, (req: Request, res: Response) => {
     // TODO: Authentication -- admin only
     try {
         const newForum = dataStorage.addForum(req.body.name, req.body.icon);
+        res.status(201);
         res.json({ message: `New forum added`, data: newForum });
     }
     catch (error) {
@@ -129,9 +153,9 @@ forumAPI.post('/create', isAdmin, (req: Request, res: Response) => {
 // Create new thread
 forumAPI.post('/thread/create', isLoggedIn, (req: Request, res: Response) => {
     // TODO: Validation
-    // TODO: Authentication -- logged in
     try {
         const newThread = dataStorage.addThread(req.body.forumId, req.body.title);
+        res.status(201);
         res.json({ message: `New thread added`, data: newThread });
     }
     catch (error) {
@@ -144,10 +168,10 @@ forumAPI.post('/thread/create', isLoggedIn, (req: Request, res: Response) => {
 // Create new message
 forumAPI.post('/message/create', isLoggedIn, (req: Request, res: Response) => {
     // TODO: Validation
-    // TODO: Authentication -- logged in
     try {
-        const authorId = "f9258ea6-89c5-46b6-8577-9df9c343dc96"; // TODO: Get the user ID of the user sending the request.
+        const authorId = (req.user as ForumUser).id;
         const newMessage = dataStorage.addMessage(req.body.threadId, authorId, req.body.message);
+        res.status(201);
         res.json({ message: `New post added`, data: newMessage });
     }
     catch (error) {
@@ -160,11 +184,10 @@ forumAPI.post('/message/create', isLoggedIn, (req: Request, res: Response) => {
 // Create new reply
 forumAPI.post('/message/reply', isLoggedIn, (req: Request, res: Response) => {
     // TODO: Validation
-    // TODO: Authentication -- logged in
-    // addReply(messageId: string, authorId: string, messageText: string)
     try {
-        const authorId = "f9258ea6-89c5-46b6-8577-9df9c343dc96"; // "5bcca996-929a-4451-a889-3a2267c6e216"; // TODO: Get the user ID of the user sending the request.
+        const authorId = (req.user as ForumUser).id;
         const newReply = dataStorage.addReply(req.body.messageId, authorId, req.body.message);
+        res.status(201);
         res.json({ message: `New reply added`, data: newReply });
     }
     catch (error) {
