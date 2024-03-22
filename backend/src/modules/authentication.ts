@@ -88,9 +88,11 @@ userAPI.post("/login", passport.authenticate('local'), (req: Request, res: Respo
 
 
 // Route for an authenticated user to log off manually. 
-userAPI.get("/logout", isLoggedIn, (req: Request, res: Response, next: NextFunction) => {
-    console.log("LOGOFF", req.session.passport.user);
+userAPI.get("/logout", (req: Request, res: Response, next: NextFunction) => {
+    console.log("MANUAL LOGOFF!");
+
     req.logout((error) => {
+        console.log("LOGOFF", req.user);
         if (error) {
             return next(error);
         }

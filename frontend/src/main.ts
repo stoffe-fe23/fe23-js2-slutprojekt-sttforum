@@ -72,7 +72,9 @@ console.log("PAGE LOADED!");
         });
     }
     else if ((event.submitter as HTMLButtonElement).id == "user-profile-logout") {
-
+        forumApp.userLogoff().then(() => {
+            console.log("User logged off!");
+        });
     }
 
     profileDialog.close();

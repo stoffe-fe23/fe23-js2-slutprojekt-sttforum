@@ -55,8 +55,7 @@ userAPI.get('/list', isLoggedIn, (req: Request, res: Response) => {
 });
 
 userAPI.get('/current', (req: Request, res: Response) => {
-    console.log("REQ USER", req.user, req.isAuthenticated());
-    if (req.user) {
+    if (req.user && req.isAuthenticated()) {
         const sessionUser = req.user as ForumUser;
         const currentUser: UserData = {
             id: sessionUser.id,

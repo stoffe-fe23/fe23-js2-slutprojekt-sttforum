@@ -156,7 +156,7 @@ export default class ForumApp {
 
     public async userLogoff() {
         if (this.isLoggedIn()) {
-            const response = await this.api.getJson("user/logout")
+            const response: StatusResponseAPI = await this.api.getJson("user/logout");
             this.user = null;
             this.displayCurrentUser();
             console.log("User logoff", response);
