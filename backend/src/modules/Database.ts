@@ -1,11 +1,13 @@
 /*
     Slutprojekt Javascript 2 (FE23 Grit Academy)
-    Grupp : TTSForum
+    Grupp : STTForum
 
     Database.ts
     Database abstraction layer. 
     Class and global object for reading and writing subsets of data in the database. 
-    Currently uses simple JSON file storage, but should be replaced with an actual database.
+    Currently uses simple JSON file storage, but could be replaced with an actual database here
+    using the same public methods. 
+    
     Initializes storage and caches data from files in the storage property. 
 */
 import DataStore from "./Datastore.js";
@@ -105,7 +107,7 @@ class Database {
 
 
     // Add a new thread to the forum with the specified forum ID.
-    public addThread(forumId: string, threadTitle: string): ForumThread {
+    public addThread(forumId: string, threadTitle: string, skipSaving: boolean = false): ForumThread {
         const newThread: ForumThread = {
             id: crypto.randomUUID(),
             title: threadTitle,
@@ -116,7 +118,9 @@ class Database {
         const targetForum = this.getForum(forumId);
         if (targetForum) {
             targetForum.threads.push(newThread);
-            this.storage.saveForums();
+            if (!skipSaving) {
+                this.storage.saveForums();
+            }
         }
         else {
             throw new Error("Target forum of new thread not found.");
@@ -188,6 +192,74 @@ class Database {
         else {
             throw new Error("Unable to find a valid user to set as author of new reply.");
         }
+    }
+
+    // Edit the title of an existing thread.
+    public editThread(threadId: string, title: string): ForumThread | null {
+        const thread = dataStorage.getThread(threadId);
+        if (thread) {
+            thread.title = title;
+            this.storage.saveForums();
+        }
+        return thread;
+    }
+
+    // Delete an exiting thread from its forum (along with all its messages). 
+    public deleteThread(threadId: string): void {
+        const thread = dataStorage.getThread(threadId);
+        if (thread) {
+            const parentForum = this.findContainerElement(threadId) as Forum;
+            if (parentForum) {
+                const idx: number = parentForum.threads.findIndex((thread) => thread.id == threadId);
+                if (idx !== -1) {
+                    parentForum.threads.splice(idx, 1);
+                    this.storage.saveForums();
+                }
+            }
+        };
+    }
+
+    // Edit the content of an existing message. 
+    public editMessage(messageId: string, messageText: string): ForumMessage | null {
+        const msg = dataStorage.getMessage(messageId);
+        if (msg) {
+            msg.message = messageText;
+            this.storage.saveForums();
+        }
+        return msg;
+    }
+
+    // Delete an exiting thread from its forum (along with all its messages). 
+    public deleteMessage(messageId: string): void {
+        const msg = dataStorage.getMessage(messageId);
+        if (msg) {
+            const messageParent = this.findContainerElement(messageId) as ForumThread | ForumMessage;
+            if (messageParent) {
+                if ((messageParent as ForumThread).posts) {
+                    const idx: number = (messageParent as ForumThread).posts.findIndex((message) => message.id == messageId);
+                    if (idx !== -1) {
+                        (messageParent as ForumThread).posts.splice(idx, 1);
+                    }
+                }
+                else if ((messageParent as ForumMessage).replies) {
+                    const idx: number = (messageParent as ForumMessage).replies.findIndex((message) => message.id == messageId);
+                    if (idx !== -1) {
+                        (messageParent as ForumMessage).replies.splice(idx, 1);
+                    }
+                }
+                this.storage.saveForums();
+            }
+        };
+    }
+
+    // Edit the content of an existing message. 
+    public softDeleteMessage(messageId: string, isDeleted: boolean): ForumMessage | null {
+        const msg = dataStorage.getMessage(messageId);
+        if (msg) {
+            msg.deleted = isDeleted;
+            this.storage.saveForums();
+        }
+        return msg;
     }
 
 
@@ -274,6 +346,79 @@ class Database {
                 }
             }
         }
+    }
+
+    private findContainerElement(searchId: string): Forum | ForumThread | ForumMessage | null {
+        for (const forum of this.storage.forumDB) {
+            for (const thread of forum.threads) {
+                if (thread.id == searchId) {
+                    return forum;
+                }
+                for (const message of thread.posts) {
+                    if (message.id == searchId) {
+                        return thread;
+                    }
+                    const reply = this.parentMessageSearch(searchId, message.replies, message);
+                    if (reply) {
+                        return reply;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    // Helper method to recursively search reply chains for a matching message ID and return the message it is a reply to. 
+    private parentMessageSearch(searchId: string, messages: ForumMessage[], parent: ForumMessage): ForumMessage | null {
+        for (const message of messages) {
+            if (message.id === searchId) {
+                return parent;
+            }
+            else if (message.replies && message.replies.length) {
+                const result = this.parentMessageSearch(searchId, message.replies, message);
+                if (result) {
+                    return parent;
+                }
+            }
+        }
+    }
+
+    // TODO: Update the Name and picture on all messages posted by the specified user
+    public updateAuthorInfo(userId: string) {
+        const user = dataStorage.getUser(userId);
+        if (user) {
+            let postCounter: number = 0;
+            for (const forum of this.storage.forumDB) {
+                for (const thread of forum.threads) {
+                    for (const message of thread.posts) {
+                        if (message.author.id == userId) {
+                            message.author.userName = user.name;
+                            message.author.picture = user.picture;
+                            postCounter++;
+                        }
+                        postCounter = this.updateAuthorInfoReplies(userId, message.replies, user, postCounter);
+                    }
+                }
+            }
+            if (postCounter) {
+                this.storage.saveForums();
+            }
+        }
+    }
+
+    // Helper method to recursively update the author info on any replies made by the specified user.  
+    private updateAuthorInfoReplies(userId: string, messages: ForumMessage[], user: ForumUser, postCounter: number): number {
+        for (const message of messages) {
+            if (message.author.id === userId) {
+                message.author.userName = user.name;
+                message.author.picture = user.picture;
+                postCounter++;
+            }
+            if (message.replies && message.replies.length) {
+                postCounter = this.updateAuthorInfoReplies(userId, message.replies, user, postCounter);
+            }
+        }
+        return postCounter;
     }
 }
 

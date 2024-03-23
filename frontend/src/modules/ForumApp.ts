@@ -1,11 +1,13 @@
 /*
     Slutprojekt Javascript 2 (FE23 Grit Academy)
-    Grupp : TTSForum
+    Grupp : STTForum
 
     ForumApp.ts
     Main controller class for the Forum. Manage forums, track the logged-in user and provide interface for server requests.
 */
 import Forum from "./Forum.ts";
+import Thread from "./Thread.ts";
+import Message from "./Message.ts";
 import User from "./User.ts";
 import RestApi from "./RestApi.ts";
 import { ForumInfoAPI, UserData, StatusResponseAPI } from "./TypeDefs.ts";
@@ -82,26 +84,6 @@ export default class ForumApp {
         }
     }
 
-    public isLoggedIn(): boolean {
-        return this.user ? true : false;
-    }
-
-    public async userLogin(loginName: string, loginPass: string) {
-        const postData = {
-            username: loginName,
-            password: loginPass
-        };
-
-        const response: StatusResponseAPI = await this.api.postJson("user/login", postData);
-        if (response && response.message && (response.message == "Login successful")) {
-            await this.loadCurrentUser();
-            await this.loadForums();
-        }
-        else {
-            console.log("Login failed! ", response);
-        }
-    }
-
     // Show buttons to select a forum to view
     public showforumPicker(outBox: HTMLElement): void {
         // Show buttons for all available forums
@@ -145,12 +127,34 @@ export default class ForumApp {
         const userName = userBox.querySelector("#user-name") as HTMLDivElement;
 
         if (this.isLoggedIn() && this.user && userBox) {
-            userName.innerText = this.user.userName;
+            userName.innerText = this.user.userName ?? "Username";
             userImage.src = this.user.picture;
         }
         else {
             userName.innerText = "Log in";
             userImage.src = new URL('../images/user-icon.png', import.meta.url).toString();
+        }
+    }
+
+    public isLoggedIn(): boolean {
+        return this.user ? true : false;
+    }
+
+    // TODO: Need exception handling here
+    // 401 - login invalid (user,pass is wrong, user does not exist etc)
+    public async userLogin(loginName: string, loginPass: string): Promise<void> {
+        const postData = {
+            username: loginName,
+            password: loginPass
+        };
+
+        const response: StatusResponseAPI = await this.api.postJson("user/login", postData);
+        if (response && response.message && (response.message == "Login successful")) {
+            await this.loadCurrentUser();
+            await this.loadForums();
+        }
+        else {
+            console.log("Login failed! ", response);
         }
     }
 
@@ -180,6 +184,48 @@ export default class ForumApp {
         }
         else {
             throw new Error("The passwords do not match. Try again.")
+        }
+    }
+
+    public async updateUserProfile(profileData: FormData): Promise<void> {
+        const result = await this.api.postFile("user/profile/update", profileData);
+        console.log("Profile update");
+        this.displayCurrentUser();
+        // TODO: Update authorinfo on client-cached messages? 
+    }
+
+    // Find the message with the specified message ID
+    public findForumContentById(contentId: string): Forum | Thread | Message | null {
+        let foundMsg: Message | undefined;
+        for (const forum of this.forums) {
+            if (forum.id === contentId) {
+                return forum;
+            }
+            for (const thread of forum.threads) {
+                if (thread.id === contentId) {
+                    return thread;
+                }
+                foundMsg = this.messageSearch(contentId, thread.posts);
+                if (foundMsg) {
+                    return foundMsg;
+                }
+            }
+        }
+        return null;
+    }
+
+    // Helper method to recursively search reply chains for a matching message ID.
+    private messageSearch(messageId: string, messages: Message[]): Message | undefined {
+        for (const message of messages) {
+            if (message.id === messageId) {
+                return message;
+            }
+            else if (message.replies && message.replies.length) {
+                const result = this.messageSearch(messageId, message.replies);
+                if (result) {
+                    return result;
+                }
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
 /*
     Slutprojekt Javascript 2 (FE23 Grit Academy)
-    Grupp : TTSForum
+    Grupp : STTForum
 
     TypeDefs.ts
     Type alias definitions. 

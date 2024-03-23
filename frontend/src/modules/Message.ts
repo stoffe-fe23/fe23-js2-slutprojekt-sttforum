@@ -1,6 +1,6 @@
 /*
     Slutprojekt Javascript 2 (FE23 Grit Academy)
-    Grupp : TTSForum
+    Grupp : STTForum
 
     Message.ts
     Class for managing a message in a thread or in reply to another message. 
@@ -24,6 +24,7 @@ export default class Message {
     public date: number;
     public replies: Message[];
     private app: ForumApp;
+    private displayContainer: HTMLElement | null;
 
     // Factory method to load message data from the server and return a message object with it. 
     static async create(app: ForumApp, messageId: string = "", messageData: ForumMessageAPI): Promise<Message | null> {
@@ -57,7 +58,7 @@ export default class Message {
                 messageId: targetId
             };
 
-            const newMessageData: ForumMessageAPI = await app.api.postJson(`message/create`, messageType == 'reply' ? replyData : messageData);
+            const newMessageData: ForumMessageAPI = await app.api.postJson(`forum/message/create`, messageType == 'reply' ? replyData : messageData);
             return new Message(app, newMessageData);
         }
         return null;
@@ -74,6 +75,7 @@ export default class Message {
             this.message = messageData.message;
             this.deleted = messageData.deleted;
             this.date = messageData.date;
+            this.displayContainer = null;
             this.replies = [];
         }
     }
@@ -98,7 +100,7 @@ export default class Message {
     }
 
     // Generate HTML to display this message
-    public display(targetContainer: HTMLElement, replyDepth: number = 0): HTMLElement {
+    public display(targetContainer: HTMLElement | null = null, replyDepth: number = 0): HTMLElement {
         if (!this.app.isLoggedIn()) {
             throw new Error("You must be logged on to view the forum messages.");
         }
@@ -113,6 +115,16 @@ export default class Message {
             date: htmlUtilities.dateTimeToString(this.date)
         };
         const attributes = { "data-messageid": this.id };
+
+        if (targetContainer) {
+            this.displayContainer = targetContainer;
+        }
+        else if (this.displayContainer) {
+            targetContainer = this.displayContainer;
+        }
+        else {
+            targetContainer = null;
+        }
 
         const thisMessageElem = htmlUtilities.createHTMLFromTemplate("tpl-forum-message", targetContainer, values, attributes, true);
         const repliesElement = thisMessageElem.querySelector(`.forum-message-replies`) as HTMLElement;

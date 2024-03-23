@@ -1,6 +1,6 @@
 /*
     Slutprojekt Javascript 2 (FE23 Grit Academy)
-    Grupp : TTSForum
+    Grupp : STTForum
 
     password.ts
     Functions for generating random user password salt values and password hashes. 

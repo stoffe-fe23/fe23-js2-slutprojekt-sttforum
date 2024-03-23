@@ -1,6 +1,6 @@
 /*
     Slutprojekt Javascript 2 (FE23 Grit Academy)
-    Grupp : TTSForum
+    Grupp : STTForum
 
     permissions.ts
     Middleware for checking if the user has access to a particular route/resource. 

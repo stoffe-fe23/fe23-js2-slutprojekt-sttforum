@@ -1,6 +1,6 @@
 /*
     Slutprojekt Javascript 2 (FE23 Grit Academy)
-    Grupp : TTSForum
+    Grupp : STTForum
 
     RestApi.ts
     Class for making requests to the server REST API endpoints. 
@@ -253,7 +253,28 @@ export default class RestApi {
         this.lastRequest.options = undefined;
 
         if ((response.status == 400)) {
-            throw new ApiError(response.status, `Bad request: ${result.error ?? ""}  (${response.statusText})`);
+            if (result.error && result.data && (result.error == "Validation error")) {
+                if (Array.isArray(result.data)) {
+                    let errorText = "<ul>";
+                    if (result.data.length) {
+                        for (const errorMsg of result.data) {
+                            errorText += `<li>${errorMsg.msg ?? "No message"}</li>`;
+                        }
+                    }
+                    else {
+                        errorText += `<li>${result.error}</li>`;
+                    }
+                    errorText += "</ul>";
+                    throw new ApiError(response.status, errorText);
+                }
+            }
+            else {
+                throw new ApiError(response.status, `Bad request: ${result.error ?? ""}  (${response.statusText})`);
+            }
+        }
+        else if ((response.status == 401)) {
+            console.log("DEBUG: Authentication error ", result);
+            throw new ApiError(response.status, `Unauthorized: ${result.error ?? ""}  (${response.statusText})`);
         }
         // Server errors - show the error message from API
         else if (response.status == 500) {

@@ -1,6 +1,6 @@
 /*
     Slutprojekt Javascript 2 (FE23 Grit Academy)
-    Grupp : TTSForum
+    Grupp : STTForum
 
     Thread.ts
     Class for managing a discussion and displaying its messages. 
@@ -19,14 +19,19 @@ export default class Thread {
     public posts: Message[];
     public active: boolean;
     private app: ForumApp;
+    private displayContainer: HTMLElement | null;
 
+    // Factory function for creating a new Thread object from existing thread data.
     static async create(app: ForumApp, threadId: string, threadData: ForumThreadAPI): Promise<Thread> {
         if (app.isLoggedIn()) {
             if (!threadData) {
                 threadData = await app.api.getJson(`forum/thread/get/${threadId}`);
             }
+            else {
+                threadData.id = threadId;
+            }
 
-            const obj = new Thread(app, threadId, threadData);
+            const obj = new Thread(app, threadData);
 
             if (threadData.posts && threadData.posts.length) {
                 for (const post of threadData.posts) {
@@ -41,20 +46,36 @@ export default class Thread {
         return new Thread(app);
     }
 
+    // Factory method creating a new thread on the server and returning the new Thread object.
+    static async new(app: ForumApp, targetId: string, threadTitle: string, messageText: string,): Promise<Thread | null> {
+        if (app.isLoggedIn() && threadTitle.length && messageText.length) {
+            const threadData = {
+                title: threadTitle,
+                message: messageText,
+                forumId: targetId
+            };
 
-    constructor(app: ForumApp, threadId: string = "", threadData: ForumThreadAPI | null = null) {
+            const newThreadData: ForumThreadAPI = await app.api.postJson(`forum/thread/create`, threadData);
+            return new Thread(app, newThreadData);
+        }
+        return null;
+    }
+
+
+    constructor(app: ForumApp, threadData: ForumThreadAPI | null = null) {
         if (threadData) {
             this.app = app;
             this.id = threadData.id;
             this.title = threadData.title;
             this.date = threadData.date;
             this.active = threadData.active;
+            this.displayContainer = null;
             this.posts = [];
         }
     }
 
     // Generate HTML to display this discussion thread
-    public display(targetContainer: HTMLElement, isShowingPosts: boolean = true): HTMLElement {
+    public display(targetContainer: HTMLElement | null = null, isShowingPosts: boolean = true): HTMLElement {
         if (!this.app.isLoggedIn()) {
             throw new Error("You must be logged on to view the forum threads.");
         }
@@ -64,6 +85,17 @@ export default class Thread {
             date: htmlUtilities.dateTimeToString(this.date),
         };
         const attributes = { "data-threadid": this.id };
+
+        if (targetContainer) {
+            this.displayContainer = targetContainer;
+        }
+        else if (this.displayContainer) {
+            targetContainer = this.displayContainer;
+        }
+        else {
+            targetContainer = null;
+        }
+
         const threadElement = htmlUtilities.createHTMLFromTemplate("tpl-forum-thread", targetContainer, values, attributes);
         if (isShowingPosts) {
             const messagesElement = threadElement.querySelector(`.forum-thread-messages`) as HTMLElement;

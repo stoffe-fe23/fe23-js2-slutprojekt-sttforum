@@ -1,6 +1,6 @@
 /*
     Slutprojekt Javascript 2 (FE23 Grit Academy)
-    Grupp : TTSForum
+    Grupp : STTForum
 
     forumAPI.ts
     API endpoint routes for managing forums, threads and posts.
@@ -9,18 +9,29 @@ import { Router, Request, Response, NextFunction } from 'express';
 import dataStorage from "./Database.js";
 import { isLoggedIn, isOwner, isAdmin } from "./permissions.js";
 import { ForumInfo, ForumUser } from "./TypeDefs.js";
+import {
+    validationErrorHandler,
+    validateForumId,
+    validateThreadId,
+    validateMessageId,
+    validateNewForum,
+    validateNewThread,
+    validateNewMessage,
+    validateNewReply,
+    validateEditThread,
+    validateEditMessage
+} from "./validation.js";
 
 // Router for the /api/forum path endpoints 
 const forumAPI = Router();
 
+// TODO: Edit/delete routes with input validation
 
-// TODO: Validation!
-// TODO: Authentication! 
+/*********************************************************************************************
+*   Get data
+*********************************************************************************************/
 
-/*
-    Get data
-*/
-
+//////////////////////////////////////////////////////////////////////////////////////////////
 // Get list of all available forums
 forumAPI.get('/list', (req: Request, res: Response) => {
     const forumList = dataStorage.getForumList();
@@ -34,8 +45,9 @@ forumAPI.get('/list', (req: Request, res: Response) => {
 });
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////
 // Get a list of all threads within the specified forum (but not their messages)
-forumAPI.get('/threads/list/:forumId', isLoggedIn, (req: Request, res: Response) => {
+forumAPI.get('/threads/list/:forumId', isLoggedIn, validateForumId, validationErrorHandler, (req: Request, res: Response) => {
     try {
         const forumThreads = dataStorage.getThreadList(req.params.forumId);
         if (forumThreads) {
@@ -52,8 +64,9 @@ forumAPI.get('/threads/list/:forumId', isLoggedIn, (req: Request, res: Response)
 });
 
 
-// Get all data about a forum with the specified ID
-forumAPI.get('/get/:forumId', isLoggedIn, (req: Request, res: Response) => {
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Get all data about a forum with the specified ID, including any messages contained within. 
+forumAPI.get('/get/:forumId', isLoggedIn, validateForumId, validationErrorHandler, (req: Request, res: Response) => {
     try {
         const forum = dataStorage.getForum(req.params.forumId);
         if (forum) {
@@ -69,8 +82,10 @@ forumAPI.get('/get/:forumId', isLoggedIn, (req: Request, res: Response) => {
     }
 });
 
-// Get information about forum with the specified ID
-forumAPI.get('/data/:forumId', (req: Request, res: Response) => {
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Get information about forum with the specified ID, but not its messages content. 
+forumAPI.get('/data/:forumId', validateForumId, validationErrorHandler, (req: Request, res: Response) => {
     try {
         const forum = dataStorage.getForum(req.params.forumId);
         if (forum) {
@@ -93,8 +108,9 @@ forumAPI.get('/data/:forumId', (req: Request, res: Response) => {
 });
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////
 // Get all data about a thread with the specified ID
-forumAPI.get('/thread/get/:threadId', isLoggedIn, (req: Request, res: Response) => {
+forumAPI.get('/thread/get/:threadId', isLoggedIn, validateThreadId, validationErrorHandler, (req: Request, res: Response) => {
     try {
         const forumThread = dataStorage.getThread(req.params.threadId);
         if (forumThread) {
@@ -111,8 +127,9 @@ forumAPI.get('/thread/get/:threadId', isLoggedIn, (req: Request, res: Response) 
 });
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////
 // Get all data about a message with the specified ID
-forumAPI.get('/message/get/:messageId', isLoggedIn, (req: Request, res: Response) => {
+forumAPI.get('/message/get/:messageId', isLoggedIn, validateMessageId, validationErrorHandler, (req: Request, res: Response) => {
     try {
         const forumMessage = dataStorage.getMessage(req.params.messageId);
         if (forumMessage) {
@@ -129,15 +146,14 @@ forumAPI.get('/message/get/:messageId', isLoggedIn, (req: Request, res: Response
 });
 
 
+/*********************************************************************************************
+*   Add new data
+*********************************************************************************************/
 
-/*
-    Add new data
-*/
 
+//////////////////////////////////////////////////////////////////////////////////////////////
 // Create new forum
-forumAPI.post('/create', isAdmin, (req: Request, res: Response) => {
-    // TODO: Validation
-    // TODO: Authentication -- admin only
+forumAPI.post('/create', isAdmin, validateNewForum, validationErrorHandler, (req: Request, res: Response) => {
     try {
         const newForum = dataStorage.addForum(req.body.name, req.body.icon);
         res.status(201);
@@ -150,11 +166,13 @@ forumAPI.post('/create', isAdmin, (req: Request, res: Response) => {
 });
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////
 // Create new thread
-forumAPI.post('/thread/create', isLoggedIn, (req: Request, res: Response) => {
-    // TODO: Validation
+forumAPI.post('/thread/create', isLoggedIn, validateNewThread, validationErrorHandler, (req: Request, res: Response) => {
     try {
-        const newThread = dataStorage.addThread(req.body.forumId, req.body.title);
+        const authorId = (req.user as ForumUser).id;
+        const newThread = dataStorage.addThread(req.body.forumId, req.body.title, true);
+        dataStorage.addMessage(newThread.id, authorId, req.body.message);
         res.status(201);
         res.json({ message: `New thread added`, data: newThread });
     }
@@ -165,9 +183,9 @@ forumAPI.post('/thread/create', isLoggedIn, (req: Request, res: Response) => {
 });
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////
 // Create new message
-forumAPI.post('/message/create', isLoggedIn, (req: Request, res: Response) => {
-    // TODO: Validation
+forumAPI.post('/message/create', isLoggedIn, validateNewMessage, validationErrorHandler, (req: Request, res: Response) => {
     try {
         const authorId = (req.user as ForumUser).id;
         const newMessage = dataStorage.addMessage(req.body.threadId, authorId, req.body.message);
@@ -181,9 +199,9 @@ forumAPI.post('/message/create', isLoggedIn, (req: Request, res: Response) => {
 });
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////
 // Create new reply
-forumAPI.post('/message/reply', isLoggedIn, (req: Request, res: Response) => {
-    // TODO: Validation
+forumAPI.post('/message/reply', isLoggedIn, validateNewReply, validationErrorHandler, (req: Request, res: Response) => {
     try {
         const authorId = (req.user as ForumUser).id;
         const newReply = dataStorage.addReply(req.body.messageId, authorId, req.body.message);
@@ -197,35 +215,82 @@ forumAPI.post('/message/reply', isLoggedIn, (req: Request, res: Response) => {
 });
 
 
-/*
-    Edit existing data
-*/
 
-// TODO: Edit (the title of) the specified thread
-forumAPI.patch('/thread/edit/:threadId', isAdmin, (req: Request, res: Response) => {
-    console.log("TODO: Edit thread");
-    res.json({ message: `TODO: Edit thread`, data: req.params.threadId });
+/*********************************************************************************************
+*   Edit existing data
+*********************************************************************************************/
+
+// Edit (the title of) the specified thread
+forumAPI.patch('/thread/edit/:threadId', isAdmin, validateEditThread, validationErrorHandler, (req: Request, res: Response) => {
+    console.log("Edit thread: ", req.params.threadId);
+    try {
+        dataStorage.editThread(req.params.threadId, req.body.title);
+        res.json({ message: `Edited thread`, data: req.params.threadId });
+    }
+    catch (error) {
+        res.status(500);
+        res.json({ error: `An error occured when editing thread ${req.params.threadId}.`, data: error.message });
+    }
+
 });
 
 
-// TODO: Delete the specified thread
-forumAPI.delete('/thread/delete/:threadId', isAdmin, (req: Request, res: Response) => {
-    console.log("TODO: Delete thread");
-    res.json({ message: `TODO: Delete thread`, data: req.params.threadId });
+// Delete the specified thread
+forumAPI.delete('/thread/delete/:threadId', isAdmin, validateThreadId, validationErrorHandler, (req: Request, res: Response) => {
+    console.log("Delete thread", req.params.threadId);
+
+    try {
+        dataStorage.deleteThread(req.params.threadId);
+        res.json({ message: `Deleted thread`, data: req.params.threadId });
+    }
+    catch (error) {
+        res.status(500);
+        res.json({ error: `An error occured when deleting thread ${req.params.threadId}.`, data: error.message });
+    }
 });
 
 
-// TODO: Edit (the message text of) the specified message
-forumAPI.patch('/message/edit/:messageId', isOwner, (req: Request, res: Response) => {
-    console.log("TODO: Edit message");
-    res.json({ message: `TODO: Edit message`, data: req.params.messageId });
+// Edit (the message text of) the specified message
+forumAPI.patch('/message/edit/:messageId', isOwner, validateEditMessage, validationErrorHandler, (req: Request, res: Response) => {
+    console.log("Edit message", req.params.messageId);
+
+    try {
+        dataStorage.editMessage(req.params.messageId, req.body.message);
+        res.json({ message: `Edited message`, data: req.params.messageId });
+    }
+    catch (error) {
+        res.status(500);
+        res.json({ error: `An error occured when editing message ${req.params.messageId}.`, data: error.message });
+    }
 });
 
 
-// TODO:  Delete the specified message
-forumAPI.delete('/message/delete/:messageId', isOwner, (req: Request, res: Response) => {
-    console.log("TODO: Delete message");
-    res.json({ message: `TODO: Delete message`, data: req.params.messageId });
+// Soft-Delete the specified message (only admins can hard-delete messages)
+forumAPI.delete('/message/delete/:messageId', isOwner, validateMessageId, validationErrorHandler, (req: Request, res: Response) => {
+    console.log("Delete message", req.params.messageId);
+
+    try {
+        dataStorage.softDeleteMessage(req.params.messageId, true);
+        res.json({ message: `Deleted message`, data: req.params.messageId });
+    }
+    catch (error) {
+        res.status(500);
+        res.json({ error: `An error occured when deleting message ${req.params.messageId}.`, data: error.message });
+    }
+});
+
+// Hard-Delete (remove) the specified message, and any replies to it.
+forumAPI.delete('/message/remove/:messageId', isAdmin, validateMessageId, validationErrorHandler, (req: Request, res: Response) => {
+    console.log("Delete message", req.params.messageId);
+
+    try {
+        dataStorage.deleteMessage(req.params.messageId);
+        res.json({ message: `Removed message`, data: req.params.messageId });
+    }
+    catch (error) {
+        res.status(500);
+        res.json({ error: `An error occured when removing message ${req.params.messageId}.`, data: error.message });
+    }
 });
 
 

@@ -1,6 +1,6 @@
 /*
     Slutprojekt Javascript 2 (FE23 Grit Academy)
-    Grupp : TTSForum
+    Grupp : STTForum
 
     authentication.ts
     Module for authenticating users using the passport local strategy. 
@@ -15,7 +15,7 @@ import dotenv from 'dotenv';
 import { Request, Response, NextFunction } from 'express';
 
 import dataStorage from "./Database.js";
-import { ForumUser } from "./TypeDefs.js";
+import { ForumUser, UserData } from "./TypeDefs.js";
 import { generatePasswordHash } from "./password.js";
 import userAPI from "./userAPI.js";
 import { isLoggedIn } from "./permissions.js";
@@ -81,9 +81,17 @@ passport.use(new LocalStrategy(passportCustomFields, verifyLogin));
 
 // Route for the login form to post to. POST req requires the "username" and "password"
 // fields (configurable in passportCustomFields if needed).
-userAPI.post("/login", passport.authenticate('local'), (req: Request, res: Response, next: NextFunction) => {
-    console.log("LOGIN", req.session.passport.user);
-    res.json({ message: `Login successful` });
+userAPI.post("/login", passport.authenticate('local', { failWithError: true }), loginAuthenticationError, (req: Request, res: Response, next: NextFunction) => {
+    const sessionUser = req.user as ForumUser;  // req.session.passport.user
+    const currentUser: UserData = {
+        id: sessionUser.id,
+        name: sessionUser.name,
+        email: sessionUser.email,
+        picture: sessionUser.picture,
+        admin: sessionUser.admin
+    }
+    console.log("DEBUG: LOGIN", currentUser);
+    res.json({ message: `Login successful`, data: currentUser });
 });
 
 
@@ -122,6 +130,12 @@ function verifyLogin(username: string, password: string, returnCallback: Functio
     catch (error) {
         return returnCallback(error);
     }
+}
+
+function loginAuthenticationError(err: Error, req: Request, res: Response, next: NextFunction) {
+    console.log("DEBUG: LOGIN ERROR");
+    res.status(401);
+    res.json({ error: `Login failed`, data: err });
 }
 
 export { passport };

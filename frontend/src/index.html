@@ -2,7 +2,7 @@
 <html lang="en">
     <!--
     Slutprojekt Javascript 2 (FE23 Grit Academy)
-    Grupp : TTSForum
+    Grupp : STTForum
 
     index.html
     Main HTML page for the site and templates for interface components. 
@@ -101,6 +101,11 @@
                 <h2 data-template="name"></h2>
             </div>
             <div class="forum-breadcrumb"></div>
+            <form class="forum-new-thread-form">
+                <input type="text" name="title" class="forum-new-thread-title" placeholder="Your new thread title here" min-length="2" max-length="40" required>
+                <textarea name="message" class="forum-new-thread-message" placeholder="Message text" min-length="2" max-length="4000" required></textarea>
+                <button class="forum-new-thread-submit">Create new thread</button>
+            </form>
             <div class="forum-threads" data-template="threads">
             </div>
         </section>

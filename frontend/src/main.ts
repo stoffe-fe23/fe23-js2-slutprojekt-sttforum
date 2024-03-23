@@ -1,6 +1,6 @@
 /*
     Slutprojekt Javascript 2 (FE23 Grit Academy)
-    Grupp : TTSForum
+    Grupp : STTForum
 
     main.ts
     Main script for the page. Initialize the forum and handle sub-pages. 
@@ -44,15 +44,22 @@ console.log("PAGE LOADED!");
 });
 
 // Handler for clicking on the User button in the top left corner
+// TODO: Clean this up... a lot. 
 (document.querySelector("#current-user") as HTMLElement).addEventListener("click", (event) => {
     if (forumApp.isLoggedIn() && forumApp.user) {
         const profileDialog = document.querySelector("#user-profile") as HTMLDialogElement;
         const nameField = document.querySelector("#user-profile-name") as HTMLInputElement;
         const emailField = document.querySelector("#user-profile-email") as HTMLInputElement;
+        const pictureField = document.querySelector("#user-profile-picture") as HTMLInputElement;
+        const passwordField = document.querySelector("#user-profile-password") as HTMLInputElement;
+        const passwordConfirmField = document.querySelector("#user-profile-password-confirm") as HTMLInputElement;
         const pictureView = document.querySelector("#user-profile-picture-view") as HTMLImageElement;
 
         nameField.value = forumApp.user.userName;
         emailField.value = forumApp.user.email;
+        pictureField.value = "";
+        passwordField.value = "";
+        passwordConfirmField.value = "";
         pictureView.src = forumApp.user.picture;
 
         profileDialog.showModal();
@@ -68,10 +75,7 @@ console.log("PAGE LOADED!");
     const profileDialog = document.querySelector("#user-profile") as HTMLDialogElement;
     if ((event.submitter as HTMLButtonElement).id == "user-profile-submit") {
         const formData = new FormData(event.currentTarget as HTMLFormElement);
-        forumApp.api.postFile("user/profile/update", formData).then((result) => {
-            console.log("Profile update");
-            forumApp.displayCurrentUser();
-        });
+        forumApp.updateUserProfile(formData);
     }
     else if ((event.submitter as HTMLButtonElement).id == "user-profile-logout") {
         forumApp.userLogoff().then(() => {
