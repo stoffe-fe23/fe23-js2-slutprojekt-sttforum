@@ -5,24 +5,30 @@
     ForumApp.ts
     Main controller class for the Forum. Manage forums, track the logged-in user and provide interface for server requests.
 */
+import Navigo from "navigo";
 import Forum from "./Forum.ts";
 import Thread from "./Thread.ts";
 import Message from "./Message.ts";
 import User from "./User.ts";
 import RestApi from "./RestApi.ts";
 import { ForumInfoAPI, UserData, StatusResponseAPI } from "./TypeDefs.ts";
+import * as htmlUtilities from "./htmlUtilities";
 
 export default class ForumApp {
     public api: RestApi;
     public user: User | null;
-    public forums: Forum[];
+    public router: Navigo;
+    // public forums: Forum[];
     public mediaUrl: string;
+    private userLoginInit: boolean;
 
 
     constructor(apiUrl: string) {
         // Object for making requests to the server/API.
         this.api = new RestApi(apiUrl);
-        this.forums = [];
+        this.router = new Navigo("/");
+        this.userLoginInit = false;
+        // this.forums = [];
 
         const mediaUrl = new URL(apiUrl);
         this.mediaUrl = `${mediaUrl.protocol}//${mediaUrl.hostname}:${mediaUrl.port}/media/`;
@@ -32,9 +38,9 @@ export default class ForumApp {
         try {
             await this.loadCurrentUser();
 
-            if (this.isLoggedIn()) {
-                return await this.loadForums();
-            }
+            /*             if (this.isLoggedIn()) {
+                            return await this.loadForums();
+                        } */
         }
         catch (error) {
             console.error("ForumApp load error: ", error.message);
@@ -48,59 +54,92 @@ export default class ForumApp {
 
         if (apiResponse.data && apiResponse.message == "User") {
             this.user = new User(this, apiResponse.data as UserData);
+            this.userLoginInit = true;
             this.displayCurrentUser();
             console.log("User is logged in: ", this.user.userName);
         }
         else if (apiResponse.message == "No User") {
             console.log("User not logged in.");
+            this.userLoginInit = true;
         }
         else {
             throw new Error("Unable to load current user data.");
         }
     }
 
-    public async loadForums(): Promise<void> {
-        try {
-            const forumList: ForumInfoAPI[] = await this.api.getJson(`forum/list`);
-            this.forums = [];
-            if (forumList && forumList.length) {
-                for (const forum of forumList) {
-                    const newForum = await Forum.create(this, forum.id);
-                    if (newForum) {
-                        this.forums.push(newForum);
+    /*     public async loadForums(): Promise<void> {
+            try {
+                const forumList: ForumInfoAPI[] = await this.api.getJson(`forum/list`);
+                this.forums = [];
+                if (forumList && forumList.length) {
+                    for (const forum of forumList) {
+                        const newForum = await Forum.create(this, forum.id);
+                        if (newForum) {
+                            this.forums.push(newForum);
+                        }
                     }
                 }
             }
-        }
-        catch (error) {
-            if (error.status) {
-                if (error.status == 401) {
-                    console.log("ForumApp load - Not authorized to access forums.");
-                }
-                else {
-                    console.error("ForumApp load error: ", error.message);
+            catch (error) {
+                if (error.status) {
+                    if (error.status == 401) {
+                        console.log("ForumApp load - Not authorized to access forums.");
+                    }
+                    else {
+                        console.error("ForumApp load error: ", error.message);
+                    }
                 }
             }
-        }
-    }
+        } */
 
     // Show buttons to select a forum to view
-    public showforumPicker(outBox: HTMLElement): void {
+    public async showForumPicker(outBox: HTMLElement): Promise<void> {
         // Show buttons for all available forums
         outBox.innerHTML = "";
         if (this.isLoggedIn()) {
+            const forumList: ForumInfoAPI[] = await this.api.getJson(`forum/list`);
+            // this.forums = [];
+            if (forumList && forumList.length) {
+                for (const forum of forumList) {
+                    const forumData = {
+                        id: forum.id,
+                        name: forum.name,
+                        icon: forum.icon.length ? this.mediaUrl + 'forumicons/' + forum.icon : new URL('../images/forum-icon.png', import.meta.url).toString(),
+                        threadCount: forum.threadCount
+                    }
+                    const forumButton = htmlUtilities.createHTMLFromTemplate("tpl-forum-button", outBox, forumData, { "data-forumid": forum.id });
+
+                    forumButton.addEventListener("click", (event) => {
+                        const button = event.currentTarget as HTMLButtonElement;
+                        if (button && button.dataset && button.dataset.forumid) {
+                            // TODO: Redirect instead to /forum/<id>
+                            this.router.navigate(`/forum/${button.dataset.forumid}`);
+                        }
+                    });
+                }
+            }
+
+            /*
+           //     id: forum.id,
+           //     name: forum.name,
+           //     icon: forum.icon,
+           //     threadCount: forum.threads.length
+
             for (const forum of this.forums) {
                 const forumButton = forum.getButton();
                 if (forumButton) {
                     outBox.appendChild(forumButton);
                     forumButton.addEventListener("click", (event) => {
-                        const forumId = (event.currentTarget as HTMLButtonElement).dataset.forumid!.toString();
-                        if (forumId) {
-                            this.displayForum(forumId, outBox);
+                        const button = event.currentTarget as HTMLButtonElement;
+                        if (button && button.dataset && button.dataset.forumid) {
+                            // TODO: Redirect instead to /forum/<id>
+                            this.displayForum(button.dataset.forumid, outBox);
                         }
+
                     });
                 }
             }
+            */
         }
         else {
             throw new Error("You must be logged in the view the forums.");
@@ -108,16 +147,45 @@ export default class ForumApp {
     }
 
     // Display the threads/posts in the specified forum
-    public displayForum(forumId: string, outBox: HTMLElement): void {
+    /*     public displayForum(forumId: string, outBox: HTMLElement): void {
+            if (this.isLoggedIn()) {
+                const foundForum = this.forums.find((forum) => forum.id == forumId);
+                if (foundForum) {
+                    outBox.innerHTML = "";
+                    foundForum.display(outBox);
+                }
+            }
+            else {
+                throw new Error("You must be logged in the view the forums.");
+            }
+        } */
+
+    // Display the threads/posts in the specified forum
+    public async showForum(forumId: string, outBox: HTMLElement): Promise<void> {
         if (this.isLoggedIn()) {
-            const foundForum = this.forums.find((forum) => forum.id == forumId);
+            // const foundForum = this.forums.find((forum) => forum.id == forumId);
+            const foundForum = await Forum.create(this, forumId);
             if (foundForum) {
                 outBox.innerHTML = "";
                 foundForum.display(outBox);
             }
         }
         else {
-            throw new Error("You must be logged in the view the forums.");
+            throw new Error("You must be logged in the view the forum topics.");
+        }
+    }
+
+    // Display the posts in the specified thread
+    public async showThread(threadId: string, outBox: HTMLElement): Promise<void> {
+        if (this.isLoggedIn()) {
+            const foundThread = await Thread.create(this, threadId);
+            if (foundThread) {
+                outBox.innerHTML = "";
+                foundThread.display(outBox);
+            }
+        }
+        else {
+            throw new Error("You must be logged in the view forum posts.");
         }
     }
 
@@ -140,6 +208,13 @@ export default class ForumApp {
         return this.user ? true : false;
     }
 
+    public async userLoginCheck(): Promise<boolean> {
+        if (!this.user && !this.userLoginInit) {
+            await this.loadCurrentUser();
+        }
+        return this.isLoggedIn();
+    }
+
     // TODO: Need exception handling here
     // 401 - login invalid (user,pass is wrong, user does not exist etc)
     public async userLogin(loginName: string, loginPass: string): Promise<void> {
@@ -151,7 +226,7 @@ export default class ForumApp {
         const response: StatusResponseAPI = await this.api.postJson("user/login", postData);
         if (response && response.message && (response.message == "Login successful")) {
             await this.loadCurrentUser();
-            await this.loadForums();
+            //await this.loadForums();
         }
         else {
             console.log("Login failed! ", response);
@@ -176,9 +251,7 @@ export default class ForumApp {
             }
             const response: StatusResponseAPI = await this.api.postJson("user/register", newUserData);
             if (response && response.message && response.data) {
-                // Maybe require account confirmation first? 
-                // const newUser = new User(this, response.data as UserData);
-                // this.user = newUser;
+                // Maybe require account confirmation first before allowing full access? 
                 console.log("User Register", response.data);
             }
         }
@@ -195,37 +268,37 @@ export default class ForumApp {
     }
 
     // Find the message with the specified message ID
-    public findForumContentById(contentId: string): Forum | Thread | Message | null {
-        let foundMsg: Message | undefined;
-        for (const forum of this.forums) {
-            if (forum.id === contentId) {
-                return forum;
-            }
-            for (const thread of forum.threads) {
-                if (thread.id === contentId) {
-                    return thread;
+    /*     public findForumContentById(contentId: string): Forum | Thread | Message | null {
+            let foundMsg: Message | undefined;
+            for (const forum of this.forums) {
+                if (forum.id === contentId) {
+                    return forum;
                 }
-                foundMsg = this.messageSearch(contentId, thread.posts);
-                if (foundMsg) {
-                    return foundMsg;
+                for (const thread of forum.threads) {
+                    if (thread.id === contentId) {
+                        return thread;
+                    }
+                    foundMsg = this.messageSearch(contentId, thread.posts);
+                    if (foundMsg) {
+                        return foundMsg;
+                    }
                 }
             }
-        }
-        return null;
-    }
+            return null;
+        } */
 
     // Helper method to recursively search reply chains for a matching message ID.
-    private messageSearch(messageId: string, messages: Message[]): Message | undefined {
-        for (const message of messages) {
-            if (message.id === messageId) {
-                return message;
-            }
-            else if (message.replies && message.replies.length) {
-                const result = this.messageSearch(messageId, message.replies);
-                if (result) {
-                    return result;
+    /*     private messageSearch(messageId: string, messages: Message[]): Message | undefined {
+            for (const message of messages) {
+                if (message.id === messageId) {
+                    return message;
+                }
+                else if (message.replies && message.replies.length) {
+                    const result = this.messageSearch(messageId, message.replies);
+                    if (result) {
+                        return result;
+                    }
                 }
             }
-        }
-    }
+        } */
 }

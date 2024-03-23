@@ -5,13 +5,10 @@
     main.ts
     Main script for the page. Initialize the forum and handle sub-pages. 
 */
-
-import Navigo from "navigo";
-import { ResolveOptions, Match } from "navigo";
 import ForumApp from "./modules/ForumApp";
 import * as htmlUtilities from "./modules/htmlUtilities.js";
 
-const pageRouter = new Navigo("/");
+
 const forumApp = new ForumApp('http://localhost:3000/api');
 
 const pageHome = document.querySelector("#page-home") as HTMLElement;
@@ -30,8 +27,10 @@ console.log("PAGE LOADED!");
         const formData = new FormData(event.currentTarget as HTMLFormElement);
         forumApp.userLogin(formData.get("username") as string, formData.get("password") as string).then(() => {
             console.log("Login");
-            forumApp.showforumPicker(pageForum);
-            pageRouter.navigate('/forums');
+            // forumApp.showforumPicker(pageForum);
+            (document.querySelector("#login-username") as HTMLInputElement).value = "";
+            (document.querySelector("#login-password") as HTMLInputElement).value = "";
+            forumApp.router.navigate('/forums');
 
             alert("Logged in.")
 
@@ -46,27 +45,29 @@ console.log("PAGE LOADED!");
 // Handler for clicking on the User button in the top left corner
 // TODO: Clean this up... a lot. 
 (document.querySelector("#current-user") as HTMLElement).addEventListener("click", (event) => {
-    if (forumApp.isLoggedIn() && forumApp.user) {
-        const profileDialog = document.querySelector("#user-profile") as HTMLDialogElement;
-        const nameField = document.querySelector("#user-profile-name") as HTMLInputElement;
-        const emailField = document.querySelector("#user-profile-email") as HTMLInputElement;
-        const pictureField = document.querySelector("#user-profile-picture") as HTMLInputElement;
-        const passwordField = document.querySelector("#user-profile-password") as HTMLInputElement;
-        const passwordConfirmField = document.querySelector("#user-profile-password-confirm") as HTMLInputElement;
-        const pictureView = document.querySelector("#user-profile-picture-view") as HTMLImageElement;
+    forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
+        if (isLoggedIn && forumApp.user) {
+            const profileDialog = document.querySelector("#user-profile") as HTMLDialogElement;
+            const nameField = document.querySelector("#user-profile-name") as HTMLInputElement;
+            const emailField = document.querySelector("#user-profile-email") as HTMLInputElement;
+            const pictureField = document.querySelector("#user-profile-picture") as HTMLInputElement;
+            const passwordField = document.querySelector("#user-profile-password") as HTMLInputElement;
+            const passwordConfirmField = document.querySelector("#user-profile-password-confirm") as HTMLInputElement;
+            const pictureView = document.querySelector("#user-profile-picture-view") as HTMLImageElement;
 
-        nameField.value = forumApp.user.userName;
-        emailField.value = forumApp.user.email;
-        pictureField.value = "";
-        passwordField.value = "";
-        passwordConfirmField.value = "";
-        pictureView.src = forumApp.user.picture;
+            nameField.value = forumApp.user.userName;
+            emailField.value = forumApp.user.email;
+            pictureField.value = "";
+            passwordField.value = "";
+            passwordConfirmField.value = "";
+            pictureView.src = forumApp.user.picture;
 
-        profileDialog.showModal();
-    }
-    else {
-        loginDialog.showModal();
-    }
+            profileDialog.showModal();
+        }
+        else {
+            showLoginDialog();
+        }
+    });
 });
 
 // Submit handler for edit user profile form
@@ -80,7 +81,7 @@ console.log("PAGE LOADED!");
     else if ((event.submitter as HTMLButtonElement).id == "user-profile-logout") {
         forumApp.userLogoff().then(() => {
             console.log("User logged off!");
-            pageRouter.navigate('/');
+            forumApp.router.navigate('/');
             pageForum.innerHTML = "";
             htmlUtilities.createHTMLElement("div", `You must be <a href="/login" data-navigo>logged in</a> to view the forums.`, pageForum, 'error-not-logged-in', null, true);
         });
@@ -102,7 +103,7 @@ console.log("PAGE LOADED!");
             formData.get("email") as string).then(() => {
                 console.log("Login");
                 alert("User account created!");
-                pageRouter.navigate('/login');
+                forumApp.router.navigate('/login');
 
             }).catch((error) => {
                 console.error("Login error", error.message);
@@ -115,12 +116,12 @@ console.log("PAGE LOADED!");
 
 // Initialize the forums and load current user (if already logged in)
 forumApp.load().then(() => {
-    if (forumApp.isLoggedIn()) {
-        forumApp.showforumPicker(pageForum);
-    }
-    else {
-        htmlUtilities.createHTMLElement("div", `You must be <a href="/login" data-navigo>logged in</a> to view the forums.`, pageForum, 'error-not-logged-in', null, true);
-    }
+    /*     if (forumApp.isLoggedIn()) {
+            forumApp.showforumPicker(pageForum);
+        }
+        else {
+            htmlUtilities.createHTMLElement("div", `You must be <a href="/login" data-navigo>logged in</a> to view the forums.`, pageForum, 'error-not-logged-in', null, true);
+        } */
     console.log("ForumApp loaded!");
 }).catch((error) => {
     alert(error.message);
@@ -129,54 +130,88 @@ forumApp.load().then(() => {
 
 //////////////////////////////////////////////////////////////////////////////////
 // Start page - show info about the forum etc? 
-pageRouter.on("/", () => {
+forumApp.router.on("/", () => {
     pageHome.classList.add("show");
     pageForum.classList.remove("show");
     pageUsers.classList.remove("show");
+    console.log("DEBUG: Show start page!");
 });
 
 
 //////////////////////////////////////////////////////////////////////////////////
 // Show the forum list page
-pageRouter.on("/forums", () => {
-    pageHome.classList.remove("show");
+forumApp.router.on("/forums", () => {
     pageForum.classList.add("show");
-    pageUsers.classList.remove("show");
-    console.log("FORA!");
-    if (forumApp.isLoggedIn()) {
-        forumApp.showforumPicker(pageForum);
-    }
-});
-
-//////////////////////////////////////////////////////////////////////////////////
-// Show the forum list page
-// TODO: Why is this not working? 
-pageRouter.on("/threads/:forumid", (route) => {
     pageHome.classList.remove("show");
-    pageForum.classList.add("show");
     pageUsers.classList.remove("show");
-    console.log("THREAD!");
-    if (forumApp.isLoggedIn()) {
-        if (route!.data!.forumid) {
-            forumApp.displayForum(route!.data!.forumid, pageForum);
+    forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
+        console.log("DEBUG: Show forum buttons!");
+        if (isLoggedIn) {
+            forumApp.showForumPicker(pageForum);
         }
-    }
+        else {
+            htmlUtilities.createHTMLElement("div", `You must be <a href="/login" data-navigo>logged in</a> to view the forums.`, pageForum, 'error-not-logged-in', null, true);
+        }
+    });
+});
+
+//////////////////////////////////////////////////////////////////////////////////
+// Show the list of threads in a forum.
+forumApp.router.on('/forum/:forumId', (route) => {
+    pageForum.classList.add("show");
+    pageHome.classList.remove("show");
+    pageUsers.classList.remove("show");
+    forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
+        console.log("DEBUG: Show Forum threads!");
+
+        if (isLoggedIn) {
+            if (route && route.data && route.data.forumId) {
+                forumApp.showForum(route.data.forumId, pageForum);
+            }
+        }
+    });
+});
+
+//////////////////////////////////////////////////////////////////////////////////
+// Show the posts in a discussion thread. 
+forumApp.router.on("/thread/:threadId", (route) => {
+    pageForum.classList.add("show");
+    pageHome.classList.remove("show");
+    pageUsers.classList.remove("show");
+    forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
+        console.log("DEBUG: Show Forum Thread messages!");
+
+        if (isLoggedIn) {
+            console.log("DEBUG: Show threads running...");
+            if (route && route.data && route.data.threadId) {
+                console.log("DEBUG: Show threads displaying: ", route.data.threadId);
+                forumApp.showThread(route.data.threadId, pageForum);
+            }
+        }
+        else {
+            console.log("DEBUG: Show threads skipped, no login..");
+        }
+    });
 });
 
 
 
 //////////////////////////////////////////////////////////////////////////////////
 // Show a list of all the registered users
-pageRouter.on("/users", () => {
+forumApp.router.on("/users", () => {
     pageHome.classList.remove("show");
     pageForum.classList.remove("show");
     pageUsers.classList.add("show");
+    forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
+        console.log("DEBUG: Show user list!");
+    });
 });
 
 //////////////////////////////////////////////////////////////////////////////////
 // Show a list of all the registered users
-pageRouter.on("/login", () => {
-    loginDialog.showModal();
+forumApp.router.on("/login", () => {
+    console.log("DEBUG: Show login screen!");
+    showLoginDialog();
 });
 
 
@@ -184,10 +219,23 @@ pageRouter.on("/login", () => {
 //////////////////////////////////////////////////////////////////////////////////
 // Show the public profile for the user with the specified ID
 
-pageRouter.on("/user/profile/:userid", (routeInfo) => {
-    htmlUtilities.createHTMLElement("div", "Användarprofil: " + routeInfo!.data!.userid, pageForum);
+forumApp.router.on("/user/profile/:userid", (routeInfo) => {
+    console.log("DEBUG: Show public user profile!");
+    forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
+        htmlUtilities.createHTMLElement("div", "Användarprofil: " + routeInfo!.data!.userid, pageForum);
+    });
 });
 
 
 
-pageRouter.resolve();
+forumApp.router.resolve();
+
+
+function showLoginDialog() {
+    if (!forumApp.isLoggedIn()) {
+        (document.querySelector("#login-username") as HTMLInputElement).value = "";
+        (document.querySelector("#login-password") as HTMLInputElement).value = "";
+        loginDialog.showModal();
+    }
+
+}

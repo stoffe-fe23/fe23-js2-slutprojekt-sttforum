@@ -8,7 +8,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import dataStorage from "./Database.js";
 import { isLoggedIn, isOwner, isAdmin } from "./permissions.js";
-import { ForumInfo, ForumUser } from "./TypeDefs.js";
+import { ForumInfo, ForumUser, ForumContentInfo, ForumThreadInfo } from "./TypeDefs.js";
 import {
     validationErrorHandler,
     validateForumId,
@@ -70,7 +70,23 @@ forumAPI.get('/get/:forumId', isLoggedIn, validateForumId, validationErrorHandle
     try {
         const forum = dataStorage.getForum(req.params.forumId);
         if (forum) {
-            res.json(forum);
+            const forumData: ForumContentInfo = {
+                id: forum.id,
+                name: forum.name,
+                icon: forum.icon.length ? forum.icon : "forum-icon.png",
+                threads: []
+            }
+            for (const thread of forum.threads) {
+                const threadData: ForumThreadInfo = {
+                    id: thread.id,
+                    title: thread.title,
+                    date: thread.date,
+                    active: thread.active,
+                    postCount: dataStorage.countThreadContent(thread.id)
+                }
+                forumData.threads.push(threadData);
+            }
+            res.json(forumData);
         }
         else {
             throw new Error(`No forum was found with forum ID ${req.params.forumId}.`);

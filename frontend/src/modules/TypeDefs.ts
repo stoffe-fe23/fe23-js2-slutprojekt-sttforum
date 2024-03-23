@@ -8,6 +8,21 @@ export type ForumInfoAPI = {
     threadCount: number
 }
 
+export type ForumContentInfo = {
+    id: string,
+    name: string,
+    icon: string,
+    threads: ForumThreadInfoAPI[]
+}
+
+export type ForumThreadInfoAPI = {
+    id: string,
+    title: string,
+    date: number,
+    active: boolean,
+    postCount: number
+}
+
 export type ForumMessageAPI = {
     id: string,
     author: UserAuthor,

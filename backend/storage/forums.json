@@ -68,6 +68,46 @@
                         "replies": []
                     }
                 ]
+            },
+            {
+                "id": "69ce95c7-6ffa-4670-b5f7-6e4123c3651a",
+                "title": "Ännu en ny tråd...",
+                "date": 1711218730092,
+                "active": true,
+                "posts": [
+                    {
+                        "id": "887d6737-08c5-4ff1-99a2-f39ff3481d7d",
+                        "author": {
+                            "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                            "userName": "Stoffe",
+                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png"
+                        },
+                        "message": "Fungerar detta fortfarande?",
+                        "deleted": false,
+                        "date": 1711218730092,
+                        "replies": []
+                    }
+                ]
+            },
+            {
+                "id": "f9feaee4-9422-4a81-ac21-932423416556",
+                "title": "Testar ännu mer",
+                "date": 1711219091661,
+                "active": true,
+                "posts": [
+                    {
+                        "id": "39eea305-4575-4929-a562-7d7f4ecbc4b1",
+                        "author": {
+                            "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                            "userName": "Stoffe",
+                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png"
+                        },
+                        "message": "Måste fixa så listan uppdateras med när en ny tråd skapas...",
+                        "deleted": false,
+                        "date": 1711219091661,
+                        "replies": []
+                    }
+                ]
             }
         ]
     },

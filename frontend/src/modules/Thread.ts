@@ -19,21 +19,17 @@ export default class Thread {
     public posts: Message[];
     public active: boolean;
     private app: ForumApp;
-    private displayContainer: HTMLElement | null;
 
     // Factory function for creating a new Thread object from existing thread data.
-    static async create(app: ForumApp, threadId: string, threadData: ForumThreadAPI): Promise<Thread> {
+    static async create(app: ForumApp, threadId: string, threadData: ForumThreadAPI | null = null,): Promise<Thread | null> {
         if (app.isLoggedIn()) {
-            if (!threadData) {
+            if (!threadData && threadId.length) {
                 threadData = await app.api.getJson(`forum/thread/get/${threadId}`);
-            }
-            else {
-                threadData.id = threadId;
             }
 
             const obj = new Thread(app, threadData);
 
-            if (threadData.posts && threadData.posts.length) {
+            if (threadData && threadData.posts && threadData.posts.length) {
                 for (const post of threadData.posts) {
                     const newMessage = await Message.create(app, "", post);
                     if (newMessage) {
@@ -43,7 +39,7 @@ export default class Thread {
             }
             return obj;
         }
-        return new Thread(app);
+        return null;
     }
 
     // Factory method creating a new thread on the server and returning the new Thread object.
@@ -69,13 +65,12 @@ export default class Thread {
             this.title = threadData.title;
             this.date = threadData.date;
             this.active = threadData.active;
-            this.displayContainer = null;
             this.posts = [];
         }
     }
 
     // Generate HTML to display this discussion thread
-    public display(targetContainer: HTMLElement | null = null, isShowingPosts: boolean = true): HTMLElement {
+    public display(targetContainer: HTMLElement | null = null): HTMLElement {
         if (!this.app.isLoggedIn()) {
             throw new Error("You must be logged on to view the forum threads.");
         }
@@ -86,23 +81,11 @@ export default class Thread {
         };
         const attributes = { "data-threadid": this.id };
 
-        if (targetContainer) {
-            this.displayContainer = targetContainer;
-        }
-        else if (this.displayContainer) {
-            targetContainer = this.displayContainer;
-        }
-        else {
-            targetContainer = null;
-        }
-
         const threadElement = htmlUtilities.createHTMLFromTemplate("tpl-forum-thread", targetContainer, values, attributes);
-        if (isShowingPosts) {
-            const messagesElement = threadElement.querySelector(`.forum-thread-messages`) as HTMLElement;
+        const messagesElement = threadElement.querySelector(`.forum-thread-messages`) as HTMLElement;
 
-            for (const message of this.posts) {
-                message.display(messagesElement);
-            }
+        for (const message of this.posts) {
+            message.display(messagesElement);
         }
 
         return threadElement;

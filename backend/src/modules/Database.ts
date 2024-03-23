@@ -383,7 +383,7 @@ class Database {
         }
     }
 
-    // TODO: Update the Name and picture on all messages posted by the specified user
+    // Update the Name and picture on all messages posted by the specified user
     public updateAuthorInfo(userId: string) {
         const user = dataStorage.getUser(userId);
         if (user) {
@@ -419,6 +419,38 @@ class Database {
             }
         }
         return postCounter;
+    }
+
+    // Count the number of messages (including replies) a thread contains 
+    public countThreadContent(threadId: string): number {
+        let postCounter: number;
+
+        // Helper function to start counting the replies in the specified thread
+        function countThreadMessages(threadId: string): number {
+            const thread = dataStorage.getThread(threadId);
+            postCounter = 0;
+            if (thread) {
+                for (const message of thread.posts) {
+                    postCounter++;
+                    countThreadReplies(message.replies);
+                }
+            }
+            console.log(`> The Count is ${postCounter}`);
+            return postCounter;
+        }
+
+        // Helper function to recursively count the number of posts in a reply chain.
+        function countThreadReplies(messages: ForumMessage[]): void {
+            for (const message of messages) {
+                postCounter++;
+
+                if (message.replies && message.replies.length) {
+                    countThreadReplies(message.replies);
+                }
+            }
+        }
+
+        return countThreadMessages(threadId);
     }
 }
 

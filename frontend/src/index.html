@@ -15,6 +15,7 @@
         <link rel="stylesheet" href="./css/user.css">
         <script src="./main.ts" type="module"></script>
         <title>TTS Forum</title>
+        <base href="/">
     </head>
     <body>
         <header>
@@ -106,9 +107,22 @@
                 <textarea name="message" class="forum-new-thread-message" placeholder="Message text" min-length="2" max-length="4000" required></textarea>
                 <button class="forum-new-thread-submit">Create new thread</button>
             </form>
+            <div class="forum-thread-list-hdr">
+                <div class="forum-thread-list-title-hdr">Thread</div>
+                <div class="forum-thread-list-date-hdr">Created</div>
+                <div class="forum-thread-list-postcount-hdr">Posts</div>
+            </div>
             <div class="forum-threads" data-template="threads">
             </div>
         </section>
+    </template>
+    <!-- Template for a row in the forum threads list -->
+    <template id="tpl-forum-thread-list">
+        <article class="forum-thread-list" data-threadid="0">
+            <div class="forum-thread-list-title"><a href="#" data-template="link" data-navigo><span data-template="title">Thread subject</span></a></div>
+            <div class="forum-thread-list-date" data-template="date"></div>
+            <div class="forum-thread-list-postcount" data-template="postCount"></div>
+        </article>
     </template>
     <!-- Template for a forum thread -->
     <template id="tpl-forum-thread">
