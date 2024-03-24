@@ -70,9 +70,6 @@
 
 a.author-name {
     grid-area: authorname;
-}
-
-a.author-name {
     color: black;
     text-decoration: none;
     font-size: 1.5em;
@@ -80,6 +77,20 @@ a.author-name {
     margin: 0;
     padding: 0;
 }
+
+a.author-name span.admin::after {
+    position: relative;
+    top: -3px;
+    content: 'Admin';
+    display: inline-block;
+    background-color: darkblue;
+    color: white;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.7rem;
+    margin-left: 0.5rem;
+    border-radius: 12px;
+}
+
 
 
 .forum-message-date {
@@ -137,13 +148,13 @@ a.author-name {
 .forum-thread-list-hdr,
 .forum-thread-list {
     display: grid;
-    grid-template-areas: "thread-title thread-date thread-postcount";
+    grid-template-areas: "thread-title thread-lastauthor thread-updated thread-date thread-postcount";
     grid-template-columns: 1fr auto auto;
-    gap: 3rem;
+    gap: 2rem;
     justify-content: space-between;
     background-color: lightgray;
     margin: 0.2rem;
-    max-width: 1024px;
+    max-width: 1280px;
 }
 
 .forum-thread-list-hdr {
@@ -155,18 +166,41 @@ a.author-name {
 .forum-thread-list-title {
     grid-area: thread-title;
     padding: 0.5rem;
+    overflow: hidden;
+    word-wrap: break-word;
+}
+
+.forum-thread-list-lastby-hdr,
+.forum-thread-list-lastby {
+    grid-area: thread-lastauthor;
+    padding: 0.5rem;
+    width: 200px;
+    overflow: hidden;
+    word-wrap: break-word;
 }
 
 .forum-thread-list-date-hdr,
 .forum-thread-list-date {
     grid-area: thread-date;
     padding: 0.5rem;
+    width: 175px;
+    overflow: hidden;
+}
+
+.forum-thread-list-updated-hdr,
+.forum-thread-list-updated {
+    grid-area: thread-updated;
+    padding: 0.5rem;
+    width: 175px;
+    overflow: hidden;
 }
 
 .forum-thread-list-postcount-hdr,
 .forum-thread-list-postcount {
     grid-area: thread-postcount;
     padding: 0.5rem;
+    width: 90px;
+    overflow: hidden;
 }
 
 

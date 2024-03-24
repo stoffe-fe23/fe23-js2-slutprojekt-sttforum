@@ -14,7 +14,7 @@
         <link rel="stylesheet" href="./css/forum.css">
         <link rel="stylesheet" href="./css/user.css">
         <script src="./main.ts" type="module"></script>
-        <title>TTS Forum</title>
+        <title>STT Forum</title>
         <base href="/">
     </head>
     <body>
@@ -23,14 +23,16 @@
                 <img id="user-image" src="./images/user-icon.png" alt="Profile picture">
                 <div id="user-name">Log in</div>
             </div>
-            <h1>TTS Forum</h1>
-            <nav>
-                <ul>
-                    <li><a href="/" data-navigo>Home</a></li>
-                    <li><a href="/forums" data-navigo>Forums</a></li>
-                    <li><a href="/users" data-navigo>Users</a></li>
-                </ul>
-            </nav>
+            <div id="mainmenu">
+                <h1>STT Forum</h1>
+                <nav>
+                    <ul>
+                        <li><a href="/" data-navigo>Home</a></li>
+                        <li><a href="/forums" data-navigo>Forums</a></li>
+                        <li><a href="/users" data-navigo>Users</a></li>
+                    </ul>
+                </nav>
+            </div>
         </header>
         <main>
             <!-- Main container for page content inserted by the scripts -->
@@ -47,6 +49,7 @@
         <footer>
             This is the footer.
         </footer>
+        <!-- POPUP DIALOG BOXES - not in page flow -->
         <dialog id="user-login">
             <form id="login-form">
                 <h2>Log in</h2>
@@ -74,11 +77,11 @@
             <form id="user-profile-form">
                 <img src="images/user-icon.png" id="user-profile-picture-view" alt="Profile picture">
                 <h2>User profile</h2>
-                <input type="text" id="user-profile-name" name="username" value="" placeholder="Your username" required>
-                <input type="email" id="user-profile-email" name="email" value="" placeholder="Your e-mail address" required>
-                <input type="password" id="user-profile-password" name="password" value="" placeholder="Change password">
-                <input type="password" id="user-profile-password-confirm" name="password-confirm" value="" placeholder="Confirm password">
-                <input type="file" id="user-profile-picture" name="picture" value="">
+                <input type="text" id="user-profile-name" name="username" value="" min-length="2" max-length="20" placeholder="Your username" required>
+                <input type="email" id="user-profile-email" name="email" value="" max-length="128" placeholder="Your e-mail address" required>
+                <input type="password" id="user-profile-password" name="password" value="" min-length="4" max-length="40" placeholder="Change password">
+                <input type="password" id="user-profile-password-confirm" name="password-confirm" value="" min-length="4" max-length="40" placeholder="Confirm password">
+                <input type="file" id="user-profile-picture" name="picture" value="" accept="image/png, image/jpeg, image/gif, image/webp">
                 <div class="profile-buttons">
                     <button id="user-profile-submit">Save</button>
                     <button formnovalidate>Close</button>
@@ -87,6 +90,7 @@
             </form>
         </dialog>
     </body>
+    <!-- HTML TEMPLATES - not in page flow -->
     <!-- Template for a forum button -->
     <template id="tpl-forum-button">
         <button class="forum-button" data-forumid="0">
@@ -109,6 +113,8 @@
             </form>
             <div class="forum-thread-list-hdr">
                 <div class="forum-thread-list-title-hdr">Thread</div>
+                <div class="forum-thread-list-lastby-hdr">Last post by</div>
+                <div class="forum-thread-list-updated-hdr">Last post on</div>
                 <div class="forum-thread-list-date-hdr">Created</div>
                 <div class="forum-thread-list-postcount-hdr">Posts</div>
             </div>
@@ -120,6 +126,8 @@
     <template id="tpl-forum-thread-list">
         <article class="forum-thread-list" data-threadid="0">
             <div class="forum-thread-list-title"><a href="#" data-template="link" data-navigo><span data-template="title">Thread subject</span></a></div>
+            <div class="forum-thread-list-lastby" data-template="lastAuthor"></div>
+            <div class="forum-thread-list-updated" data-template="lastUpdated"></div>
             <div class="forum-thread-list-date" data-template="date"></div>
             <div class="forum-thread-list-postcount" data-template="postCount"></div>
         </article>

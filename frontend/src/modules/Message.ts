@@ -24,7 +24,6 @@ export default class Message {
     public date: number;
     public replies: Message[];
     private app: ForumApp;
-    private displayContainer: HTMLElement | null;
 
     // Factory method to load message data from the server and return a message object with it. 
     static async create(app: ForumApp, messageId: string = "", messageData: ForumMessageAPI): Promise<Message | null> {
@@ -75,13 +74,12 @@ export default class Message {
             this.message = messageData.message;
             this.deleted = messageData.deleted;
             this.date = messageData.date;
-            this.displayContainer = null;
             this.replies = [];
         }
     }
 
     // Add a new reply to this message
-    public async addReply(messageText: string) {
+    public async newReply(messageText: string) {
         if (this.app.isLoggedIn()) {
             const message = await Message.new(this.app, this.id, messageText, 'reply');
             if (message) {
@@ -93,10 +91,14 @@ export default class Message {
         }
     }
 
-    // Mark this message as deleted
+    // Mark this message as deleted.
     public delete(isDeleted: boolean = true): void {
-        this.deleted = isDeleted == true;
         // TODO: Uppdatera på server.... ... !!!!
+    }
+
+    // Edit the content of this message. 
+    public editMessage(messageText: string): void {
+        // TODO: Uppdatera på server... 
     }
 
     // Generate HTML to display this message
@@ -116,22 +118,18 @@ export default class Message {
         };
         const attributes = { "data-messageid": this.id };
 
-        if (targetContainer) {
-            this.displayContainer = targetContainer;
-        }
-        else if (this.displayContainer) {
-            targetContainer = this.displayContainer;
-        }
-        else {
-            targetContainer = null;
-        }
-
         const thisMessageElem = htmlUtilities.createHTMLFromTemplate("tpl-forum-message", targetContainer, values, attributes, true);
         const repliesElement = thisMessageElem.querySelector(`.forum-message-replies`) as HTMLElement;
         const replyBtns = thisMessageElem.querySelector(".forum-message-buttons") as HTMLFormElement;
         replyBtns.addEventListener("submit", this.onMessageButtonsSubmit.bind(this));
 
-
+        // Add admin badge next to the name if the author is an admin. 
+        if (this.author.admin) {
+            const authorName = thisMessageElem.querySelector(".author-name span");
+            if (authorName) {
+                authorName.classList.add("admin");
+            }
+        }
 
         // Bara för testning, ta bort och styla ordentligt sen.
         thisMessageElem.style.marginLeft = `${replyDepth}rem`;

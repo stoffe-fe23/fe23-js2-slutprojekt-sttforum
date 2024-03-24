@@ -15,7 +15,8 @@
                         "author": {
                             "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
                             "userName": "Stoffe",
-                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png"
+                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png",
+                            "admin": true
                         },
                         "message": "Kanske borde lagt Lorem Ipsum här istället?",
                         "deleted": false,
@@ -80,7 +81,8 @@
                         "author": {
                             "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
                             "userName": "Stoffe",
-                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png"
+                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png",
+                            "admin": true
                         },
                         "message": "Fungerar detta fortfarande?",
                         "deleted": false,
@@ -100,7 +102,8 @@
                         "author": {
                             "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
                             "userName": "Stoffe",
-                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png"
+                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png",
+                            "admin": true
                         },
                         "message": "Måste fixa så listan uppdateras med när en ny tråd skapas...",
                         "deleted": false,
@@ -127,7 +130,8 @@
                         "author": {
                             "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
                             "userName": "Stoffe",
-                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png"
+                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png",
+                            "admin": true
                         },
                         "message": "Postat ifrån Brevbäraren, fungerar detta nu?",
                         "deleted": false,
@@ -147,7 +151,8 @@
                         "author": {
                             "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
                             "userName": "Stoffe",
-                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png"
+                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png",
+                            "admin": true
                         },
                         "message": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero quaerat inventore unde qui blanditiis voluptatem veritatis deserunt tenetur ratione maiores corporis aut, sapiente eligendi quas provident assumenda amet accusamus vero?",
                         "deleted": false,
@@ -159,7 +164,8 @@
                         "author": {
                             "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
                             "userName": "Stoffe",
-                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png"
+                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png",
+                            "admin": true
                         },
                         "message": "Ett annat nytt meddelande, fungerar detta som det ska?",
                         "deleted": false,
@@ -179,7 +185,8 @@
                         "author": {
                             "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
                             "userName": "Stoffe",
-                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png"
+                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png",
+                            "admin": true
                         },
                         "message": "Detta blev ju såklart betydligt krångligare än det var tänkt. Surprise.",
                         "deleted": false,

@@ -6,6 +6,29 @@
     Type alias definitions. 
 */
 
+
+export type ForumMessageContext = {
+    message: ForumMessage,
+    thread: ForumThread
+}
+
+export type PublicUserProfilePost = {
+    id: string,
+    threadId: string,
+    title: string,
+    message: string,
+    date: number;
+}
+
+export type PublicUserProfile = {
+    id: string,
+    userName: string,
+    picture: string,
+    admin: boolean,
+    recentPosts: PublicUserProfilePost[],
+    postCount: number
+}
+
 export type ForumUser = {
     id: string,
     name: string,
@@ -27,7 +50,14 @@ export type UserData = {
 export type ForumAuthor = {
     id: string,
     userName: string,
-    picture: string
+    picture: string,
+    admin: boolean
+}
+
+export type ForumThreadStats = {
+    postCount: number,
+    lastUpdated: number,
+    lastAuthor: string
 }
 
 export type ForumMessage = {
@@ -73,7 +103,9 @@ export type ForumThreadInfo = {
     title: string,
     date: number,
     active: boolean,
-    postCount: number
+    postCount: number,
+    lastUpdate: number,
+    lastAuthor: string
 }
 
 export type ForumMessageInfo = {

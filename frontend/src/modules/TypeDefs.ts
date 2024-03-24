@@ -20,7 +20,9 @@ export type ForumThreadInfoAPI = {
     title: string,
     date: number,
     active: boolean,
-    postCount: number
+    postCount: number,
+    lastUpdate: number,
+    lastAuthor: string
 }
 
 export type ForumMessageAPI = {
@@ -50,7 +52,8 @@ export type ForumAPI = {
 export type UserAuthor = {
     id: string,
     userName: string,
-    picture: string
+    picture: string,
+    admin: boolean
 }
 
 export type UserData = {

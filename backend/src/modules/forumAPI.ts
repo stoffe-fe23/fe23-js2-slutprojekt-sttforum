@@ -77,12 +77,15 @@ forumAPI.get('/get/:forumId', isLoggedIn, validateForumId, validationErrorHandle
                 threads: []
             }
             for (const thread of forum.threads) {
+                const threadStats = dataStorage.getThreadStats(thread.id);
                 const threadData: ForumThreadInfo = {
                     id: thread.id,
                     title: thread.title,
                     date: thread.date,
                     active: thread.active,
-                    postCount: dataStorage.countThreadContent(thread.id)
+                    postCount: threadStats.postCount,
+                    lastUpdate: threadStats.lastUpdated,
+                    lastAuthor: threadStats.lastAuthor
                 }
                 forumData.threads.push(threadData);
             }

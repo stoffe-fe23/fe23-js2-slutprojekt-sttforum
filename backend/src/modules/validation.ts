@@ -24,8 +24,8 @@ export const validFileTypes = {
 export function validationErrorHandler(req: Request, res: Response, next: NextFunction) {
     try {
         const errorList = validationResult(req);
-        console.log("VALIDATOR", errorList.array());
         if (!errorList.isEmpty()) {
+            console.log("DEBUG: VALIDATOR", errorList.array());
             res.status(400);
             res.json({ error: 'Validation error', data: errorList.array() });
         }
@@ -45,7 +45,15 @@ export function validationErrorHandler(req: Request, res: Response, next: NextFu
 export function fileErrorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
     console.log("DEBUG: File Validation Error");
     res.status(400);
-    res.json({ error: 'Validation error', data: [{ msg: err.message }] });
+    res.json({
+        error: 'Validation error', data: [{
+            type: "field",
+            value: "file",
+            msg: err.message,
+            path: "picture",
+            location: "body"
+        }]
+    });
 }
 
 
@@ -236,4 +244,50 @@ function validateNewPassword(value: string, { req }): boolean {
         return false;
     }
     return true;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+// Validate User profile fields - "picture" field is validated in fileErrorHandler()
+export const validateUserRegister = [
+    body("username")
+        .exists().withMessage('A user name must be set.').bail()
+        .trim().notEmpty().withMessage('The user name cannot be empty.').bail()
+        .isString().withMessage('The user name must be a string.').bail()
+        .isLength({ min: 2, max: 20 }).withMessage('The user name must be between 2 to 20 characters in length.').bail()
+        .custom(validateNewUserName).withMessage('The specified user name is already taken or disallowed. Choose another.').bail(),
+    body("email")
+        .exists().withMessage('The email address must be set.').bail()
+        .trim().notEmpty().withMessage('The email address cannot be empty.').bail()
+        .isEmail().withMessage('The email address is not valid.').bail(),
+    body("password")
+        .exists().withMessage('A desired password must be specified.').bail()
+        .isString().withMessage('The password must be a string.').bail()
+        .isLength({ min: 4, max: 40 }).withMessage('The password must be between 4 to 40 characters in length.').bail()
+];
+
+
+function validateNewUserName(value: string, { req }): boolean {
+    const currUser = dataStorage.getUserByName(value);
+    if (currUser) {
+        return true;
+    }
+    return false;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+// Validate user ID parameter
+export const validateUserId = [
+    param("userId")
+        .exists().withMessage('The user ID of the profile to show must be specifiec.').bail()
+        .isUUID('all').withMessage('Invalid User ID specified.').bail()
+        .custom(validateUserIdExists).withMessage('The specified user does not exist.').bail(),
+];
+
+function validateUserIdExists(value: string): boolean {
+    if (dataStorage.getUser(value)) {
+        return true;
+    }
+    return false;
 }

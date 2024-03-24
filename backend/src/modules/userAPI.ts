@@ -15,47 +15,56 @@ import {
     validationErrorHandler,
     validFileTypes,
     validateUserProfile,
-    fileErrorHandler
+    fileErrorHandler,
+    validateUserRegister,
+    validateUserId
 } from "./validation.js";
 
 
 // Router for the /api/user path endpoints 
 const userAPI = Router();
+const userPictureUpload = configureFileUpload();
 
-// Setup for upload of user profile pictures
-let pictureStorage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, '../backend/media/userpictures/');
-    },
-    filename: function (req, file, cb) {
-        let extension: string = (Object.keys(validFileTypes).includes(file.mimetype) ? validFileTypes[file.mimetype] : '');
-        if (req.user && (req.user as ForumUser).id) {
-            console.log("Multer Filename", file, req.user);
-            const userId = (req.user as ForumUser).id;
-            cb(null, userId + extension);
-        }
-    }
-});
-const userPictureUpload = multer({
-    storage: pictureStorage,
-    fileFilter: function (req, file, cb) {
-        if (!Object.keys(validFileTypes).includes(file.mimetype)) {
-            return cb(new Error('The profile picture must be in JPG, PNG, GIF or WEBP format.'));
-        }
-        cb(null, true);
-    },
-    limits: {
-        fileSize: 512 * 512
-    }
-});
+const POST_HISTORY_MAX = 5;
 
 
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
 // Get a list of all registered users. 
 userAPI.get('/list', isLoggedIn, (req: Request, res: Response) => {
-    console.log("TODO: Users list");
-    res.json({ message: `TODO: Users list` });
+    const userList = dataStorage.getUserList();
+    if (userList) {
+        console.log("DEBUG: Users list");
+        res.json({ message: `User list`, data: userList });
+    }
+    else {
+        res.json({ message: `User list`, data: [] });
+    }
 });
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Get the public profile of the specified user with their most recent posts.
+userAPI.get('/profile/:userId', isLoggedIn, validateUserId, validationErrorHandler, (req: Request, res: Response) => {
+    if (req.params && req.params.userId) {
+        const userProfile = dataStorage.getPublicUserProfile(req.params.userId);
+        if (userProfile) {
+            userProfile.recentPosts.sort((a, b) => b.date - a.date);
+            userProfile.recentPosts = userProfile.recentPosts.slice(0, Math.min(userProfile.recentPosts.length, POST_HISTORY_MAX));
+
+            res.json({ message: `User profile`, data: userProfile });
+        }
+        else {
+            res.status(404);
+            res.json({ error: `User not found.`, data: req.params.userId });
+        }
+    }
+});
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
 // Get info about the currently logged in user visiting this route. 
 // Response message is either "User" if data was found, or "No User"
 // if the visitor is not logged in. 
@@ -72,13 +81,14 @@ userAPI.get('/current', (req: Request, res: Response) => {
         res.json({ message: `User`, data: currentUser });
     }
     else {
-        res.json({ message: "No User" });
+        res.json({ message: "No User", data: {} });
     }
 });
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////
 // POST target of form to register a new user account.
-userAPI.post("/register", (req: Request, res: Response) => {
+userAPI.post("/register", validateUserRegister, validationErrorHandler, (req: Request, res: Response) => {
     try {
         const newUser = dataStorage.addUser(req.body.username, req.body.password, req.body.email);
         if (newUser) {
@@ -104,6 +114,7 @@ userAPI.post("/register", (req: Request, res: Response) => {
 });
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////
 // POST target of form to update user profile.   
 userAPI.post("/profile/update", isLoggedIn, userPictureUpload.single('picture'), validateUserProfile, validationErrorHandler, fileErrorHandler, (req: Request, res: Response) => {
     try {
@@ -130,6 +141,43 @@ userAPI.post("/profile/update", isLoggedIn, userPictureUpload.single('picture'),
         res.json({ error: "Error trying to save user profile. " + error.message });
     }
 });
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Configure the multer module to handle uploading profile pictures. 
+// TODO: Use a proper validation library to prevent tampering with mime data to upload anything:
+//       https://www.npmjs.com/package/validate-image-type
+function configureFileUpload() {
+    // Setup for upload of user profile pictures
+    let pictureStorage = multer.diskStorage({
+        destination: function (req, file, returnCallback) {
+            returnCallback(null, '../backend/media/userpictures/');
+        },
+        filename: function (req, file, returnCallback) {
+            // Set name of uploaded picture to <UserId>.<file extension>, i.e. f9258ea6-89c5-46b6-8577-9df9c343dc96.png
+            let extension: string = (Object.keys(validFileTypes).includes(file.mimetype) ? validFileTypes[file.mimetype] : '');
+            if (req.user && (req.user as ForumUser).id) {
+                console.log("Multer Filename", file, req.user);
+                const userId = (req.user as ForumUser).id;
+                returnCallback(null, userId + extension);
+            }
+        }
+    });
+
+    return multer({
+        storage: pictureStorage,
+        fileFilter: function (req, file, returnCallback) {
+            // Only allow JPG, PNG, GIF and WEPB files to be uploaded.
+            if (!Object.keys(validFileTypes).includes(file.mimetype)) {
+                return returnCallback(new Error('The profile picture must be in JPG, PNG, GIF or WEBP format.'));
+            }
+            returnCallback(null, true);
+        },
+        limits: {
+            fileSize: 512 * 512
+        }
+    });
+}
 
 
 export default userAPI;

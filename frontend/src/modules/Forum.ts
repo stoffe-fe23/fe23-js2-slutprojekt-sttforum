@@ -61,6 +61,9 @@ export default class Forum {
 
         newThreadForm.addEventListener("submit", this.onNewThreadFormSubmit.bind(this));
 
+        // Sorts threads in falling chronological order by last update
+        this.threads.sort((a, b) => b.lastUpdate - a.lastUpdate);
+
         for (const thread of this.threads) {
             const attributes = { "data-threadid": thread.id };
             const values = {
@@ -69,6 +72,8 @@ export default class Forum {
                 date: htmlUtilities.dateTimeToString(thread.date),
                 active: thread.active,
                 postCount: thread.postCount,
+                lastUpdated: htmlUtilities.dateTimeToString(thread.lastUpdate),
+                lastAuthor: thread.lastAuthor,
                 link: `/thread/${thread.id}`
             }
             htmlUtilities.createHTMLFromTemplate("tpl-forum-thread-list", threadsElement, values, attributes);

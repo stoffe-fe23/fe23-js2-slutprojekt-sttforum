@@ -17,7 +17,7 @@ const pageUsers = document.querySelector("#page-users") as HTMLElement;
 const loginDialog = document.querySelector("#user-login") as HTMLDialogElement;
 
 
-console.log("PAGE LOADED!");
+console.log("PAGE LOADED!", htmlUtilities.dateTimeToString(Date.now()));
 
 // Handler for submitting the login form 
 (document.querySelector("#login-form") as HTMLFormElement).addEventListener("submit", (event) => {
@@ -75,8 +75,12 @@ console.log("PAGE LOADED!");
     event.preventDefault();
     const profileDialog = document.querySelector("#user-profile") as HTMLDialogElement;
     if ((event.submitter as HTMLButtonElement).id == "user-profile-submit") {
-        const formData = new FormData(event.currentTarget as HTMLFormElement);
-        forumApp.updateUserProfile(formData);
+        forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
+            if (isLoggedIn && forumApp.user) {
+                const formData = new FormData(event.currentTarget as HTMLFormElement);
+                forumApp.user.updateUserProfile(formData);
+            }
+        });
     }
     else if ((event.submitter as HTMLButtonElement).id == "user-profile-logout") {
         forumApp.userLogoff().then(() => {
@@ -116,12 +120,6 @@ console.log("PAGE LOADED!");
 
 // Initialize the forums and load current user (if already logged in)
 forumApp.load().then(() => {
-    /*     if (forumApp.isLoggedIn()) {
-            forumApp.showforumPicker(pageForum);
-        }
-        else {
-            htmlUtilities.createHTMLElement("div", `You must be <a href="/login" data-navigo>logged in</a> to view the forums.`, pageForum, 'error-not-logged-in', null, true);
-        } */
     console.log("ForumApp loaded!");
 }).catch((error) => {
     alert(error.message);
@@ -155,6 +153,7 @@ forumApp.router.on("/forums", () => {
     });
 });
 
+
 //////////////////////////////////////////////////////////////////////////////////
 // Show the list of threads in a forum.
 forumApp.router.on('/forum/:forumId', (route) => {
@@ -172,17 +171,16 @@ forumApp.router.on('/forum/:forumId', (route) => {
     });
 });
 
+
 //////////////////////////////////////////////////////////////////////////////////
 // Show the posts in a discussion thread. 
+// TODO: Figure out why going to this route reloads the page while the others do not. 
 forumApp.router.on("/thread/:threadId", (route) => {
     pageForum.classList.add("show");
     pageHome.classList.remove("show");
     pageUsers.classList.remove("show");
     forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
-        console.log("DEBUG: Show Forum Thread messages!");
-
         if (isLoggedIn) {
-            console.log("DEBUG: Show threads running...");
             if (route && route.data && route.data.threadId) {
                 console.log("DEBUG: Show threads displaying: ", route.data.threadId);
                 forumApp.showThread(route.data.threadId, pageForum);
@@ -195,17 +193,20 @@ forumApp.router.on("/thread/:threadId", (route) => {
 });
 
 
-
 //////////////////////////////////////////////////////////////////////////////////
 // Show a list of all the registered users
 forumApp.router.on("/users", () => {
     pageHome.classList.remove("show");
     pageForum.classList.remove("show");
     pageUsers.classList.add("show");
+
     forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
         console.log("DEBUG: Show user list!");
+        // TODO: Display user list
+        // API: /api/user/list
     });
 });
+
 
 //////////////////////////////////////////////////////////////////////////////////
 // Show a list of all the registered users
@@ -215,27 +216,28 @@ forumApp.router.on("/login", () => {
 });
 
 
-
 //////////////////////////////////////////////////////////////////////////////////
 // Show the public profile for the user with the specified ID
-
 forumApp.router.on("/user/profile/:userid", (routeInfo) => {
     console.log("DEBUG: Show public user profile!");
     forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
-        htmlUtilities.createHTMLElement("div", "Användarprofil: " + routeInfo!.data!.userid, pageForum);
+        // TODO: Display user profile of specified user
+        // API: /api/user/profile/<id>
     });
 });
 
 
+//////////////////////////////////////////////////////////////////////////////////
+// Display the login form popup dialog. 
+function showLoginDialog() {
+    forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
+        if (!isLoggedIn) {
+            (document.querySelector("#login-username") as HTMLInputElement).value = "";
+            (document.querySelector("#login-password") as HTMLInputElement).value = "";
+            loginDialog.showModal();
+        }
+    });
+}
+
 
 forumApp.router.resolve();
-
-
-function showLoginDialog() {
-    if (!forumApp.isLoggedIn()) {
-        (document.querySelector("#login-username") as HTMLInputElement).value = "";
-        (document.querySelector("#login-password") as HTMLInputElement).value = "";
-        loginDialog.showModal();
-    }
-
-}

@@ -28,7 +28,7 @@ const fileStoreOptions = {};
 // Accessed via process.env.* below. 
 dotenv.config();
 
-// Define allowed properties in the session data
+// Add "user" as an allowed property in the session data
 declare module "express-session" {
     interface SessionData {
         passport: {
@@ -52,13 +52,13 @@ export const sessionSetup = session({
 });
 
 
-// Configure name of the fields in the login form.
+// Configure the name of the fields in the login form that passport will look for. 
 const passportCustomFields = {
     usernameField: "username",
     passwordField: "password"
 }
 
-// Only store the UserId of authenticated users in their session.
+// Store only the UserId of authenticated users in their session data.
 passport.serializeUser((user: ForumUser, done) => {
     done(null, user.id);
 });
@@ -75,10 +75,12 @@ passport.deserializeUser((userId: string, done) => {
     }
 });
 
-// Set up local strategy (username/password login) for passport. 
+// Set up local strategy (username/password login) authentication for passport. 
 passport.use(new LocalStrategy(passportCustomFields, verifyLogin));
 
 
+
+////////////////////////////////////////////////////////////////////////////////////
 // Route for the login form to post to. POST req requires the "username" and "password"
 // fields (configurable in passportCustomFields if needed).
 userAPI.post("/login", passport.authenticate('local', { failWithError: true }), loginAuthenticationError, (req: Request, res: Response, next: NextFunction) => {
@@ -95,6 +97,7 @@ userAPI.post("/login", passport.authenticate('local', { failWithError: true }), 
 });
 
 
+////////////////////////////////////////////////////////////////////////////////////
 // Route for an authenticated user to log off manually. 
 userAPI.get("/logout", isLoggedIn, (req: Request, res: Response, next: NextFunction) => {
     req.logout((error) => {
@@ -107,6 +110,7 @@ userAPI.get("/logout", isLoggedIn, (req: Request, res: Response, next: NextFunct
 });
 
 
+////////////////////////////////////////////////////////////////////////////////////
 // Logic for verifying a login attempt - does the user exist, and does the password match?
 function verifyLogin(username: string, password: string, returnCallback: Function) {
     try {
@@ -132,10 +136,14 @@ function verifyLogin(username: string, password: string, returnCallback: Functio
     }
 }
 
+
+////////////////////////////////////////////////////////////////////////////////////
+// Handle user login errors. 
 function loginAuthenticationError(err: Error, req: Request, res: Response, next: NextFunction) {
     console.log("DEBUG: LOGIN ERROR");
     res.status(401);
     res.json({ error: `Login failed`, data: err });
 }
+
 
 export { passport };

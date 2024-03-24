@@ -26,6 +26,15 @@ export default class User {
             this.admin = userData.admin;
         }
     }
+
+    public async updateUserProfile(profileData: FormData): Promise<void> {
+        const result = await this.app.api.postFile("user/profile/update", profileData);
+        this.app.userLoginInit = false;
+        this.app.displayCurrentUser();
+        console.log("Profile update");
+        // TODO: Redraw forums to update icon/name on users posts? 
+    }
+
     // mediaUrl
     // TODO: Methods for viewing and editing the user profile
 

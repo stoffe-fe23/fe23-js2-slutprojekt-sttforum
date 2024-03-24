@@ -16,18 +16,19 @@ import { isLoggedIn, isAdmin } from "./modules/permissions.js";
 
 const app = express();
 
-// Allow-Origin "*" will block fetch() calls on the client from sending cookies to server :(
-// req.headers.origin is sometimes undefined for some reason, so have to hardcode an origin
-// for when that happens too, for testing... 
+// Note: Allow-Origin "*" will block fetch() calls on the client from sending cookies to server :(
+// and req.headers.origin is sometimes undefined for some reason, so have to hardcode an origin
+// for when that happens too, just in case, for testing... 
 app.use(cors({
-    origin: (origin, callback) => {
-        // console.log("DEBUG: Origin is ", origin);
-        callback(null, origin ?? 'http://localhost:1234');
-    },
+    origin: (origin, callback) => { callback(null, origin ?? 'http://localhost:1234'); },
     methods: 'GET,PUT,PATCH,POST,DELETE,OPTIONS,HEAD',
     allowedHeaders: 'Content-Type,X-Requested-With',
     credentials: true,
 }));
+
+// Serve images and other static files in the "media" folder at the root path: http://localhost:3000/media
+// Note: This must be above the session handler or it will bug out when serving static files. 
+app.use('/media', express.static('media'));
 
 // Set up session and authentication middleware
 app.use(sessionSetup);
@@ -37,9 +38,6 @@ app.use(passport.session());
 // Set up request data parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Serve images and other static files in the "media" folder at the root path: http://localhost:3000/media
-app.use('/media', express.static('media'));
 
 // Serve the users API endpoints at the path:  http://localhost:3000/api/user
 app.use('/api/user', userAPI);
