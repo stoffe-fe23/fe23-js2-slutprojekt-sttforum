@@ -122,6 +122,18 @@
             </div>
         </section>
     </template>
+    <!-- Template for a forum displaying content of a thread -->
+    <template id="tpl-thread-forum">
+        <section class="forum" data-forumid="0">
+            <div class="forum-header">
+                <img class="forum-icon" src="images/forum-icon.png" data-template="icon">
+                <h2 data-template="name"></h2>
+            </div>
+            <div class="forum-breadcrumb"></div>
+            <div class="forum-thread" data-template="thread">
+            </div>
+        </section>
+    </template>
     <!-- Template for a row in the forum threads list -->
     <template id="tpl-forum-thread-list">
         <article class="forum-thread-list" data-threadid="0">
@@ -135,9 +147,15 @@
     <!-- Template for a forum thread -->
     <template id="tpl-forum-thread">
         <section class="forum-thread" data-threadid="0">
-            <h3 data-template="title">Thread subject</h3>
-            <div class="forum-thread-date" data-template="date"></div>
-            <div class="forum-thread-messages" data-template="posts"></div>
+            <form class="thread-new-post-form">
+                <textarea name="message" class="thread-new-post-message" placeholder="Your new message." min-length="2" max-length="4000" required></textarea>
+                <button class="thread-new-post-submit">New message</button>
+            </form>
+            <div class="forum-thread-wrapper">
+                <h3 data-template="title">Thread subject</h3>
+                <div class="forum-thread-date" data-template="date"></div>
+                <div class="forum-thread-messages" data-template="posts"></div>
+            </div>
         </section>
     </template>
     <!-- Template for a forum thread message -->

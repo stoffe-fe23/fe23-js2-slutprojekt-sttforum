@@ -8,7 +8,7 @@
 import User from "./User";
 import * as htmlUtilities from './htmlUtilities.ts';
 import ForumApp from "./ForumApp.ts";
-import { UserAuthor, MessageDisplayInfo, ForumMessageAPI } from "./TypeDefs.ts";
+import { UserAuthor, MessageDisplayInfo, ForumMessageAPI, StatusResponseAPI } from "./TypeDefs.ts";
 
 
 // Ignorera Typescript-gnäll här tills vidare, Parcel-bildklydd för testning. 
@@ -57,8 +57,11 @@ export default class Message {
                 messageId: targetId
             };
 
-            const newMessageData: ForumMessageAPI = await app.api.postJson(`forum/message/create`, messageType == 'reply' ? replyData : messageData);
-            return new Message(app, newMessageData);
+            const newMessageData: StatusResponseAPI = await app.api.postJson(`forum/message/create`, messageType == 'reply' ? replyData : messageData);
+            if (newMessageData.message != "New post added") {
+                console.log("DEBUG: Invalid response to new message request.", newMessageData);
+            }
+            return new Message(app, newMessageData.data as ForumMessageAPI);
         }
         return null;
     }
@@ -70,10 +73,10 @@ export default class Message {
         if (messageData) {
             this.id = messageData.id;
             this.author = messageData.author;
-            this.author.picture = this.author.picture.length ? app.mediaUrl + 'userpictures/' + this.author.picture : new URL('../images/user-icon.png', import.meta.url).toString();
-            this.message = messageData.message;
+            this.author.picture = (messageData.author && messageData.author.picture && messageData.author.picture.length) ? app.mediaUrl + 'userpictures/' + messageData.author.picture : new URL('../images/user-icon.png', import.meta.url).toString();
             this.deleted = messageData.deleted;
             this.date = messageData.date;
+            this.message = messageData.message;
             this.replies = [];
         }
     }

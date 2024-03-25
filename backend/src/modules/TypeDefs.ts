@@ -6,7 +6,6 @@
     Type alias definitions. 
 */
 
-
 export type ForumMessageContext = {
     message: ForumMessage,
     thread: ForumThread
@@ -74,7 +73,8 @@ export type ForumThread = {
     title: string,
     date: number,
     active: boolean,
-    posts: ForumMessage[]
+    posts: ForumMessage[],
+    forum?: ForumDisplayInfo
 }
 
 export type Forum = {
@@ -90,6 +90,12 @@ export type ForumInfo = {
     icon: string,
     threadCount: number
 }
+
+export type ForumDisplayInfo = {
+    id: string,
+    name: string,
+    icon: string,
+};
 
 export type ForumContentInfo = {
     id: string,

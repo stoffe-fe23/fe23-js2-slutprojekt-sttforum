@@ -39,10 +39,18 @@
 }
 
 .forum-thread {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+.forum-thread-wrapper {
     background-color: rgb(48, 48, 48);
     color: white;
     margin: 0.5rem;
     padding: 0.5rem;
+    width: 100%;
 }
 
 .forum-thread h3 {
@@ -154,7 +162,6 @@ a.author-name span.admin::after {
     justify-content: space-between;
     background-color: lightgray;
     margin: 0.2rem;
-    max-width: 1280px;
 }
 
 .forum-thread-list-hdr {
@@ -205,6 +212,7 @@ a.author-name span.admin::after {
 
 
 
+.thread-new-post-form,
 .forum-new-thread-form {
     display: flex;
     flex-direction: column;
@@ -214,8 +222,9 @@ a.author-name span.admin::after {
     gap: 0px;
     padding: 0.8rem 1rem;
     margin: 0.5rem;
-    max-width: 500px;
     border-radius: 15px;
+    min-width: 300px;
+    width: 100%;
 }
 
 .forum-new-thread-title {
@@ -236,6 +245,17 @@ a.author-name span.admin::after {
     outline: 0;
 }
 
+.thread-new-post-message {
+    width: 100%;
+    min-height: 75px;
+    border: 0px;
+    border-radius: 15px;
+    padding: 0.5rem;
+    resize: vertical;
+    outline: 0;
+}
+
+.thread-new-post-submit,
 .forum-new-thread-submit {
     margin-top: 0.8rem;
     border: 0px;

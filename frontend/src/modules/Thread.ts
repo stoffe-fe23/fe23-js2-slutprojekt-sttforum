@@ -8,7 +8,7 @@
 import Message from "./Message.ts";
 import ForumApp from "./ForumApp.ts";
 import * as htmlUtilities from "./htmlUtilities.ts";
-import { ThreadDisplayInfo, ForumThreadAPI } from "./TypeDefs.ts";
+import { ThreadDisplayInfo, ForumThreadAPI, ForumDisplayInfo } from "./TypeDefs.ts";
 
 
 
@@ -18,6 +18,7 @@ export default class Thread {
     public date: number;
     public posts: Message[];
     public active: boolean;
+    public forumInfo: ForumDisplayInfo | null;
     private app: ForumApp;
 
     // Factory function for creating a new Thread object from existing thread data.
@@ -37,6 +38,7 @@ export default class Thread {
                     }
                 }
             }
+
             return obj;
         }
         return null;
@@ -65,6 +67,7 @@ export default class Thread {
             this.title = threadData.title;
             this.date = threadData.date;
             this.active = threadData.active;
+            this.forumInfo = threadData.forum ?? null;
             this.posts = [];
         }
     }
@@ -84,11 +87,25 @@ export default class Thread {
         const threadElement = htmlUtilities.createHTMLFromTemplate("tpl-forum-thread", targetContainer, values, attributes);
         const messagesElement = threadElement.querySelector(`.forum-thread-messages`) as HTMLElement;
 
+        const newPostForm = threadElement.querySelector(`.thread-new-post-form`) as HTMLFormElement;
+        newPostForm.addEventListener("submit", this.onNewPostFormSubmit.bind(this));
+
         for (const message of this.posts) {
             message.display(messagesElement);
         }
 
         return threadElement;
+    }
+
+    private onNewPostFormSubmit(event) {
+        event.preventDefault();
+
+        console.log("DEBUG: Creating new post in thread...");
+        const form = event.currentTarget as HTMLFormElement;
+        const formData = new FormData(form);
+
+        this.newMessage(formData.get("message") as string);
+        form.reset();
     }
 
     // Create a new message in this thread by the currently logged in user and save it to the server. 

@@ -48,9 +48,10 @@ export default class Forum {
         // this.icon = new URL('../images/forum-icon.png', import.meta.url).toString();
     }
 
-    // Generate HTML to display the threads in this forum
+    // Generate HTML to display a list of the threads in this forum
     public display(targetContainer: HTMLElement): HTMLElement {
         const values: ForumDisplayInfo = {
+            id: this.id,
             name: this.name,
             icon: this.icon,
         };

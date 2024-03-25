@@ -39,7 +39,8 @@ export type ForumThreadAPI = {
     title: string,
     date: number,
     active: boolean,
-    posts: ForumMessageAPI[]
+    posts: ForumMessageAPI[],
+    forum?: ForumDisplayInfo
 }
 
 export type ForumAPI = {
@@ -80,6 +81,7 @@ export type ThreadDisplayInfo = {
 }
 
 export type ForumDisplayInfo = {
+    id: string,
     name: string,
     icon: string,
 };

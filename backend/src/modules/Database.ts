@@ -25,7 +25,8 @@ import {
     ForumAuthor,
     PublicUserProfile,
     PublicUserProfilePost,
-    ForumMessageContext
+    ForumMessageContext,
+    ForumDisplayInfo
 } from "./TypeDefs.js";
 
 
@@ -47,6 +48,7 @@ class Database {
         console.log("Data storage initialized");
     }
 
+    /************************************* USERS **************************************/
 
     ////////////////////////////////////////////////////////////////////////////////////
     // Find the user with the specified userid
@@ -160,6 +162,7 @@ class Database {
         }
     }
 
+    /************************************* FORUMS *************************************/
 
     ////////////////////////////////////////////////////////////////////////////////////
     // Create a new empty forum with the specified name and icon.
@@ -402,8 +405,14 @@ class Database {
     public getThread(threadId: string): ForumThread | null {
         let foundThread = null;
         for (const forum of this.storage.forumDB) {
-            foundThread = forum.threads.find((checkThread) => checkThread.id == threadId);
+            foundThread = forum.threads.find((checkThread) => checkThread.id == threadId) as ForumThread;
             if (foundThread) {
+                const forumData: ForumDisplayInfo = {
+                    id: forum.id,
+                    name: forum.name,
+                    icon: forum.icon
+                }
+                foundThread.forum = forumData;
                 break;
             }
         }

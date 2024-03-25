@@ -122,7 +122,18 @@ export default class ForumApp {
             const foundThread = await Thread.create(this, threadId);
             if (foundThread) {
                 outBox.innerHTML = "";
-                foundThread.display(outBox);
+
+                // Display the thread within its parent forum wrapper. 
+                if (foundThread.forumInfo) {
+                    foundThread.forumInfo.icon = foundThread.forumInfo.icon.length ? this.mediaUrl + 'forumicons/' + foundThread.forumInfo.icon : new URL('../images/forum-icon.png', import.meta.url).toString()
+                    const forumElement = htmlUtilities.createHTMLFromTemplate("tpl-thread-forum", outBox, foundThread.forumInfo, { "data-forumid": foundThread.forumInfo.id });
+                    const threadsElement = forumElement.querySelector(`.forum-thread`) as HTMLElement;
+                    foundThread.display(threadsElement);
+                }
+                else {
+                    // If the thread for some reason is not in a forum, just display it on its own. 
+                    foundThread.display(outBox);
+                }
             }
         }
         else {
