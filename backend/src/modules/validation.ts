@@ -165,13 +165,21 @@ export const validateNewReply = [
     body("messageId")
         .exists().withMessage('The ID of the target message must be set.').bail()
         .isUUID('all').withMessage('Invalid message ID specified.').bail()
-        .custom(validateMessageIdExists).withMessage('The specified message does not exist.').bail(),
+        .custom(validateMessageIdExistsNotDeleted).withMessage('The specified message does not exist.').bail(),
     body("message")
         .exists().withMessage('The reply must have a message text.').bail()
         .trim().notEmpty().withMessage('The reply message must have text content.').bail()
         .isString().withMessage('The reply message text must be a string.').bail()
         .isLength({ min: 2, max: 4000 }).withMessage('The reply message text must be between 2 to 4000 characters in length.').bail()
 ];
+
+function validateMessageIdExistsNotDeleted(value: string): boolean {
+    const checkMessage = dataStorage.getMessage(value);
+    if (checkMessage) {
+        return !checkMessage.deleted;
+    }
+    return false;
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -192,10 +200,10 @@ export const validateEditThread = [
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Validate Edit Message input
 export const validateEditMessage = [
-    param("messageId")
+    body("messageId")
         .exists().withMessage('The ID of the message to edit must be set.').bail()
         .isUUID('all').withMessage('Invalid message ID specified.').bail()
-        .custom(validateMessageIdExists).withMessage('The message to edit could not be found.').bail(),
+        .custom(validateMessageIdExistsNotDeleted).withMessage('The message to edit could not be found.').bail(),
     body("message")
         .exists().withMessage('The message text must be set.').bail()
         .trim().notEmpty().withMessage('The message text must have text content.').bail()
@@ -291,3 +299,14 @@ function validateUserIdExists(value: string): boolean {
     }
     return false;
 }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+// Validate user ID parameter
+export const validateSearchString = [
+    body("searchFor")
+        .exists().withMessage('A search criteria must be specified.').bail()
+        .isString().withMessage('The text to search for must be specified.').bail()
+        .isLength({ min: 1, max: 40 }).withMessage('The search criteria must be between 1 to 40 characters in length.').bail()
+];
+

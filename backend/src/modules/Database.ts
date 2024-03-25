@@ -345,6 +345,7 @@ class Database {
         const msg = this.getMessage(messageId);
         if (msg) {
             msg.deleted = isDeleted;
+            msg.message = "(This message has been deleted.)";
             this.storage.saveForums();
         }
         return msg;
@@ -472,7 +473,7 @@ class Database {
         // Recursively search reply chains for a matching message ID.
         function messageSearch(userId: string, messages: ForumMessage[], thread: ForumThread): void {
             for (const message of messages) {
-                if (message.author.id === userId) {
+                if ((message.author.id === userId) && !message.deleted) {
                     const msgContainer: ForumMessageContext = {
                         message: message,
                         thread: thread
@@ -485,6 +486,65 @@ class Database {
             }
         }
         return threadsSearch(userId, this);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    // Find all messages where the text contains the specified search string
+    public findMessagesByText(searchFor: string): ForumMessageContext[] {
+        let foundMessages: ForumMessageContext[] = [];
+
+        // Search all forum threads for the message ID
+        function threadsSearch(searchFor: string, database: Database): ForumMessageContext[] {
+            for (const forum of database.storage.forumDB) {
+                for (const thread of forum.threads) {
+                    messageSearch(searchFor, thread.posts, thread);
+                }
+            }
+            return foundMessages;
+        }
+
+        // Recursively search reply chains for a matching message ID.
+        function messageSearch(searchFor: string, messages: ForumMessage[], thread: ForumThread): void {
+            for (const message of messages) {
+                if (!message.deleted && message.message.toLowerCase().includes(searchFor.toLowerCase())) {
+                    const msgContainer: ForumMessageContext = {
+                        message: message,
+                        thread: thread
+                    }
+                    foundMessages.push(msgContainer);
+                }
+                if (message.replies && message.replies.length) {
+                    messageSearch(searchFor, message.replies, thread);
+                }
+            }
+        }
+        return threadsSearch(searchFor, this);
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    // Get a list of all threads where the title contains the specified search criteria.
+    public findThreadsByTitle(searchFor: string): ForumThreadInfo[] {
+        const threadList: ForumThreadInfo[] = [];
+
+        for (const forum of this.storage.forumDB) {
+            for (const thread of forum.threads) {
+                if (thread.title.toLowerCase().includes(searchFor.toLowerCase())) {
+                    const threadStats = this.getThreadStats(thread.id);
+                    const threadData: ForumThreadInfo = {
+                        id: thread.id,
+                        title: thread.title,
+                        date: thread.date,
+                        active: thread.active,
+                        postCount: threadStats.postCount,
+                        lastUpdate: threadStats.lastUpdated,
+                        lastAuthor: threadStats.lastAuthor
+                    };
+                    threadList.push(threadData);
+                }
+            }
+        }
+        return threadList;
     }
 
 

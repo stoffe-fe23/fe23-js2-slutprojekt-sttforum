@@ -50,6 +50,7 @@
             This is the footer.
         </footer>
         <!-- POPUP DIALOG BOXES - not in page flow -->
+        <!-- User Login / Register new user dialog -->
         <dialog id="user-login">
             <form id="login-form">
                 <h2>Log in</h2>
@@ -66,13 +67,19 @@
                 <button id="user-register-submit">Register</button>
             </form>
         </dialog>
-        <dialog id="message-form">
-            <form>
-                <input type="hidden" id="reply-thredId" name="threadId">
-                <textarea id="message-form-text" placeholder="Write your message here" name="message"></textarea><button id="message-send-btn">Send</button> <button id="message-form-cancel-btn">Cancel</button>
+        <!-- Dialog for replying to a message or editing a messsage -->
+        <dialog id="message-editor-dialog">
+            <form id="message-editor-form">
+                <input type="hidden" id="message-editor-targetid" name="targetId">
+                <input type="hidden" id="message-editor-action" name="action">
+                <textarea id="message-editor-text" placeholder="Write your message here" name="message" min-length="2" max-length="4000" required></textarea>
+                <div class="message-editor-buttons">
+                    <button name="submit" value="save">Save</button>
+                    <button name="submit" value="cancel" formnovalidate>Cancel</button>
+                </div>
             </form>
-
         </dialog>
+        <!-- Dialog for viewing and editing the logged-on user's profile -->
         <dialog id="user-profile">
             <form id="user-profile-form">
                 <img src="images/user-icon.png" id="user-profile-picture-view" alt="Profile picture">
@@ -148,7 +155,7 @@
     <template id="tpl-forum-thread">
         <section class="forum-thread" data-threadid="0">
             <form class="thread-new-post-form">
-                <textarea name="message" class="thread-new-post-message" placeholder="Your new message." min-length="2" max-length="4000" required></textarea>
+                <textarea name="message" class="thread-new-post-message" placeholder="Message to add to the thread..." min-length="2" max-length="4000" required></textarea>
                 <button class="thread-new-post-submit">New message</button>
             </form>
             <div class="forum-thread-wrapper">
@@ -161,13 +168,15 @@
     <!-- Template for a forum thread message -->
     <template id="tpl-forum-message">
         <article class="forum-message" data-messageid="0">
-            <div class="forum-message-header">
-                <img class="author-picture" src="images/user-icon.png" data-template="authorPicture">
-                <a class="author-name" href="#" data-template="authorLink"><span data-template="authorName"></span></a>
-                <div class="forum-message-date" data-template="date"></div>
+            <div class="forum-message-wrapper">
+                <div class="forum-message-header">
+                    <img class="author-picture" src="images/user-icon.png" data-template="authorPicture">
+                    <a class="author-name" href="#" data-template="authorLink"><span data-template="authorName"></span></a>
+                    <div class="forum-message-date" data-template="date"></div>
+                </div>
+                <div class="forum-message-text" data-template="message"></div>
+                <form class="forum-message-buttons"><button name="submit" value="reply">Reply</button><button name="submit" value="edit">Edit</button><button name="submit" value="delete">Delete</button></form>
             </div>
-            <div class="forum-message-text" data-template="message"></div>
-            <form class="forum-message-buttons"><button class="reply-btn">Reply</button></form>
             <div class="forum-message-replies" data-template="replies"></div>
         </article>
     </template>

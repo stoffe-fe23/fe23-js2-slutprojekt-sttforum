@@ -72,7 +72,21 @@
                         "message": "Hmm, något skumt fel kanske?",
                         "deleted": false,
                         "date": 1711353977595,
-                        "replies": []
+                        "replies": [
+                            {
+                                "id": "6b3908ce-16fb-4d94-b59f-f796d33e15c3",
+                                "author": {
+                                    "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                                    "userName": "Stoffe",
+                                    "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png",
+                                    "admin": true
+                                },
+                                "message": "Alltid, men det brukar lösa sig. :)",
+                                "deleted": false,
+                                "date": 1711377658442,
+                                "replies": []
+                            }
+                        ]
                     },
                     {
                         "id": "7dbba8bf-9434-45b6-a5a0-4e9869b0c081",
@@ -195,6 +209,75 @@
                         "message": "Postat ifrån Brevbäraren, fungerar detta nu?",
                         "deleted": false,
                         "date": 1710881349046,
+                        "replies": [
+                            {
+                                "id": "5a238536-87b5-4e81-8cf3-90a3d7c55dd8",
+                                "author": {
+                                    "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                                    "userName": "Stoffe",
+                                    "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png",
+                                    "admin": true
+                                },
+                                "message": "Verkar så, men fungerar det att svara?",
+                                "deleted": false,
+                                "date": 1711373732071,
+                                "replies": [
+                                    {
+                                        "id": "861e3df9-a15e-4c19-8aa7-72bde92fa711",
+                                        "author": {
+                                            "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                                            "userName": "Stoffe",
+                                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png",
+                                            "admin": true
+                                        },
+                                        "message": "Funkar det att svara på ett svar med? Jo, fungerar att redigera meddelande också?",
+                                        "deleted": false,
+                                        "date": 1711373832281,
+                                        "replies": [
+                                            {
+                                                "id": "713bb67a-5651-4c5e-a6d5-baaf46d82f4c",
+                                                "author": {
+                                                    "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                                                    "userName": "Stoffe",
+                                                    "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png",
+                                                    "admin": true
+                                                },
+                                                "message": "(This message has been deleted.)",
+                                                "deleted": true,
+                                                "date": 1711376909247,
+                                                "replies": [
+                                                    {
+                                                        "id": "fcdf4f54-4c9f-4c25-969a-3adef8805d28",
+                                                        "author": {
+                                                            "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                                                            "userName": "Stoffe",
+                                                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png",
+                                                            "admin": true
+                                                        },
+                                                        "message": "Och med ett raderat meddelande mitt i allt ihopa?",
+                                                        "deleted": false,
+                                                        "date": 1711376929034,
+                                                        "replies": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": "29f3b9ed-067d-4ddd-a37c-6755a1ae4f71",
+                        "author": {
+                            "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                            "userName": "Stoffe",
+                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png",
+                            "admin": true
+                        },
+                        "message": "(This message has been deleted.)",
+                        "deleted": true,
+                        "date": 1711376429091,
                         "replies": []
                     }
                 ],

@@ -35,7 +35,7 @@ export default class User {
         // TODO: Redraw forums to update icon/name on users posts? 
     }
 
-    // mediaUrl
+
     // TODO: Methods for viewing and editing the user profile
 
     // TODO: Methods for logging on/off, and checking if logged in

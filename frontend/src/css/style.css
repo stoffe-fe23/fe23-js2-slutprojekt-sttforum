@@ -111,3 +111,7 @@ footer {
 #page-users.show {
     display: block;
 }
+
+.hide {
+    display: none !important;
+}

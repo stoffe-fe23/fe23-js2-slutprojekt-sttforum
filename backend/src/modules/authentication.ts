@@ -115,7 +115,7 @@ userAPI.get("/logout", isLoggedIn, (req: Request, res: Response, next: NextFunct
 function verifyLogin(username: string, password: string, returnCallback: Function) {
     try {
         const user = dataStorage.getUserByName(username);
-        console.log("VERIFY", username, user);
+        //        console.log("VERIFY", username, user);
         if (user) {
             try {
                 if (user.password != generatePasswordHash(password, user.token)) {

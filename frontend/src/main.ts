@@ -6,6 +6,7 @@
     Main script for the page. Initialize the forum and handle sub-pages. 
 */
 import ForumApp from "./modules/ForumApp";
+import Message from "./modules/Message.js";
 import * as htmlUtilities from "./modules/htmlUtilities.js";
 
 
@@ -19,6 +20,18 @@ const loginDialog = document.querySelector("#user-login") as HTMLDialogElement;
 
 console.log("PAGE LOADED!", htmlUtilities.dateTimeToString(Date.now()));
 
+// Initialize the forums and load current user (if already logged in)
+forumApp.load().then(() => {
+    console.log("ForumApp loaded!");
+}).catch((error) => {
+    alert(error.message);
+});
+
+
+
+/*** EVENT HANDLERS *************************************************************/
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Handler for submitting the login form 
 (document.querySelector("#login-form") as HTMLFormElement).addEventListener("submit", (event) => {
     event.preventDefault();
@@ -42,6 +55,8 @@ console.log("PAGE LOADED!", htmlUtilities.dateTimeToString(Date.now()));
     loginDialog.close();
 });
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Handler for clicking on the User button in the top left corner
 // TODO: Clean this up... a lot. 
 (document.querySelector("#current-user") as HTMLElement).addEventListener("click", (event) => {
@@ -70,6 +85,8 @@ console.log("PAGE LOADED!", htmlUtilities.dateTimeToString(Date.now()));
     });
 });
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Submit handler for edit user profile form
 (document.querySelector("#user-profile-form") as HTMLFormElement).addEventListener("submit", (event) => {
     event.preventDefault();
@@ -94,6 +111,8 @@ console.log("PAGE LOADED!", htmlUtilities.dateTimeToString(Date.now()));
     profileDialog.close();
 });
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 // New user registration form submit
 (document.querySelector("#user-register-form") as HTMLFormElement).addEventListener("submit", (event) => {
     event.preventDefault();
@@ -118,13 +137,39 @@ console.log("PAGE LOADED!", htmlUtilities.dateTimeToString(Date.now()));
 });
 
 
-// Initialize the forums and load current user (if already logged in)
-forumApp.load().then(() => {
-    console.log("ForumApp loaded!");
-}).catch((error) => {
-    alert(error.message);
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// New user registration form submit
+(document.querySelector("#message-editor-form") as HTMLFormElement).addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    try {
+        const messageDialog = document.querySelector("#message-editor-dialog") as HTMLDialogElement;
+        const formData = new FormData(event.currentTarget as HTMLFormElement, event.submitter);
+        const action = formData.get("action");
+        const targetId = formData.get("targetId") as string;
+        const parentMessage = await Message.create(forumApp, targetId);
+
+        console.log("DEBUG: Message Editor submit: ", action, targetId);
+
+        if (parentMessage) {
+            switch (action) {
+                case "reply": await parentMessage.newReply(formData.get("message") as string); break;
+                case "edit": await parentMessage.editMessage(formData.get("message") as string); break;
+            }
+        }
+        else {
+            console.log("Error! Could not load message to reply to.");
+        }
+        messageDialog.close();
+    }
+    catch (error) {
+        console.error("DEBUG: Error submitting from message editor", error.message);
+    }
 });
 
+
+
+/*** ROUTES *********************************************************************/
 
 //////////////////////////////////////////////////////////////////////////////////
 // Start page - show info about the forum etc? 
@@ -226,6 +271,8 @@ forumApp.router.on("/user/profile/:userid", (routeInfo) => {
     });
 });
 
+
+/*** FUNCTIONS ******************************************************************/
 
 //////////////////////////////////////////////////////////////////////////////////
 // Display the login form popup dialog. 

@@ -19,8 +19,17 @@
 .forum-message {
     background-color: lightgray;
     color: black;
-    margin: 0.5rem;
-    padding: 0.5rem;
+    margin: 0.5rem 0px;
+    padding: 0px;
+    overflow: hidden;
+}
+
+article.forum-message .forum-message-wrapper.deleted {
+    opacity: 0.25;
+}
+
+article.forum-message .forum-message-wrapper.deleted .forum-message-text {
+    font-style: italic;
 }
 
 .forum-message-header {
@@ -30,12 +39,13 @@
     grid-template-areas:
         "authoricon authorname"
         "authoricon postdate";
-    align-items: space-around;
+    align-items: stretch;
     background-color: rgba(0, 0, 0, 0.1);
+    padding: 0.25rem;
 }
 
 .forum-message-replies {
-    border-left: 1px solid blue;
+    margin-left: 2rem;
 }
 
 .forum-thread {
@@ -227,6 +237,26 @@ a.author-name span.admin::after {
     width: 100%;
 }
 
+#message-editor-dialog {
+    background-color: transparent;
+    border: 0;
+}
+
+#message-editor-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: lightblue;
+    gap: 0px;
+    padding: 0.8rem 1rem;
+    margin: 0;
+    border-radius: 15px;
+    min-width: 500px;
+    width: 100%;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.35);
+}
+
 .forum-new-thread-title {
     width: 100%;
     border: 0;
@@ -245,9 +275,10 @@ a.author-name span.admin::after {
     outline: 0;
 }
 
+#message-editor-text,
 .thread-new-post-message {
     width: 100%;
-    min-height: 75px;
+    min-height: 100px;
     border: 0px;
     border-radius: 15px;
     padding: 0.5rem;
@@ -255,6 +286,7 @@ a.author-name span.admin::after {
     outline: 0;
 }
 
+.message-editor-buttons button,
 .thread-new-post-submit,
 .forum-new-thread-submit {
     margin-top: 0.8rem;
@@ -270,4 +302,39 @@ a.author-name span.admin::after {
 .forum-new-thread-submit:focus {
     color: yellow;
     background-color: rgb(40, 40, 40);
+}
+
+.forum-message-buttons {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.2rem;
+    margin-top: 0.8rem;
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.forum-message-buttons button {
+    border: 0px;
+    background-color: black;
+    color: orange;
+    padding: 0.25rem 0.75rem;
+    margin-right: 0.5rem;
+    border-radius: 15px;
+    font-size: 0.8em;
+    cursor: pointer;
+}
+
+.forum-message-buttons button:hover,
+.forum-message-buttons button:focus {
+    color: yellow;
+    background-color: rgb(40, 40, 40);
+}
+
+.forum-message-wrapper {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.forum-message-text {
+    padding: 0.7rem;
 }

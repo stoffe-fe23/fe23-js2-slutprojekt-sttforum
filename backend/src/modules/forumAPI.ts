@@ -19,7 +19,8 @@ import {
     validateNewMessage,
     validateNewReply,
     validateEditThread,
-    validateEditMessage
+    validateEditMessage,
+    validateSearchString
 } from "./validation.js";
 
 // Router for the /api/forum path endpoints 
@@ -40,7 +41,7 @@ forumAPI.get('/list', (req: Request, res: Response) => {
     }
     else {
         res.status(404);
-        res.json({ error: `There are currenly no available forums to show.` });
+        res.json({ error: `No forums` });
     }
 });
 
@@ -54,7 +55,8 @@ forumAPI.get('/threads/list/:forumId', isLoggedIn, validateForumId, validationEr
             res.json(forumThreads);
         }
         else {
-            throw new Error(`No thread was found with thread id ${req.params.forumId}.`);
+            res.status(404);
+            res.json({ error: `Forum not found`, data: req.params.forumId ?? "No forum ID" });
         }
     }
     catch (error) {
@@ -92,7 +94,8 @@ forumAPI.get('/get/:forumId', isLoggedIn, validateForumId, validationErrorHandle
             res.json(forumData);
         }
         else {
-            throw new Error(`No forum was found with forum ID ${req.params.forumId}.`);
+            res.status(404);
+            res.json({ error: `Forum not found`, data: req.params.forumId ?? "No forum ID" });
         }
     }
     catch (error) {
@@ -117,7 +120,8 @@ forumAPI.get('/data/:forumId', validateForumId, validationErrorHandler, (req: Re
             res.json(forumData);
         }
         else {
-            throw new Error(`No forum was found with forum ID ${req.params.forumId}.`);
+            res.status(404);
+            res.json({ error: `Forum not found`, data: req.params.forumId ?? "No forum ID" });
         }
     }
     catch (error) {
@@ -136,7 +140,8 @@ forumAPI.get('/thread/get/:threadId', isLoggedIn, validateThreadId, validationEr
             res.json(forumThread);
         }
         else {
-            throw new Error(`No thread was found with thread id ${req.params.threadId}.`);
+            res.status(404);
+            res.json({ error: `Thread not found`, data: req.params.threadId ?? "No thread ID" });
         }
     }
     catch (error) {
@@ -155,12 +160,63 @@ forumAPI.get('/message/get/:messageId', isLoggedIn, validateMessageId, validatio
             res.json(forumMessage);
         }
         else {
-            throw new Error(`No message was found with message id ${req.params.messageId}.`);
+            res.status(404);
+            res.json({ error: `Message not found`, data: req.params.messageId ?? "No message ID" });
         }
     }
     catch (error) {
         res.status(500);
         res.json({ error: `Error! Unable to load message. (${error.message})` });
+    }
+});
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Search for messages where the text contains the specified search criteria.
+forumAPI.post('/search/messages', isLoggedIn, validateSearchString, validationErrorHandler, (req: Request, res: Response) => {
+    try {
+        if (!req.body.searchFor || !req.body.searchFor.length) {
+            res.status(400);
+            res.json({ error: `No search criteria.` });
+            return;
+        }
+
+        const messages = dataStorage.findMessagesByText(req.body.searchFor);
+        if (messages) {
+            res.json(messages);
+        }
+        else {
+            res.json([]);
+        }
+    }
+    catch (error) {
+        res.status(500);
+        res.json({ error: `Error! Unable to search messages. (${error.message})` });
+    }
+});
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Search for messages where the text contains the specified search criteria.
+forumAPI.post('/search/threads', isLoggedIn, validateSearchString, validationErrorHandler, (req: Request, res: Response) => {
+    try {
+        if (!req.body.searchFor || !req.body.searchFor.length) {
+            res.status(400);
+            res.json({ error: `No search criteria.` });
+            return;
+        }
+
+        const threads = dataStorage.findThreadsByTitle(req.body.searchFor);
+        if (threads) {
+            res.json(threads);
+        }
+        else {
+            res.json([]);
+        }
+    }
+    catch (error) {
+        res.status(500);
+        res.json({ error: `Error! Unable to search threads. (${error.message})` });
     }
 });
 
@@ -241,7 +297,7 @@ forumAPI.post('/message/reply', isLoggedIn, validateNewReply, validationErrorHan
 
 // Edit (the title of) the specified thread
 forumAPI.patch('/thread/edit/:threadId', isAdmin, validateEditThread, validationErrorHandler, (req: Request, res: Response) => {
-    console.log("Edit thread: ", req.params.threadId);
+    console.log("DEBUG: Edit thread: ", req.params.threadId);
     try {
         dataStorage.editThread(req.params.threadId, req.body.title);
         res.json({ message: `Edited thread`, data: req.params.threadId });
@@ -256,7 +312,7 @@ forumAPI.patch('/thread/edit/:threadId', isAdmin, validateEditThread, validation
 
 // Delete the specified thread
 forumAPI.delete('/thread/delete/:threadId', isAdmin, validateThreadId, validationErrorHandler, (req: Request, res: Response) => {
-    console.log("Delete thread", req.params.threadId);
+    console.log("DEBUG: Delete thread", req.params.threadId);
 
     try {
         dataStorage.deleteThread(req.params.threadId);
@@ -270,16 +326,16 @@ forumAPI.delete('/thread/delete/:threadId', isAdmin, validateThreadId, validatio
 
 
 // Edit (the message text of) the specified message
-forumAPI.patch('/message/edit/:messageId', isOwner, validateEditMessage, validationErrorHandler, (req: Request, res: Response) => {
-    console.log("Edit message", req.params.messageId);
+forumAPI.patch('/message/edit', isOwner, validateEditMessage, validationErrorHandler, (req: Request, res: Response) => {
+    console.log("DEBUG: Edit message", req.body.messageId);
 
     try {
-        dataStorage.editMessage(req.params.messageId, req.body.message);
-        res.json({ message: `Edited message`, data: req.params.messageId });
+        const editedMessage = dataStorage.editMessage(req.body.messageId, req.body.message);
+        res.json({ message: `Edited message`, data: editedMessage });
     }
     catch (error) {
         res.status(500);
-        res.json({ error: `An error occured when editing message ${req.params.messageId}.`, data: error.message });
+        res.json({ error: `An error occured when editing message ${req.body.messageId}.`, data: error.message });
     }
 });
 
