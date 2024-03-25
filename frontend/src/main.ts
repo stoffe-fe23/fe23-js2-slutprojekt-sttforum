@@ -10,7 +10,7 @@ import Message from "./modules/Message.js";
 import * as htmlUtilities from "./modules/htmlUtilities.js";
 
 
-const forumApp = new ForumApp('http://localhost:3000/api');
+const forumApp = new ForumApp('http://localhost:3000/api'); // https://localhost:3000/api
 
 const pageHome = document.querySelector("#page-home") as HTMLElement;
 const pageForum = document.querySelector("#page-forum") as HTMLElement;

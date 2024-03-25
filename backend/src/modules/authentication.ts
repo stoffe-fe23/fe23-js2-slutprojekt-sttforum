@@ -44,7 +44,7 @@ export const sessionSetup = session({
     resave: false,
     saveUninitialized: true,
     cookie: {
-        sameSite: false,
+        sameSite: false, // "none"
         maxAge: 1000 * 60 * 60 * 24,
         httpOnly: false,
         secure: false,

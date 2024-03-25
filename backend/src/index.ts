@@ -6,7 +6,11 @@
     Main script for the Node.js/Express server. Set up served routes and listen for client connections. 
 */
 import express from "express";
+// import https from "https";
+// import fs from "fs";
 import { Request, Response, NextFunction } from 'express';
+// import path from 'path';
+// import { fileURLToPath } from 'url'
 import cors from "cors";
 import forumAPI from "./modules/forumAPI.js";
 import userAPI from "./modules/userAPI.js";
@@ -14,13 +18,20 @@ import dataStorage from "./modules/Database.js";
 import { sessionSetup, passport } from "./modules/authentication.js";
 import { isLoggedIn, isAdmin } from "./modules/permissions.js";
 
+// const baseDirectory = path.dirname(fileURLToPath(import.meta.url));
+
+/* const sslOptions = {
+    key: fs.readFileSync("./ssl/localhost-key.pem"),
+    cert: fs.readFileSync("./ssl/localhost.pem"),
+};
+ */
 const app = express();
 
 // Note: Allow-Origin "*" will block fetch() calls on the client from sending cookies to server :(
 // and req.headers.origin is sometimes undefined for some reason, so have to hardcode an origin
 // for when that happens too, just in case, for testing... 
 app.use(cors({
-    origin: (origin, callback) => { callback(null, origin ?? 'http://localhost:1234'); },
+    origin: (origin, callback) => { callback(null, origin ?? 'http://localhost:1234'); }, // 'https://localhost:3000'
     methods: 'GET,PUT,PATCH,POST,DELETE,OPTIONS,HEAD',
     allowedHeaders: 'Content-Type,X-Requested-With',
     credentials: true,
@@ -29,6 +40,14 @@ app.use(cors({
 // Serve images and other static files in the "media" folder at the root path: http://localhost:3000/media
 // Note: This must be above the session handler or it will bug out when serving static files. 
 app.use('/media', express.static('media'));
+
+// Serve frontend files via node.
+// NOTE! Having the client served this way causes the Navigo library on the client side to severely malfunction 
+// for some reason, no longer allowing direct access to any route other than /, and breaking on page refresh. Why? 
+// app.use(express.static('../frontend/docs'));
+
+
+
 
 // Set up session and authentication middleware
 app.use(sessionSetup);
@@ -44,12 +63,6 @@ app.use('/api/user', userAPI);
 
 // Serve the forum API endpoints at the path:  http://localhost:3000/api/forum
 app.use('/api/forum', forumAPI);
-
-
-// Serve frontend files via node.
-// NOTE! Having the client served this way causes the Navigo library on the client side to severely malfunction 
-// for some reason, no longer allowing direct access to any route other than /, and breaking on page refresh. Why? 
-// app.use(express.static('../frontend/docs'));
 
 
 // Test route: user logged in with admin permissions
@@ -86,7 +99,9 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 
 // Start the server
+// const server = https.createServer(sslOptions, app);
 app.listen(3000, () => {
+    // server.listen(3000, () => {
     console.log('Server listening on port 3000: http://localhost:3000/');
 
     // Cache forum and user data from disk. 

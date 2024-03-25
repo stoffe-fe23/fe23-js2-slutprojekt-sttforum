@@ -44,7 +44,21 @@
                                 "message": "Kanske det...",
                                 "deleted": false,
                                 "date": 1710866091084,
-                                "replies": []
+                                "replies": [
+                                    {
+                                        "id": "32e00724-616c-4c41-9ce5-af26534420b6",
+                                        "author": {
+                                            "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                                            "userName": "Stoffe",
+                                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png",
+                                            "admin": true
+                                        },
+                                        "message": "Kanske.",
+                                        "deleted": false,
+                                        "date": 1711383700052,
+                                        "replies": []
+                                    }
+                                ]
                             }
                         ]
                     },
@@ -279,6 +293,46 @@
                         "deleted": true,
                         "date": 1711376429091,
                         "replies": []
+                    },
+                    {
+                        "id": "a12116ea-c32e-4746-9ea2-5de869388404",
+                        "author": {
+                            "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                            "userName": "Stoffe",
+                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png",
+                            "admin": true
+                        },
+                        "message": "Ett helt annat meddelande, men lik väl ett test.",
+                        "deleted": false,
+                        "date": 1711379547841,
+                        "replies": [
+                            {
+                                "id": "24d979e4-c98a-403d-9818-d53310534113",
+                                "author": {
+                                    "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                                    "userName": "Stoffe",
+                                    "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png",
+                                    "admin": true
+                                },
+                                "message": "Fungerade dessutom.",
+                                "deleted": false,
+                                "date": 1711379635597,
+                                "replies": []
+                            },
+                            {
+                                "id": "b9acc8b7-9bd9-4749-af58-bddf8e32692f",
+                                "author": {
+                                    "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                                    "userName": "Stoffe",
+                                    "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png",
+                                    "admin": true
+                                },
+                                "message": "Well, detta var plågsamt, lugnt sagt. :/",
+                                "deleted": false,
+                                "date": 1711391322920,
+                                "replies": []
+                            }
+                        ]
                     }
                 ],
                 "forum": {
