@@ -90,6 +90,9 @@ export default class Thread {
         const newPostForm = threadElement.querySelector(`.thread-new-post-form`) as HTMLFormElement;
         newPostForm.addEventListener("submit", this.onNewPostFormSubmit.bind(this));
 
+        // TODO: Also include date on replies to the posts in the sort order! 
+        this.posts.sort((a, b) => b.date - a.date);
+
         for (const message of this.posts) {
             message.display(messagesElement);
         }
