@@ -24,7 +24,7 @@ export default class UserList {
             const attribute = { "data-userid": user.id };
             const values = {
                 "profilePic": (user.picture.length ? `${this.app.mediaUrl}userpictures/${user.picture}` : new URL('../images/user-icon.png', import.meta.url).toString()),
-                "Username": user.userName,
+                "username": user.userName,
                 "userLink": "/user/profile/" + user.id
             }
             const userElement = htmlUtilities.createHTMLFromTemplate("tpl-user-list-user", userContainer, values, attribute);
