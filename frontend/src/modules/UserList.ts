@@ -29,7 +29,6 @@ export default class UserList {
             }
             const userElement = htmlUtilities.createHTMLFromTemplate("tpl-user-list-user", userContainer, values, attribute);
             console.log(userElement);
-
         }
         this.app.router.updatePageLinks();
 
