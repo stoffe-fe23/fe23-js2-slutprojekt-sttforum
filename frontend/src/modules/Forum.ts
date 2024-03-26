@@ -79,6 +79,7 @@ export default class Forum {
             }
             htmlUtilities.createHTMLFromTemplate("tpl-forum-thread-list", threadsElement, values, attributes);
         }
+        this.app.router.updatePageLinks();
         return forumElement;
     }
 

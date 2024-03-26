@@ -44,6 +44,8 @@ app.use('/media', express.static('media'));
 // Serve frontend files via node.
 // NOTE! Having the client served this way causes the Navigo library on the client side to severely malfunction 
 // for some reason, no longer allowing direct access to any route other than /, and breaking on page refresh. Why? 
+// Because apparently the node server will get the clientside routes, note that they do not exist on the server,
+// and send back an error message overwriting the index page.  :/
 // app.use(express.static('../frontend/docs'));
 
 
