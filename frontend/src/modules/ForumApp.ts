@@ -25,7 +25,7 @@ export default class ForumApp {
 
     constructor(apiUrl: string) {
         this.api = new RestApi(apiUrl);
-        this.router = new Navigo("/");
+        this.router = new Navigo("/"); // { linksSelector: "a" }
         this.userLoginInit = false;
 
         const mediaUrl = new URL(apiUrl);
@@ -236,14 +236,19 @@ export default class ForumApp {
         }
     }
 
-    public showUserList(): void {
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Display a list of all registered users.
+    public showUserList(userPage: HTMLElement): void {
         const userList = new UserList(this);
-        userList.displayUserList();
+        userList.displayUserList(userPage);
     }
 
-    public showUserProfile(userId: string): void {
-        const userList = new UserList(this);
-        userList.displayUserProfile(userId);
 
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Displays the public profile of the user with the specified user ID. 
+    public showUserProfile(userId: string, userPage: HTMLElement): void {
+        const userList = new UserList(this);
+        userList.displayUserProfile(userId, userPage);
     }
 }

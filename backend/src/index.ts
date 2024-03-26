@@ -46,6 +46,18 @@ app.use('/media', express.static('media'));
 // for some reason, no longer allowing direct access to any route other than /, and breaking on page refresh. Why? 
 // Because apparently the node server will get the clientside routes, note that they do not exist on the server,
 // and send back an error message overwriting the index page.  :/
+
+// Catch for client side routes to use the index.html page and not display 404 pages.
+// May also need to use absoluts URLS to stylesheet and script files in index.html if doing this. :/
+/*
+app.get('/*', function(req, res, next) {
+    if (req.url.startsWith('/api') || req.url.startsWith('/media') || (TODO: exclude *.CSS and *.JS files as well) ) {
+        return next();
+    }
+    // TODO: Serve the index.html page
+  });
+*/
+
 // app.use(express.static('../frontend/docs'));
 
 

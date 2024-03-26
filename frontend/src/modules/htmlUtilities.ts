@@ -208,3 +208,18 @@ export function dateTimeToString(time: Date | number, locale: string = 'sv-SE'):
 
     return new Intl.DateTimeFormat(locale, formatOptions).format(dateObj);
 }
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+// Return a string cropped down to a maximum number of characters. The function will cut off the
+// string at the closest space character before the max-length to avoid cutting in the middle of words.
+export function getTruncatedString(truncText: string, maxLength: number): string {
+    if (maxLength < truncText.length) {
+        let cutOffLength = truncText.lastIndexOf(" ", maxLength);
+        if (cutOffLength < 1) {
+            cutOffLength = maxLength;
+        }
+        truncText = truncText.slice(0, cutOffLength) + "…";
+    }
+    return truncText;
+}

@@ -22,7 +22,7 @@ console.log("PAGE LOADED!", htmlUtilities.dateTimeToString(Date.now()));
 
 // Initialize the forums and load current user (if already logged in)
 forumApp.load().then(() => {
-    console.log("ForumApp loaded!");
+    console.log("DEBUG: ForumApp loaded!");
 }).catch((error) => {
     alert(error.message);
 });
@@ -35,20 +35,16 @@ forumApp.load().then(() => {
 // Handler for submitting the login form 
 (document.querySelector("#login-form") as HTMLFormElement).addEventListener("submit", (event) => {
     event.preventDefault();
-    console.log("Login form submit");
+
     if ((event.submitter as HTMLButtonElement).id == "button-login") {
         const formData = new FormData(event.currentTarget as HTMLFormElement);
         forumApp.userLogin(formData.get("username") as string, formData.get("password") as string).then(() => {
-            console.log("Login");
-            // forumApp.showforumPicker(pageForum);
+            console.log("DEBUG: User Login");
             (document.querySelector("#login-username") as HTMLInputElement).value = "";
             (document.querySelector("#login-password") as HTMLInputElement).value = "";
-            forumApp.router.navigate('/forums');
-
-            alert("Logged in.")
-
+            forumApp.router.navigate('/');
         }).catch((error) => {
-            console.error("Login error", error.message);
+            console.error("DEBUG: Login error", error.message);
 
         });
     }
@@ -58,24 +54,20 @@ forumApp.load().then(() => {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Handler for clicking on the User button in the top left corner
-// TODO: Clean this up... a lot. 
 (document.querySelector("#current-user") as HTMLElement).addEventListener("click", (event) => {
     forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
         if (isLoggedIn && forumApp.user) {
             const profileDialog = document.querySelector("#user-profile") as HTMLDialogElement;
-            const nameField = document.querySelector("#user-profile-name") as HTMLInputElement;
-            const emailField = document.querySelector("#user-profile-email") as HTMLInputElement;
-            const pictureField = document.querySelector("#user-profile-picture") as HTMLInputElement;
-            const passwordField = document.querySelector("#user-profile-password") as HTMLInputElement;
-            const passwordConfirmField = document.querySelector("#user-profile-password-confirm") as HTMLInputElement;
-            const pictureView = document.querySelector("#user-profile-picture-view") as HTMLImageElement;
 
-            nameField.value = forumApp.user.userName;
-            emailField.value = forumApp.user.email;
-            pictureField.value = "";
-            passwordField.value = "";
-            passwordConfirmField.value = "";
-            pictureView.src = forumApp.user.picture;
+            // Load current user info into the form fields. 
+            (document.querySelector("#user-profile-name") as HTMLInputElement).value = forumApp.user.userName;
+            (document.querySelector("#user-profile-email") as HTMLInputElement).value = forumApp.user.email;
+            (document.querySelector("#user-profile-picture-view") as HTMLImageElement).src = forumApp.user.picture;
+
+            // These should only have a value when changing what is already set. 
+            (document.querySelector("#user-profile-picture") as HTMLInputElement).value = "";
+            (document.querySelector("#user-profile-password") as HTMLInputElement).value = "";
+            (document.querySelector("#user-profile-password-confirm") as HTMLInputElement).value = "";
 
             profileDialog.showModal();
         }
@@ -248,38 +240,49 @@ forumApp.router.on("/users", () => {
     forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
         console.log("DEBUG: Show user list!");
 
-        // TODO: Display user list 
-        // API: /api/user/list
-        forumApp.showUserList();
+        if (isLoggedIn) {
+            forumApp.showUserList(pageUsers);
+        }
+        else {
+            console.log("DEBUG: User not logged on, not allowed to view user list.");
+        }
 
     });
-});
-
-
-//////////////////////////////////////////////////////////////////////////////////
-// Show a list of all the registered users
-forumApp.router.on("/login", () => {
-    console.log("DEBUG: Show login screen!");
-    showLoginDialog();
 });
 
 
 //////////////////////////////////////////////////////////////////////////////////
 // Show the public profile for the user with the specified ID
 forumApp.router.on("/user/profile/:userid", (routeInfo) => {
-    console.log("DEBUG: Show public user profile!");
     pageHome.classList.remove("show");
     pageForum.classList.remove("show");
     pageUsers.classList.add("show");
+
     forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
-        if (isLoggedIn && routeInfo && routeInfo.data) {
-            console.log("SHOW PROFILE OF", routeInfo.data.userid);
-            forumApp.showUserProfile(routeInfo.data.userid);
+        console.log("DEBUG: Show public user profile!");
+
+        if (isLoggedIn) {
+            if (routeInfo && routeInfo.data) {
+                forumApp.showUserProfile(routeInfo.data.userid, pageUsers);
+            }
+            else {
+                console.log("DEBUG: No User ID specified, cannot show profile.")
+            }
         }
-        // TODO: Display user profile of specified user
-        // API: /api/user/profile/<id>
+        else {
+            console.log("DEBUG: User not logged on, not permitted to view user profiles.")
+        }
     });
 });
+
+
+//////////////////////////////////////////////////////////////////////////////////
+// Route to display the user login dialog box.
+forumApp.router.on("/login", () => {
+    console.log("DEBUG: Show login screen!");
+    showLoginDialog();
+});
+
 
 
 /*** FUNCTIONS ******************************************************************/

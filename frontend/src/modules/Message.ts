@@ -131,11 +131,12 @@ export default class Message {
             authorId: this.author.id,
             authorName: this.author.userName,
             authorPicture: this.author.picture.length ? this.author.picture : new URL('../images/user-icon.png', import.meta.url).toString(),
-            authorLink: `/user/profile/${this.id}`,
+            authorLink: `/user/profile/${this.author.id}`,
             message: this.message ?? "",
             date: htmlUtilities.dateTimeToString(this.date)
         };
         const attributes = { "data-messageid": this.id };
+        console.log("AUTHOR ID IS", this.author.id);
 
         const thisMessageElem = htmlUtilities.createHTMLFromTemplate("tpl-forum-message", targetContainer, values, attributes, true);
         const repliesElement = thisMessageElem.querySelector(`.forum-message-replies`) as HTMLElement;
