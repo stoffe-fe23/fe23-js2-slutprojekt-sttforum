@@ -278,9 +278,9 @@ export const validateUserRegister = [
 function validateNewUserName(value: string, { req }): boolean {
     const currUser = dataStorage.getUserByName(value);
     if (currUser) {
-        return true;
+        return false;
     }
-    return false;
+    return true;
 }
 
 
