@@ -247,7 +247,9 @@ forumApp.router.on("/users", () => {
 
     forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
         console.log("DEBUG: Show user list!");
+
         // TODO: Display user list
+        forumApp.showUserList();
         // API: /api/user/list
     });
 });

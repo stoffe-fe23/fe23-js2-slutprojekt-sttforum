@@ -34,14 +34,5 @@
         "password": "f7bdfab9488034db3aed95c8183abcb2da3111bb0c90944af88d8bbdf0f98403126610dc87c8a7a0f6a407c86c8d3dba222fff513736a91713a40a6699a385b3",
         "token": "22378c33a08209846bfcc21fb64d8ba4d24a3876a953232e24f8d6398094e792",
         "admin": false
-    },
-    {
-        "id": "04866ffe-c4e9-46b1-a151-6bfffc77aeda",
-        "name": "Testaren",
-        "email": "test@test.com",
-        "picture": "user-icon.png",
-        "password": "2f5ba11864a1ef586473f9b0f5c8f4e5a0b145e6e505485250252d07f85535feb46c39c94b2a54df77e5bb52e2336f3f58d891065ea1f84fb3abbc22d5a9297e",
-        "token": "6bacca88b7a68f239b625d5ae7d03f67988e476383e30eda367fec615ed309f3",
-        "admin": false
     }
 ]

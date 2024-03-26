@@ -11,6 +11,7 @@ import Thread from "./Thread.ts";
 import Message from "./Message.ts";
 import User from "./User.ts";
 import RestApi from "./RestApi.ts";
+import UserList from "./UserList.ts";
 import { ForumInfoAPI, UserData, StatusResponseAPI } from "./TypeDefs.ts";
 import * as htmlUtilities from "./htmlUtilities";
 
@@ -233,5 +234,10 @@ export default class ForumApp {
         else {
             throw new Error("The passwords do not match. Try again.")
         }
+    }
+
+    public showUserList(){
+        const userList = new UserList(this);
+        userList.displayUserList();
     }
 }
