@@ -240,9 +240,9 @@ export const validateUserRegister = [
 function validateNewUserName(value, { req }) {
     const currUser = dataStorage.getUserByName(value);
     if (currUser) {
-        return true;
+        return false;
     }
-    return false;
+    return true;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Validate user ID parameter

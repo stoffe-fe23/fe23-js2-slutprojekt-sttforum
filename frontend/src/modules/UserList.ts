@@ -1,4 +1,5 @@
 import ForumApp from "./ForumApp.ts";
+import {StatusResponseAPI, UserAuthor} from "./TypeDefs.ts";
 
 export default class UserList {
 
@@ -7,11 +8,15 @@ export default class UserList {
     constructor(app:ForumApp){
         this.app = app;
     }
-    public displayUserList(){
-        console.log("Hej Ton");
-        this.app.api.getJson("user/list").then(data => {
-            console.log(data);
+    public async displayUserList(){
+        const res = await this.app.api.getJson("user/list") as StatusResponseAPI;
+        const userData = res.data as UserAuthor[];
+        console.log(userData);
+
+        for(const user of userData){
+            console.log(user);
             
-        })
+        }
+        
     }
 }
