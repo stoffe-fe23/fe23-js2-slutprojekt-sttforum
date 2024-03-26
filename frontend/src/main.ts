@@ -268,8 +268,12 @@ forumApp.router.on("/login", () => {
 // Show the public profile for the user with the specified ID
 forumApp.router.on("/user/profile/:userid", (routeInfo) => {
     console.log("DEBUG: Show public user profile!");
+    pageHome.classList.remove("show");
+    pageForum.classList.remove("show");
+    pageUsers.classList.add("show");
     forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
         if (isLoggedIn && routeInfo && routeInfo.data) {
+            console.log("SHOW PROFILE OF", routeInfo.data.userid);
             forumApp.showUserProfile(routeInfo.data.userid);
         }
         // TODO: Display user profile of specified user

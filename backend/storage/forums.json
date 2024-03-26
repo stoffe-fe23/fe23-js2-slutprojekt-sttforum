@@ -98,6 +98,33 @@
                                 "message": "Alltid, men det brukar lösa sig. :)",
                                 "deleted": false,
                                 "date": 1711377658442,
+                                "replies": [
+                                    {
+                                        "id": "cbcb12b1-4b42-4706-bf7b-28e84a3e62ed",
+                                        "author": {
+                                            "id": "5bcca996-929a-4451-a889-3a2267c6e216",
+                                            "userName": "John Doe",
+                                            "picture": "user-icon.png",
+                                            "admin": false
+                                        },
+                                        "message": "Man kan ju hoppas det i alla fall.",
+                                        "deleted": false,
+                                        "date": 1711450933269,
+                                        "replies": []
+                                    }
+                                ]
+                            },
+                            {
+                                "id": "1ad4c71a-a3f2-4b26-a231-5abeec743e6a",
+                                "author": {
+                                    "id": "994cad7f-ba6b-4f08-981e-3e673038875a",
+                                    "userName": "Jane Doe",
+                                    "picture": "user-icon.png",
+                                    "admin": false
+                                },
+                                "message": "Alltid är det något som krånglar.",
+                                "deleted": false,
+                                "date": 1711450979955,
                                 "replies": []
                             }
                         ]

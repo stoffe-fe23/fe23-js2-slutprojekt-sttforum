@@ -31,6 +31,7 @@ export default class UserList {
             console.log(userElement);
 
         }
+        this.app.router.updatePageLinks();
 
     }
     public async displayUserProfile(userid: string) {
@@ -41,20 +42,21 @@ export default class UserList {
         const userData = res.data as PublicUserProfile;
         const values = {
             "profilePic": (userData.picture.length ? `${this.app.mediaUrl}userpictures/${userData.picture}` : new URL('../images/user-icon.png', import.meta.url).toString()),
-            "user": userData.userName,
+            "username": userData.userName,
             "postCounter": userData.postCount,
-            "ProfileAdmin": userData.admin
+            "profileAdmin": userData.admin ? "Admin" : "User"
         }
-        const userProfileEl = htmlUtilities.createHTMLFromTemplate("tpl-user", userPage, values);
 
-        const postContainer = userProfileEl.querySelector(".post-container") as HTMLElement;
+        const userProfileEl = htmlUtilities.createHTMLFromTemplate("tpl-user", userPage, values);
+        const postContainer = userProfileEl.querySelector(".users-profile-posts") as HTMLElement;
         for (const post of userData.recentPosts) {
-            const postrow = htmlUtilities.createHTMLFromTemplate("tpl.user-post", postContainer)
             const postvalues = {
-                "postDate": post.date,
+                "postDate": htmlUtilities.dateTimeToString(post.date),
                 "threadTitle": post.title,
                 "postLink": `/thread/${post.threadId}`,
             }
+            const postrow = htmlUtilities.createHTMLFromTemplate("tpl-user-posts", postContainer, postvalues);
         }
+        this.app.router.updatePageLinks();
     }
 }
