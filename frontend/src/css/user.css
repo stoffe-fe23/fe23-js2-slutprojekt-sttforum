@@ -59,3 +59,35 @@
 #login-form.hide {
     display: none;
 }
+
+.user-container{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.article-user-list{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: lightgray;
+    width: 250px;
+    min-height: 200px;
+    border-radius: 10px;
+    padding: 1rem;
+}
+
+.user-profile-name{
+    text-align: center;
+    margin-top: 0.7rem;
+}
+
+.profile-icon{
+    max-width: 200px;
+    border-radius: 10px;
+}
+
+.user-link{
+    text-decoration: none;
+    color: black;
+}

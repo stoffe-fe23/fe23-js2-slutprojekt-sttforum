@@ -17,19 +17,18 @@ export default class UserList {
         const userData = res.data as UserAuthor[];
         const userListEl = htmlUtilities.createHTMLFromTemplate("tpl-user-list", userPage);
         const userContainer = userListEl.querySelector(".user-container") as HTMLElement;
-        
+
         for(const user of userData){
-            console.log(user);
             const attribute = {"data-userid": user.id};
+            
             const values = {
                 "profilePic": (user.picture.length ? `${this.app.mediaUrl}userpictures/${user.picture}` : new URL('../images/user-icon.png', import.meta.url).toString()),
-                 "Username": user.userName,
+                 "username": user.userName,
                  "userLink": "/user/profile/" + user.id
                 }
+                console.log(values);
+                
             const userElement = htmlUtilities.createHTMLFromTemplate("tpl-user-list-user", userContainer, values, attribute);
-            console.log(userElement);
-            
-        }
-        
+        }   
     }
 }
