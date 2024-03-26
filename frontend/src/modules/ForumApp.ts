@@ -236,8 +236,14 @@ export default class ForumApp {
         }
     }
 
-    public showUserList(){
+    public showUserList(): void {
         const userList = new UserList(this);
         userList.displayUserList();
+    }
+
+    public showUserProfile(userId: string): void {
+        const userList = new UserList(this);
+        userList.displayUserProfile(userId);
+
     }
 }

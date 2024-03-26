@@ -112,3 +112,19 @@ export type APIStatusResponse = {
     status: number,
     ok: boolean
 }
+export type PublicUserProfilePost = {
+    id: string,
+    threadId: string,
+    title: string,
+    message: string,
+    date: number;
+}
+
+export type PublicUserProfile = {
+    id: string,
+    userName: string,
+    picture: string,
+    admin: boolean,
+    recentPosts: PublicUserProfilePost[],
+    postCount: number
+}
