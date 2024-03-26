@@ -43,5 +43,14 @@
         "password": "2f5ba11864a1ef586473f9b0f5c8f4e5a0b145e6e505485250252d07f85535feb46c39c94b2a54df77e5bb52e2336f3f58d891065ea1f84fb3abbc22d5a9297e",
         "token": "6bacca88b7a68f239b625d5ae7d03f67988e476383e30eda367fec615ed309f3",
         "admin": false
+    },
+    {
+        "id": "c9a041d0-f39a-4d5f-94d1-d2920721ca22",
+        "name": "tobbe",
+        "email": "tobias.hurtig@gritacademy.se",
+        "picture": "user-icon.png",
+        "password": "e688235ced42708bd3e062231085f07418ab0ad3c948ea0d5f909e424c68d94474c95891e3c204fb4b831ee4aa097f412fa540c403edec98c7f2898f7e0c158c",
+        "token": "d02e4fc9f23720eb70fcd10ca12a5e4f348f2e236fc2c135ccb203f486ffb39e",
+        "admin": false
     }
 ]
