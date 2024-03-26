@@ -1,10 +1,32 @@
 /*
     Slutprojekt Javascript 2 (FE23 Grit Academy)
-    Grupp : TTSForum
+    Grupp : STTForum
 
     TypeDefs.ts
     Type alias definitions. 
 */
+
+export type ForumMessageContext = {
+    message: ForumMessage,
+    thread: ForumThread
+}
+
+export type PublicUserProfilePost = {
+    id: string,
+    threadId: string,
+    title: string,
+    message: string,
+    date: number;
+}
+
+export type PublicUserProfile = {
+    id: string,
+    userName: string,
+    picture: string,
+    admin: boolean,
+    recentPosts: PublicUserProfilePost[],
+    postCount: number
+}
 
 export type ForumUser = {
     id: string,
@@ -27,7 +49,14 @@ export type UserData = {
 export type ForumAuthor = {
     id: string,
     userName: string,
-    picture: string
+    picture: string,
+    admin: boolean
+}
+
+export type ForumThreadStats = {
+    postCount: number,
+    lastUpdated: number,
+    lastAuthor: string
 }
 
 export type ForumMessage = {
@@ -44,7 +73,8 @@ export type ForumThread = {
     title: string,
     date: number,
     active: boolean,
-    posts: ForumMessage[]
+    posts: ForumMessage[],
+    forum?: ForumDisplayInfo
 }
 
 export type Forum = {
@@ -61,12 +91,27 @@ export type ForumInfo = {
     threadCount: number
 }
 
+export type ForumDisplayInfo = {
+    id: string,
+    name: string,
+    icon: string,
+};
+
+export type ForumContentInfo = {
+    id: string,
+    name: string,
+    icon: string,
+    threads: ForumThreadInfo[]
+}
+
 export type ForumThreadInfo = {
     id: string,
     title: string,
     date: number,
     active: boolean,
-    postCount: number
+    postCount: number,
+    lastUpdate: number,
+    lastAuthor: string
 }
 
 export type ForumMessageInfo = {

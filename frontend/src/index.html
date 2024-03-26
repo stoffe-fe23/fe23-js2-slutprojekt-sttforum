@@ -2,7 +2,7 @@
 <html lang="en">
     <!--
     Slutprojekt Javascript 2 (FE23 Grit Academy)
-    Grupp : TTSForum
+    Grupp : STTForum
 
     index.html
     Main HTML page for the site and templates for interface components. 
@@ -14,7 +14,8 @@
         <link rel="stylesheet" href="./css/forum.css">
         <link rel="stylesheet" href="./css/user.css">
         <script src="./main.ts" type="module"></script>
-        <title>TTS Forum</title>
+        <title>STT Forum</title>
+        <base href="/">
     </head>
     <body>
         <header>
@@ -22,14 +23,16 @@
                 <img id="user-image" src="./images/user-icon.png" alt="Profile picture">
                 <div id="user-name">Log in</div>
             </div>
-            <h1>TTS Forum</h1>
-            <nav>
-                <ul>
-                    <li><a href="/" data-navigo>Home</a></li>
-                    <li><a href="/forums" data-navigo>Forums</a></li>
-                    <li><a href="/users" data-navigo>Users</a></li>
-                </ul>
-            </nav>
+            <div id="mainmenu">
+                <h1>STT Forum</h1>
+                <nav>
+                    <ul>
+                        <li><a href="/" data-navigo>Home</a></li>
+                        <li><a href="/forums" data-navigo>Forums</a></li>
+                        <li><a href="/users" data-navigo>Users</a></li>
+                    </ul>
+                </nav>
+            </div>
         </header>
         <main>
             <!-- Main container for page content inserted by the scripts -->
@@ -46,6 +49,8 @@
         <footer>
             This is the footer.
         </footer>
+        <!-- POPUP DIALOG BOXES - not in page flow -->
+        <!-- User Login / Register new user dialog -->
         <dialog id="user-login">
             <form id="login-form">
                 <h2>Log in</h2>
@@ -62,25 +67,28 @@
                 <button id="user-register-submit">Register</button>
             </form>
         </dialog>
-        <dialog id="message-dialog">
-            <form id="message-form">
-                <!-- <input type="hidden" id="reply-threadId" name="threadId"> -->
-                <input type="hidden" id="reply-messageId" name="messageId">
-                <textarea id="message-form-text" placeholder="Write your message here" name="message"></textarea>
-                <button id="message-send-btn">Send</button>
-                <button id="message-form-cancel-btn">Cancel</button>
+        <!-- Dialog for replying to a message or editing a messsage -->
+        <dialog id="message-editor-dialog">
+            <form id="message-editor-form">
+                <input type="hidden" id="message-editor-targetid" name="targetId">
+                <input type="hidden" id="message-editor-action" name="action">
+                <textarea id="message-editor-text" placeholder="Write your message here" name="message" min-length="2" max-length="4000" required></textarea>
+                <div class="message-editor-buttons">
+                    <button name="submit" value="save">Save</button>
+                    <button name="submit" value="cancel" formnovalidate>Cancel</button>
+                </div>
             </form>
-
         </dialog>
+        <!-- Dialog for viewing and editing the logged-on user's profile -->
         <dialog id="user-profile">
             <form id="user-profile-form">
                 <img src="images/user-icon.png" id="user-profile-picture-view" alt="Profile picture">
                 <h2>User profile</h2>
-                <input type="text" id="user-profile-name" name="username" value="" placeholder="Your username" required>
-                <input type="email" id="user-profile-email" name="email" value="" placeholder="Your e-mail address" required>
-                <input type="password" id="user-profile-password" name="password" value="" placeholder="Change password">
-                <input type="password" id="user-profile-password-confirm" name="password-confirm" value="" placeholder="Confirm password">
-                <input type="file" id="user-profile-picture" name="picture" value="">
+                <input type="text" id="user-profile-name" name="username" value="" min-length="2" max-length="20" placeholder="Your username" required>
+                <input type="email" id="user-profile-email" name="email" value="" max-length="128" placeholder="Your e-mail address" required>
+                <input type="password" id="user-profile-password" name="password" value="" min-length="4" max-length="40" placeholder="Change password">
+                <input type="password" id="user-profile-password-confirm" name="password-confirm" value="" min-length="4" max-length="40" placeholder="Confirm password">
+                <input type="file" id="user-profile-picture" name="picture" value="" accept="image/png, image/jpeg, image/gif, image/webp">
                 <div class="profile-buttons">
                     <button id="user-profile-submit">Save</button>
                     <button formnovalidate>Close</button>
@@ -89,6 +97,7 @@
             </form>
         </dialog>
     </body>
+    <!-- HTML TEMPLATES - not in page flow -->
     <!-- Template for a forum button -->
     <template id="tpl-forum-button">
         <button class="forum-button" data-forumid="0">
@@ -104,30 +113,70 @@
                 <h2 data-template="name"></h2>
             </div>
             <div class="forum-breadcrumb"></div>
+            <form class="forum-new-thread-form">
+                <input type="text" name="title" class="forum-new-thread-title" placeholder="Your new thread title here" min-length="2" max-length="40" required>
+                <textarea name="message" class="forum-new-thread-message" placeholder="Message text" min-length="2" max-length="4000" required></textarea>
+                <button class="forum-new-thread-submit">Create new thread</button>
+            </form>
+            <div class="forum-thread-list-hdr">
+                <div class="forum-thread-list-title-hdr">Thread</div>
+                <div class="forum-thread-list-lastby-hdr">Last post by</div>
+                <div class="forum-thread-list-updated-hdr">Last post on</div>
+                <div class="forum-thread-list-date-hdr">Created</div>
+                <div class="forum-thread-list-postcount-hdr">Posts</div>
+            </div>
             <div class="forum-threads" data-template="threads">
             </div>
         </section>
     </template>
+    <!-- Template for a forum displaying content of a thread -->
+    <template id="tpl-thread-forum">
+        <section class="forum" data-forumid="0">
+            <div class="forum-header">
+                <img class="forum-icon" src="images/forum-icon.png" data-template="icon">
+                <h2 data-template="name"></h2>
+            </div>
+            <div class="forum-breadcrumb"></div>
+            <div class="forum-thread" data-template="thread">
+            </div>
+        </section>
+    </template>
+    <!-- Template for a row in the forum threads list -->
+    <template id="tpl-forum-thread-list">
+        <article class="forum-thread-list" data-threadid="0">
+            <div class="forum-thread-list-title"><a href="#" data-template="link" data-navigo><span data-template="title">Thread subject</span></a></div>
+            <div class="forum-thread-list-lastby" data-template="lastAuthor"></div>
+            <div class="forum-thread-list-updated" data-template="lastUpdated"></div>
+            <div class="forum-thread-list-date" data-template="date"></div>
+            <div class="forum-thread-list-postcount" data-template="postCount"></div>
+        </article>
+    </template>
     <!-- Template for a forum thread -->
     <template id="tpl-forum-thread">
         <section class="forum-thread" data-threadid="0">
-            <h3 data-template="title">Thread subject</h3>
-            <div class="forum-thread-date" data-template="date"></div>
-            <div class="forum-thread-messages" data-template="posts"></div>
+            <form class="thread-new-post-form">
+                <textarea name="message" class="thread-new-post-message" placeholder="Message to add to the thread..." min-length="2" max-length="4000" required></textarea>
+                <button class="thread-new-post-submit">New message</button>
+            </form>
+            <div class="forum-thread-wrapper">
+                <h3 data-template="title">Thread subject</h3>
+                <div class="forum-thread-date" data-template="date"></div>
+                <div class="forum-thread-messages" data-template="posts"></div>
+            </div>
         </section>
     </template>
     <!-- Template for a forum thread message -->
     <template id="tpl-forum-message">
         <article class="forum-message" data-messageid="0">
-            <div class="forum-message-header">
-                <img class="author-picture" src="images/user-icon.png" data-template="authorPicture">
-                <a class="author-name" href="#" data-template="authorLink"><span data-template="authorName"></span></a>
-                <div class="forum-message-date" data-template="date"></div>
+            <div class="forum-message-wrapper">
+                <div class="forum-message-header">
+                    <img class="author-picture" src="images/user-icon.png" data-template="authorPicture">
+                    <a class="author-name" href="#" data-template="authorLink"><span data-template="authorName"></span></a>
+                    <div class="forum-message-date" data-template="date"></div>
+                </div>
+                <div class="forum-message-text" data-template="message"></div>
+                <form class="forum-message-buttons"><button name="submit" value="reply">Reply</button><button name="submit" value="edit">Edit</button><button name="submit" value="delete">Delete</button></form>
             </div>
-            <div class="forum-message-text" data-template="message"></div>
-            <form class="forum-message-buttons">
-                <button class="reply-btn">Reply</button>
-            </form>
             <div class="forum-message-replies" data-template="replies"></div>
         </article>
     </template>

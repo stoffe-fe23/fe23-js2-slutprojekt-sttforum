@@ -1,6 +1,6 @@
 /*
     Slutprojekt Javascript 2 (FE23 Grit Academy)
-    Grupp : TTSForum
+    Grupp : STTForum
 
     authentication.ts
     Module for authenticating users using the passport local strategy. 
@@ -15,7 +15,7 @@ import dotenv from 'dotenv';
 import { Request, Response, NextFunction } from 'express';
 
 import dataStorage from "./Database.js";
-import { ForumUser } from "./TypeDefs.js";
+import { ForumUser, UserData } from "./TypeDefs.js";
 import { generatePasswordHash } from "./password.js";
 import userAPI from "./userAPI.js";
 import { isLoggedIn } from "./permissions.js";
@@ -28,7 +28,7 @@ const fileStoreOptions = {};
 // Accessed via process.env.* below. 
 dotenv.config();
 
-// Define allowed properties in the session data
+// Add "user" as an allowed property in the session data
 declare module "express-session" {
     interface SessionData {
         passport: {
@@ -44,7 +44,7 @@ export const sessionSetup = session({
     resave: false,
     saveUninitialized: true,
     cookie: {
-        sameSite: false,
+        sameSite: false, // "none"
         maxAge: 1000 * 60 * 60 * 24,
         httpOnly: false,
         secure: false,
@@ -52,13 +52,13 @@ export const sessionSetup = session({
 });
 
 
-// Configure name of the fields in the login form.
+// Configure the name of the fields in the login form that passport will look for. 
 const passportCustomFields = {
     usernameField: "username",
     passwordField: "password"
 }
 
-// Only store the UserId of authenticated users in their session.
+// Store only the UserId of authenticated users in their session data.
 passport.serializeUser((user: ForumUser, done) => {
     done(null, user.id);
 });
@@ -75,18 +75,29 @@ passport.deserializeUser((userId: string, done) => {
     }
 });
 
-// Set up local strategy (username/password login) for passport. 
+// Set up local strategy (username/password login) authentication for passport. 
 passport.use(new LocalStrategy(passportCustomFields, verifyLogin));
 
 
+
+////////////////////////////////////////////////////////////////////////////////////
 // Route for the login form to post to. POST req requires the "username" and "password"
 // fields (configurable in passportCustomFields if needed).
-userAPI.post("/login", passport.authenticate('local'), (req: Request, res: Response, next: NextFunction) => {
-    console.log("LOGIN", req.session.passport.user);
-    res.json({ message: `Login successful` });
+userAPI.post("/login", passport.authenticate('local', { failWithError: true }), loginAuthenticationError, (req: Request, res: Response, next: NextFunction) => {
+    const sessionUser = req.user as ForumUser;  // req.session.passport.user
+    const currentUser: UserData = {
+        id: sessionUser.id,
+        name: sessionUser.name,
+        email: sessionUser.email,
+        picture: sessionUser.picture,
+        admin: sessionUser.admin
+    }
+    console.log("DEBUG: LOGIN", currentUser);
+    res.json({ message: `Login successful`, data: currentUser });
 });
 
 
+////////////////////////////////////////////////////////////////////////////////////
 // Route for an authenticated user to log off manually. 
 userAPI.get("/logout", isLoggedIn, (req: Request, res: Response, next: NextFunction) => {
     req.logout((error) => {
@@ -99,11 +110,12 @@ userAPI.get("/logout", isLoggedIn, (req: Request, res: Response, next: NextFunct
 });
 
 
+////////////////////////////////////////////////////////////////////////////////////
 // Logic for verifying a login attempt - does the user exist, and does the password match?
 function verifyLogin(username: string, password: string, returnCallback: Function) {
     try {
         const user = dataStorage.getUserByName(username);
-        console.log("VERIFY", username, user);
+        //        console.log("VERIFY", username, user);
         if (user) {
             try {
                 if (user.password != generatePasswordHash(password, user.token)) {
@@ -123,5 +135,15 @@ function verifyLogin(username: string, password: string, returnCallback: Functio
         return returnCallback(error);
     }
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////
+// Handle user login errors. 
+function loginAuthenticationError(err: Error, req: Request, res: Response, next: NextFunction) {
+    console.log("DEBUG: LOGIN ERROR");
+    res.status(401);
+    res.json({ error: `Login failed`, data: err });
+}
+
 
 export { passport };

@@ -1,12 +1,16 @@
 /*
     Slutprojekt Javascript 2 (FE23 Grit Academy)
-    Grupp : TTSForum
+    Grupp : STTForum
 
     index.ts
-    Main script for the Node.js/Express server. Set up served resources and listen for client connections. 
+    Main script for the Node.js/Express server. Set up served routes and listen for client connections. 
 */
 import express from "express";
+// import https from "https";
+// import fs from "fs";
 import { Request, Response, NextFunction } from 'express';
+// import path from 'path';
+// import { fileURLToPath } from 'url'
 import cors from "cors";
 import forumAPI from "./modules/forumAPI.js";
 import userAPI from "./modules/userAPI.js";
@@ -14,45 +18,68 @@ import dataStorage from "./modules/Database.js";
 import { sessionSetup, passport } from "./modules/authentication.js";
 import { isLoggedIn, isAdmin } from "./modules/permissions.js";
 
+// const baseDirectory = path.dirname(fileURLToPath(import.meta.url));
+
+/* const sslOptions = {
+    key: fs.readFileSync("./ssl/localhost-key.pem"),
+    cert: fs.readFileSync("./ssl/localhost.pem"),
+};
+ */
 const app = express();
 
-// This will block fetch() from sending cookies :(
-// app.use(cors());
+// Note: Allow-Origin "*" will block fetch() calls on the client from sending cookies to server :(
+// and req.headers.origin is sometimes undefined for some reason, so have to hardcode an origin
+// for when that happens too, just in case, for testing... 
+app.use(cors({
+    origin: (origin, callback) => { callback(null, origin ?? 'http://localhost:1234'); }, // 'https://localhost:3000'
+    methods: 'GET,PUT,PATCH,POST,DELETE,OPTIONS,HEAD',
+    allowedHeaders: 'Content-Type,X-Requested-With',
+    credentials: true,
+}));
 
-// Have to hardcode it instead for now... unless there is a better solution.
-app.use((req: Request, res: Response, next: NextFunction) => {
-    res.set("Access-Control-Allow-Origin", 'http://localhost:1234');
-    res.set("Access-Control-Allow-Credentials", "true");
-    res.set("Access-Control-Allow-Headers", "Content-Type,X-Requested-With");
-    res.set("Access-Control-Allow-Methods", "PUT,PATCH,POST,GET,DELETE,OPTIONS");
-    next();
-});
+// Serve images and other static files in the "media" folder at the root path: http://localhost:3000/media
+// Note: This must be above the session handler or it will bug out when serving static files. 
+app.use('/media', express.static('media'));
 
+// Serve frontend files via node.
+// NOTE! Having the client served this way causes the Navigo library on the client side to severely malfunction 
+// for some reason, no longer allowing direct access to any route other than /, and breaking on page refresh. Why? 
+// Because apparently the node server will get the clientside routes, note that they do not exist on the server,
+// and send back an error message overwriting the index page.  :/
+// app.use(express.static('../frontend/docs'));
+
+
+
+
+// Set up session and authentication middleware
 app.use(sessionSetup);
 app.use(passport.initialize());
 app.use(passport.session());
 
-
+// Set up request data parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve images and other static files in the "media" folder at the root path: http://localhost:3000/media
-app.use('/media', express.static('media'));
-
-// Serve the forum API endpoints at the path:  http://localhost:3000/api/user
+// Serve the users API endpoints at the path:  http://localhost:3000/api/user
 app.use('/api/user', userAPI);
 
 // Serve the forum API endpoints at the path:  http://localhost:3000/api/forum
 app.use('/api/forum', forumAPI);
 
 
-
-app.use(express.static('../frontend/docs'));
-
-
 // Test route: user logged in with admin permissions
 app.get("/test/:testid", (req: Request, res: Response) => {
-    res.json({ message: "Test!", method: req.method, body: req.body, params: req.params, path: req.path, url: req.url });
+    res.json({
+        message: "Test!",
+        method: req.method,
+        origin: req.headers.origin ?? "Not set",
+        host: req.headers.host ?? "Not set",
+        referer: req.headers.referer ?? "Not set",
+        body: req.body,
+        params: req.params,
+        path: req.path,
+        url: req.url
+    });
 });
 // Test route: user logged in
 app.get("/protected", isLoggedIn, (req: Request, res: Response) => {
@@ -73,9 +100,12 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 })
 
 
+// Start the server
+// const server = https.createServer(sslOptions, app);
 app.listen(3000, () => {
+    // server.listen(3000, () => {
     console.log('Server listening on port 3000: http://localhost:3000/');
 
-    // Load forum and user data from disk. 
+    // Cache forum and user data from disk. 
     dataStorage.initialize();
 })

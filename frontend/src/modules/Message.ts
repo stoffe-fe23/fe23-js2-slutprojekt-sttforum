@@ -1,6 +1,6 @@
 /*
     Slutprojekt Javascript 2 (FE23 Grit Academy)
-    Grupp : TTSForum
+    Grupp : STTForum
 
     Message.ts
     Class for managing a message in a thread or in reply to another message. 
@@ -8,7 +8,7 @@
 import User from "./User";
 import * as htmlUtilities from './htmlUtilities.ts';
 import ForumApp from "./ForumApp.ts";
-import { UserAuthor, MessageDisplayInfo, ForumMessageAPI } from "./TypeDefs.ts";
+import { UserAuthor, MessageDisplayInfo, ForumMessageAPI, StatusResponseAPI, APIQueryData } from "./TypeDefs.ts";
 
 
 // Ignorera Typescript-gnäll här tills vidare, Parcel-bildklydd för testning. 
@@ -25,85 +25,107 @@ export default class Message {
     public replies: Message[];
     private app: ForumApp;
 
-    // Factory method to load message data from the server and return a message object with it. 
-    static async create(app: ForumApp, messageId: string = "", messageData: ForumMessageAPI): Promise<Message | null> {
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    // Factory method to load message data from the server and return a message object with it, since constructor cannot be async...
+    static async create(app: ForumApp, messageId: string = "", messageData: ForumMessageAPI | null = null): Promise<Message | null> {
         if (app.isLoggedIn()) {
             if (!messageData && messageId.length) {
                 messageData = await app.api.getJson(`forum/message/get/${messageId}`);
             }
 
-            const obj = new Message(app, messageData);
+            if (messageData) {
+                const obj = new Message(app, messageData);
 
-            for (const reply of messageData.replies) {
-                const newMessage = await Message.create(app, "", reply);
-                if (newMessage) {
-                    obj.replies.push(newMessage);
+                for (const reply of messageData.replies) {
+                    const newMessage = await Message.create(app, "", reply);
+                    if (newMessage) {
+                        obj.replies.push(newMessage);
+                    }
                 }
+                return obj;
             }
-            return obj;
         }
         return null;
     }
 
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
     // Factory method creating a new message on the server and returning the new message object.
     static async new(app: ForumApp, targetId: string, messageText: string, messageType: 'message' | 'reply' = 'message'): Promise<Message | null> {
         if (app.isLoggedIn() && messageText.length) {
-            const messageData = {
-                message: messageText,
-                threadId: targetId
-            };
-            const replyData = {
-                message: messageText,
-                messageId: targetId
-            };
+            const apiPath = (messageType == 'reply' ? `forum/message/reply` : `forum/message/create`);
+            const postData = (messageType == 'reply' ? { message: messageText, messageId: targetId } : { message: messageText, threadId: targetId }) as APIQueryData;
+            const newMessageData: StatusResponseAPI = await app.api.postJson(apiPath, postData);
 
-            const newMessageData: ForumMessageAPI = await app.api.postJson(`message/create`, messageType == 'reply' ? replyData : messageData);
-            return new Message(app, newMessageData);
+            if (newMessageData.message != (messageType == 'reply' ? "New reply added" : "New post added")) {
+                console.log("DEBUG: Invalid response to new message request.", newMessageData);
+            }
+            return new Message(app, newMessageData.data as ForumMessageAPI);
         }
         return null;
     }
 
-    // Create message object and fill it with the specified data, if any is assigned.
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    // Create message object and fill it with the specified data, if any is submitted.
     constructor(app: ForumApp, messageData: ForumMessageAPI | null) {
         this.app = app;
-
         if (messageData) {
             this.id = messageData.id;
             this.author = messageData.author;
-            this.author.picture = this.author.picture.length ? app.mediaUrl + 'userpictures/' + this.author.picture : new URL('../images/user-icon.png', import.meta.url).toString();
-            this.message = messageData.message;
+            this.author.picture = (messageData.author && messageData.author.picture && messageData.author.picture.length) ? app.mediaUrl + 'userpictures/' + messageData.author.picture : new URL('../images/user-icon.png', import.meta.url).toString();
             this.deleted = messageData.deleted;
             this.date = messageData.date;
+            this.message = messageData.message;
             this.replies = [];
         }
     }
 
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
     // Add a new reply to this message
-    public async addReply(messageText: string) {
-        
-        if (this.app.isLoggedIn()) {
-            const message = await Message.new(this.app, this.id, messageText, 'reply');
-            if (message) {
-                this.replies.push(message);
-            }
-            else {
-                throw new Error(`An error occurred when replying to message. (${this.id})`);
+    public async newReply(messageText: string): Promise<Message | null> {
+        const message = await Message.new(this.app, this.id, messageText, 'reply');
+        if (message) {
+            this.replies.push(message);
+        }
+        else {
+            throw new Error(`An error occurred when replying to message. (${this.id})`);
+        }
+        return message;
+        return null;
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    // Mark this message as deleted.
+    public async delete(): Promise<void> {
+        const deleteResponse: StatusResponseAPI = await this.app.api.deleteJson(`forum/message/delete/${this.id}`);
+        if (deleteResponse && deleteResponse.message) {
+            if (deleteResponse.message != "Deleted message") {
+                console.log("DEBUG: Incorrect response from Message Delete call");
             }
         }
     }
 
-    // Mark this message as deleted
-    public delete(isDeleted: boolean = true): void {
-        this.deleted = isDeleted == true;
-        // TODO: Uppdatera på server.... ... !!!!
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    // Edit the content of this message. 
+    public async editMessage(messageText: string): Promise<void> {
+        const editedMessage: StatusResponseAPI = await this.app.api.updateJson("forum/message/edit", { messageId: this.id, message: messageText });
+        if (editedMessage && editedMessage.data) {
+            if (editedMessage.message && (editedMessage.message != "Edited message")) {
+                console.log("DEBUG: Incorrect response from Message Edit call");
+            }
+            this.message = (editedMessage.data as ForumMessageAPI).message;
+        }
     }
 
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
     // Generate HTML to display this message
-    public display(targetContainer: HTMLElement, replyDepth: number = 0): HTMLElement {
-        if (!this.app.isLoggedIn()) {
-            throw new Error("You must be logged on to view the forum messages.");
-        }
-
+    public display(targetContainer: HTMLElement | null = null, replyDepth: number = 0): HTMLElement {
         let values: MessageDisplayInfo = {
             id: this.id,
             authorId: this.author.id,
@@ -120,10 +142,29 @@ export default class Message {
         const replyBtns = thisMessageElem.querySelector(".forum-message-buttons") as HTMLFormElement;
         replyBtns.addEventListener("submit", this.onMessageButtonsSubmit.bind(this));
 
+        // Add admin badge next to the name if the author is an admin. 
+        if (this.author.admin) {
+            const authorName = thisMessageElem.querySelector(".author-name span");
+            if (authorName) {
+                authorName.classList.add("admin");
+            }
+        }
 
+        if (this.deleted) {
+            const msgWrapper = thisMessageElem.querySelector(".forum-message-wrapper") as HTMLElement;
+            if (msgWrapper) {
+                msgWrapper.classList.add("deleted");
+            }
 
-        // Bara för testning, ta bort och styla ordentligt sen.
-        thisMessageElem.style.marginLeft = `${replyDepth}rem`;
+            const msgButtons = replyBtns.querySelectorAll("button");
+            if (msgButtons) {
+                msgButtons.forEach((button: HTMLButtonElement) => { button.disabled = true; });
+            }
+            replyBtns.classList.add("hide");
+        }
+
+        // TODO: Bara för testning, ta bort och styla ordentligt sen.
+        // thisMessageElem.style.marginLeft = `${replyDepth}rem`;
 
         replyDepth++;
         for (const message of this.replies) {
@@ -131,37 +172,39 @@ export default class Message {
         }
         return thisMessageElem;
     }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    // Submit handler for the Reply/Edit/Delete buttons on a message
     private onMessageButtonsSubmit(event) {
         event.preventDefault();
-        if (event.submitter.classList.contains("reply-btn")) {
-            const messageDialog = document.querySelector("#message-dialog") as HTMLDialogElement;
-            // const threadIdElement = messageDialog.querySelector("#reply-threadId") as HTMLInputElement;
-            const messageForm = document.querySelector("#message-form") as HTMLFormElement;
 
-            const messageIdElement = messageDialog.querySelector("#reply-messageId") as HTMLInputElement;
-            const messagedId = event.currentTarget.closest("article").dataset.messageid; 
-            messageIdElement.value = messagedId;
-            console.log("messageid", messagedId, messageDialog, messageIdElement);
-            messageDialog.showModal();
+        const formData = new FormData(event.currentTarget, event.submitter);
+        const messageDialog = document.querySelector("#message-editor-dialog") as HTMLDialogElement;
+        const messageForm = messageDialog.querySelector("#message-editor-form") as HTMLFormElement;
+        const targetIdField = messageForm.querySelector("#message-editor-targetid") as HTMLInputElement;
+        const messageTextField = messageForm.querySelector("#message-editor-text") as HTMLTextAreaElement;
+        const editorAction = messageForm.querySelector("#message-editor-action") as HTMLInputElement;
+        const threadId = event.currentTarget.closest("section").dataset.threadid ?? "";
 
-            // const threadId = event.currentTarget.closest("section").dataset.threadid; 
-            // threadIdElement.value = threadId;
-            // console.log("threadid", threadId, messageDialog, threadIdElement);
+        editorAction.value = formData.get("submit") as string;
+        targetIdField.value = this.id;
 
-            messageForm.addEventListener("submit", (event) => {
-                event.preventDefault();
-                
-                const formData = new FormData(event.currentTarget as HTMLFormElement);
-                const messageText = formData.get("message") as string
-                console.log(messageText);
-                
-                this.addReply(messageText);
-         
-                // this.app.api.postJson("forum/message/create", formData);
-                
-                messageDialog.close();
-                
-            })
+        switch (editorAction.value) {
+            case "reply":
+                messageTextField.value = "";
+                messageDialog.showModal();
+                break;
+            case "edit":
+                messageTextField.value = this.message;
+                messageDialog.showModal();
+                break;
+            case "delete":
+                console.log("DEBUG: Delete message.");
+                if (confirm("Are you sure you wish to delete this message?")) {
+                    this.delete();
+                }
+                break;
         }
     }
 }

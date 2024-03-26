@@ -1,6 +1,6 @@
 /*
     Slutprojekt Javascript 2 (FE23 Grit Academy)
-    Grupp : TTSForum
+    Grupp : STTForum
 
     user.css
     Stylesheet for displaying and managing user profiles.
@@ -13,16 +13,14 @@
 
 
 #current-user {
-    position: fixed;
-    top: 0px;
-    left: 0px;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     padding: 0.5rem 1rem 0.5rem 0.8rem;
     cursor: pointer;
-    background-color: black;
+    background-color: rgba(0, 0, 0, 0.9);
+    pointer-events: auto;
     border-radius: 0 0 35px 0;
 }
 
@@ -36,6 +34,7 @@
     color: white;
     font-weight: 700;
     padding: 0 0.5rem;
+    text-align: center;
 }
 
 #user-profile-form input {

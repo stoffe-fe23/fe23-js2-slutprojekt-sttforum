@@ -8,6 +8,23 @@ export type ForumInfoAPI = {
     threadCount: number
 }
 
+export type ForumContentInfo = {
+    id: string,
+    name: string,
+    icon: string,
+    threads: ForumThreadInfoAPI[]
+}
+
+export type ForumThreadInfoAPI = {
+    id: string,
+    title: string,
+    date: number,
+    active: boolean,
+    postCount: number,
+    lastUpdate: number,
+    lastAuthor: string
+}
+
 export type ForumMessageAPI = {
     id: string,
     author: UserAuthor,
@@ -22,7 +39,8 @@ export type ForumThreadAPI = {
     title: string,
     date: number,
     active: boolean,
-    posts: ForumMessageAPI[]
+    posts: ForumMessageAPI[],
+    forum?: ForumDisplayInfo
 }
 
 export type ForumAPI = {
@@ -35,7 +53,8 @@ export type ForumAPI = {
 export type UserAuthor = {
     id: string,
     userName: string,
-    picture: string
+    picture: string,
+    admin: boolean
 }
 
 export type UserData = {
@@ -62,6 +81,7 @@ export type ThreadDisplayInfo = {
 }
 
 export type ForumDisplayInfo = {
+    id: string,
     name: string,
     icon: string,
 };
@@ -69,4 +89,26 @@ export type ForumDisplayInfo = {
 export type StatusResponseAPI = {
     message: string,
     data?: object
+}
+
+// Used by RestApi class
+
+// Parameters when doing an API request
+export type APIQueryParams = Record<string, string | Array<string>> | null;
+
+// Data passed to the API functions when doing a non-GET request
+export type APIQueryValue = string | number | boolean | Array<string | number>;
+export type APIQueryData = FormData | Record<string, APIQueryValue> | null;
+
+// Tracking info about the last API query performed
+export type APILastRequest = {
+    url: URL | null,
+    method: 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'None',
+    options: RequestInit | undefined
+}
+
+export type APIStatusResponse = {
+    response: UserData,
+    status: number,
+    ok: boolean
 }

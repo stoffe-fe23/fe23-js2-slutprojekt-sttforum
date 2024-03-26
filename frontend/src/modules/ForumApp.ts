@@ -1,120 +1,92 @@
 /*
     Slutprojekt Javascript 2 (FE23 Grit Academy)
-    Grupp : TTSForum
+    Grupp : STTForum
 
     ForumApp.ts
     Main controller class for the Forum. Manage forums, track the logged-in user and provide interface for server requests.
 */
+import Navigo from "navigo";
 import Forum from "./Forum.ts";
+import Thread from "./Thread.ts";
+import Message from "./Message.ts";
 import User from "./User.ts";
 import RestApi from "./RestApi.ts";
 import { ForumInfoAPI, UserData, StatusResponseAPI } from "./TypeDefs.ts";
+import * as htmlUtilities from "./htmlUtilities";
 
 export default class ForumApp {
     public api: RestApi;
     public user: User | null;
-    public forums: Forum[];
+    public router: Navigo;
     public mediaUrl: string;
+    public userLoginInit: boolean;
 
 
     constructor(apiUrl: string) {
-        // Object for making requests to the server/API.
         this.api = new RestApi(apiUrl);
-        this.forums = [];
+        this.router = new Navigo("/");
+        this.userLoginInit = false;
 
         const mediaUrl = new URL(apiUrl);
         this.mediaUrl = `${mediaUrl.protocol}//${mediaUrl.hostname}:${mediaUrl.port}/media/`;
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Initialization of the forum app. 
     public async load(): Promise<void> {
         try {
             await this.loadCurrentUser();
-
-            if (this.isLoggedIn()) {
-                return await this.loadForums();
-            }
         }
         catch (error) {
             console.error("ForumApp load error: ", error.message);
         }
     }
 
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Check if a user is currently logged in, and fetch their user data from the server.
     public async loadCurrentUser(): Promise<void> {
-        // Fetch current user if logged in
         this.user = null;
         const apiResponse: StatusResponseAPI = await this.api.getJson("user/current");
+        console.log("DEBUG: Load current user info.")
 
         if (apiResponse.data && apiResponse.message == "User") {
             this.user = new User(this, apiResponse.data as UserData);
+            this.userLoginInit = true;
             this.displayCurrentUser();
-            console.log("User is logged in: ", this.user.userName);
+            console.log("DEBUG: User is logged in: ", this.user.userName);
         }
         else if (apiResponse.message == "No User") {
-            console.log("User not logged in.");
+            console.log("DEBUG: User not logged in.");
+            this.userLoginInit = true;
         }
         else {
             throw new Error("Unable to load current user data.");
         }
     }
 
-    public async loadForums(): Promise<void> {
-        try {
-            const forumList: ForumInfoAPI[] = await this.api.getJson(`forum/list`);
-            this.forums = [];
-            if (forumList && forumList.length) {
-                for (const forum of forumList) {
-                    const newForum = await Forum.create(this, forum.id);
-                    if (newForum) {
-                        this.forums.push(newForum);
-                    }
-                }
-            }
-        }
-        catch (error) {
-            if (error.status) {
-                if (error.status == 401) {
-                    console.log("ForumApp load - Not authorized to access forums.");
-                }
-                else {
-                    console.error("ForumApp load error: ", error.message);
-                }
-            }
-        }
-    }
 
-    public isLoggedIn(): boolean {
-        return this.user ? true : false;
-    }
-
-    public async userLogin(loginName: string, loginPass: string) {
-        const postData = {
-            username: loginName,
-            password: loginPass
-        };
-
-        const response: StatusResponseAPI = await this.api.postJson("user/login", postData);
-        if (response && response.message && (response.message == "Login successful")) {
-            await this.loadCurrentUser();
-            await this.loadForums();
-        }
-        else {
-            console.log("Login failed! ", response);
-        }
-    }
-
-    // Show buttons to select a forum to view
-    public showforumPicker(outBox: HTMLElement): void {
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Forum picker screen: Display buttons to select a forum to view
+    public async showForumPicker(outBox: HTMLElement): Promise<void> {
         // Show buttons for all available forums
         outBox.innerHTML = "";
         if (this.isLoggedIn()) {
-            for (const forum of this.forums) {
-                const forumButton = forum.getButton();
-                if (forumButton) {
-                    outBox.appendChild(forumButton);
+            const forumList: ForumInfoAPI[] = await this.api.getJson(`forum/list`);
+            if (forumList && forumList.length) {
+                for (const forum of forumList) {
+                    const forumData = {
+                        id: forum.id,
+                        name: forum.name,
+                        icon: forum.icon.length ? this.mediaUrl + 'forumicons/' + forum.icon : new URL('../images/forum-icon.png', import.meta.url).toString(),
+                        threadCount: forum.threadCount
+                    }
+                    const forumButton = htmlUtilities.createHTMLFromTemplate("tpl-forum-button", outBox, forumData, { "data-forumid": forum.id });
+
                     forumButton.addEventListener("click", (event) => {
-                        const forumId = (event.currentTarget as HTMLButtonElement).dataset.forumid!.toString();
-                        if (forumId) {
-                            this.displayForum(forumId, outBox);
+                        const button = event.currentTarget as HTMLButtonElement;
+                        if (button && button.dataset && button.dataset.forumid) {
+                            this.router.navigate(`/forum/${button.dataset.forumid}`);
                         }
                     });
                 }
@@ -125,44 +97,126 @@ export default class ForumApp {
         }
     }
 
-    // Display the threads/posts in the specified forum
-    public displayForum(forumId: string, outBox: HTMLElement): void {
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Display a list of the threads in the specified forum.
+    public async showForum(forumId: string, outBox: HTMLElement): Promise<void> {
         if (this.isLoggedIn()) {
-            const foundForum = this.forums.find((forum) => forum.id == forumId);
+            // const foundForum = this.forums.find((forum) => forum.id == forumId);
+            const foundForum = await Forum.create(this, forumId);
             if (foundForum) {
                 outBox.innerHTML = "";
                 foundForum.display(outBox);
             }
         }
         else {
-            throw new Error("You must be logged in the view the forums.");
+            throw new Error("You must be logged in the view the forum topics.");
         }
     }
 
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Display all the posts/replies in the specified thread
+    public async showThread(threadId: string, outBox: HTMLElement): Promise<void> {
+        if (this.isLoggedIn()) {
+            const foundThread = await Thread.create(this, threadId);
+            if (foundThread) {
+                outBox.innerHTML = "";
+
+                // Display the thread within its parent forum wrapper. 
+                if (foundThread.forumInfo) {
+                    foundThread.forumInfo.icon = foundThread.forumInfo.icon.length ? this.mediaUrl + 'forumicons/' + foundThread.forumInfo.icon : new URL('../images/forum-icon.png', import.meta.url).toString()
+                    const forumElement = htmlUtilities.createHTMLFromTemplate("tpl-thread-forum", outBox, foundThread.forumInfo, { "data-forumid": foundThread.forumInfo.id });
+                    const threadsElement = forumElement.querySelector(`.forum-thread`) as HTMLElement;
+                    foundThread.display(threadsElement);
+                }
+                else {
+                    // If the thread for some reason is not in a forum, just display it on its own. 
+                    foundThread.display(outBox);
+                }
+            }
+        }
+        else {
+            throw new Error("You must be logged in the view forum posts.");
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Update the current user display on the page (icon + name in the upper left)
     public displayCurrentUser(): void {
         const userBox = document.querySelector("#current-user") as HTMLElement;
         const userImage = userBox.querySelector("#user-image") as HTMLImageElement;
         const userName = userBox.querySelector("#user-name") as HTMLDivElement;
 
-        if (this.isLoggedIn() && this.user && userBox) {
-            userName.innerText = this.user.userName;
-            userImage.src = this.user.picture;
+        this.userLoginCheck().then((isLoggedIn: boolean) => {
+            console.log("DEBUG: Update current user display.");
+            if (isLoggedIn && this.user && userBox) {
+                userName.innerText = this.user.userName ?? "Username";
+                userImage.src = this.user.picture;
+            }
+            else {
+                userName.innerText = "Log in";
+                userImage.src = new URL('../images/user-icon.png', import.meta.url).toString();
+            }
+        });
+
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Check if the current user is logged in.
+    // Use userLoginCheck() instead unless sure the current user data is already loaded. 
+    public isLoggedIn(): boolean {
+        return this.user ? true : false;
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Async wrapper for checking if the user is logged in, allowing time for user data
+    // from server to load before the check is made and something is done with the user. 
+    public async userLoginCheck(): Promise<boolean> {
+        if (!this.user && !this.userLoginInit) {
+            await this.loadCurrentUser();
+        }
+        return this.isLoggedIn();
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Attempt to log in to the server with the specified username and password. 
+    // TODO: Need exception handling here
+    // 401 - login invalid (user,pass is wrong, user does not exist etc)
+    public async userLogin(loginName: string, loginPass: string): Promise<void> {
+        const postData = {
+            username: loginName,
+            password: loginPass
+        };
+
+        const response: StatusResponseAPI = await this.api.postJson("user/login", postData);
+        if (response && response.message && (response.message == "Login successful")) {
+            await this.loadCurrentUser();
         }
         else {
-            userName.innerText = "Log in";
-            userImage.src = new URL('../images/user-icon.png', import.meta.url).toString();
+            console.log("Login failed! ", response);
         }
     }
 
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Log off from the server. 
     public async userLogoff(): Promise<void> {
         if (this.isLoggedIn()) {
             const response: StatusResponseAPI = await this.api.getJson("user/logout");
             this.user = null;
             this.displayCurrentUser();
-            console.log("User logoff", response);
+            console.log("DEBUG: User logoff", response);
         }
     }
 
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Register a new user account on the server. 
+    // TODO: Need exception/validation handling here
     public async userRegister(username: string, password: string, passwordConfirm: string, email: string): Promise<void> {
         if (password.length && passwordConfirm.length && (password == passwordConfirm)) {
             const newUserData = {
@@ -172,10 +226,8 @@ export default class ForumApp {
             }
             const response: StatusResponseAPI = await this.api.postJson("user/register", newUserData);
             if (response && response.message && response.data) {
-                // Maybe require account confirmation first? 
-                // const newUser = new User(this, response.data as UserData);
-                // this.user = newUser;
-                console.log("User Register", response.data);
+                // Maybe require account confirmation first before allowing full access? 
+                console.log("DEBUG: User Register", response.data);
             }
         }
         else {

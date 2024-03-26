@@ -1,6 +1,6 @@
 /*
     Slutprojekt Javascript 2 (FE23 Grit Academy)
-    Grupp : TTSForum
+    Grupp : STTForum
 
     User.ts
     Class for managing the currently logged-in user and displaying/editing their profile. 
@@ -26,7 +26,16 @@ export default class User {
             this.admin = userData.admin;
         }
     }
-    // mediaUrl
+
+    public async updateUserProfile(profileData: FormData): Promise<void> {
+        const result = await this.app.api.postFile("user/profile/update", profileData);
+        this.app.userLoginInit = false;
+        this.app.displayCurrentUser();
+        console.log("Profile update");
+        // TODO: Redraw forums to update icon/name on users posts? 
+    }
+
+
     // TODO: Methods for viewing and editing the user profile
 
     // TODO: Methods for logging on/off, and checking if logged in
