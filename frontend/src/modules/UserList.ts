@@ -29,8 +29,8 @@ export default class UserList {
             }
             const userElement = htmlUtilities.createHTMLFromTemplate("tpl-user-list-user", userContainer, values, attribute);
             console.log(userElement);
-
         }
+        this.app.router.updatePageLinks();
 
     }
     public async displayUserProfile(userid: string) {
@@ -56,5 +56,6 @@ export default class UserList {
                 "postLink": `/thread/${post.threadId}`,
             }
         }
+        this.app.router.updatePageLinks();
     }
 }
