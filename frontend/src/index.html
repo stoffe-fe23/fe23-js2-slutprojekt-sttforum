@@ -197,4 +197,25 @@
             </a>
         </article>
     </template>
+
+      <!-- Template for user-->
+      <template id="tpl-user">
+        <section class="section-user" >
+            <h2 data-template="UserProfile">User Profile</h2>
+            <div class="user-container" data-template="user">
+            <img class="profile-icon" data-template="profilePic">
+            <div class="user-profile-name" data-template="Username"></div>
+            <div class="user-profile-post-counter" data-template="postCounter"></div>
+            <div class="user-profile-admin" data-template="profileAdmin"></div>
+        <div class="post-container" data-template="postContainer"></div>
+        </section>
+    </template>
+    <template id="tpl-user-posts">
+        <article class="article-user-posts">
+            <a data-template="postLink">
+                <div class="post-date" data-template="postDate"></div>
+                <div class="thread-title" data-template="threadTitle"></div>
+            </a>
+        </article>
+    </template>
 </html> 

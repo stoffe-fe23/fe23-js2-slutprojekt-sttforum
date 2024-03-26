@@ -251,7 +251,7 @@ forumApp.router.on("/users", () => {
         // TODO: Display user list 
         // API: /api/user/list
         forumApp.showUserList();
-       
+
     });
 });
 
@@ -269,6 +269,9 @@ forumApp.router.on("/login", () => {
 forumApp.router.on("/user/profile/:userid", (routeInfo) => {
     console.log("DEBUG: Show public user profile!");
     forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
+        if (isLoggedIn && routeInfo && routeInfo.data) {
+            forumApp.showUserProfile(routeInfo.data.userid);
+        }
         // TODO: Display user profile of specified user
         // API: /api/user/profile/<id>
     });
