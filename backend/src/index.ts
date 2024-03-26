@@ -6,17 +6,17 @@
     Main script for the Node.js/Express server. Set up served routes and listen for client connections. 
 */
 import express from "express";
-// import https from "https";
-// import fs from "fs";
 import { Request, Response, NextFunction } from 'express';
-// import path from 'path';
-// import { fileURLToPath } from 'url'
 import cors from "cors";
 import forumAPI from "./modules/forumAPI.js";
 import userAPI from "./modules/userAPI.js";
 import dataStorage from "./modules/Database.js";
 import { sessionSetup, passport } from "./modules/authentication.js";
 import { isLoggedIn, isAdmin } from "./modules/permissions.js";
+// import https from "https";
+// import fs from "fs";
+// import path from 'path';
+// import { fileURLToPath } from 'url'
 
 // const baseDirectory = path.dirname(fileURLToPath(import.meta.url));
 
@@ -41,23 +41,25 @@ app.use(cors({
 // Note: This must be above the session handler or it will bug out when serving static files. 
 app.use('/media', express.static('media'));
 
+
 // Serve frontend files via node.
 // NOTE! Having the client served this way causes the Navigo library on the client side to severely malfunction 
-// for some reason, no longer allowing direct access to any route other than /, and breaking on page refresh. Why? 
+// for some reason, no longer allowing direct access to any route other than /, and breaking on page refresh.  
 // Because apparently the node server will get the clientside routes, note that they do not exist on the server,
-// and send back an error message overwriting the index page.  :/
-
-// Catch for client side routes to use the index.html page and not display 404 pages.
-// May also need to use absoluts URLS to stylesheet and script files in index.html if doing this. :/
+// and send back a 404 error message overwriting the index page.  :/
+// Workaround to set up server to catch client side routes to serve the index.html page on those as well.
+// But this will break stylesheet links etc in the index file since it is no longer just present in the server root. :/
+// So may also need to use absolute URLS to stylesheet and script files in index.html if doing this.... 
 /*
 app.get('/*', function(req, res, next) {
     if (req.url.startsWith('/api') || req.url.startsWith('/media') || (TODO: exclude *.CSS and *.JS files as well) ) {
         return next();
     }
     // TODO: Serve the index.html page
+    //       But since res.sendFile() refuses to serve anything from outside the server root this is also problematic,
+    //       unless moving the frontend docs folder into the backend folder.... :(
   });
 */
-
 // app.use(express.static('../frontend/docs'));
 
 
@@ -79,7 +81,7 @@ app.use('/api/user', userAPI);
 app.use('/api/forum', forumAPI);
 
 
-// Test route: user logged in with admin permissions
+/* // Test route: user logged in with admin permissions
 app.get("/test/:testid", (req: Request, res: Response) => {
     res.json({
         message: "Test!",
@@ -101,7 +103,7 @@ app.get("/protected", isLoggedIn, (req: Request, res: Response) => {
 // Test route: user logged in with admin permissions
 app.get("/admin", isAdmin, (req: Request, res: Response) => {
     res.json({ message: "Administrator!" });
-});
+}); */
 
 
 // General error handler
@@ -114,10 +116,10 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 // Start the server
 // const server = https.createServer(sslOptions, app);
+// server.listen(3000, () => {
 app.listen(3000, () => {
-    // server.listen(3000, () => {
     console.log('Server listening on port 3000: http://localhost:3000/');
 
-    // Cache forum and user data from disk. 
+    // Cache forum and user data from disk storage files. 
     dataStorage.initialize();
 })
