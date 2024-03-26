@@ -50,6 +50,11 @@ export type ForumAPI = {
     threads: ForumThreadAPI[]
 }
 
+export type ForumMessageContextAPI = {
+    message: ForumMessageAPI,
+    thread: ForumThreadAPI
+}
+
 export type UserAuthor = {
     id: string,
     userName: string,

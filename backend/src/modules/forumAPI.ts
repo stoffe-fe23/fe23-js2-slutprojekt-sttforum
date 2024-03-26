@@ -183,10 +183,10 @@ forumAPI.post('/search/messages', isLoggedIn, validateSearchString, validationEr
 
         const messages = dataStorage.findMessagesByText(req.body.searchFor);
         if (messages) {
-            res.json(messages);
+            res.json({ message: `Message search results`, data: messages });
         }
         else {
-            res.json([]);
+            res.json({ message: `Message search results`, data: [] });
         }
     }
     catch (error) {
@@ -208,10 +208,10 @@ forumAPI.post('/search/threads', isLoggedIn, validateSearchString, validationErr
 
         const threads = dataStorage.findThreadsByTitle(req.body.searchFor);
         if (threads) {
-            res.json(threads);
+            res.json({ message: `Thread search results`, data: threads });
         }
         else {
-            res.json([]);
+            res.json({ message: `Thread search results`, data: [] });
         }
     }
     catch (error) {

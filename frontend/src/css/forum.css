@@ -6,6 +6,17 @@
     Stylesheet for displaying and managing forums, threads and messages.
 */
 
+.forumlist-title {
+    font-size: 5em;
+    margin: 0;
+    text-align: center;
+}
+
+.forumlist-forums {
+    display: flex;
+    justify-content: center;
+}
+
 .forum-icon {
     max-width: 100px;
     height: auto;
@@ -71,7 +82,7 @@ article.forum-message .forum-message-wrapper.deleted .forum-message-text {
 .forum-header {
     display: flex;
     gap: 1.5rem;
-    justify-content: flex-start;
+    justify-content: center;
 }
 
 .forum-header h2 {

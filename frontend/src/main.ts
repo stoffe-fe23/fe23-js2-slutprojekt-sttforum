@@ -160,6 +160,39 @@ forumApp.load().then(() => {
 });
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Search form submit
+(document.querySelector("#searchform") as HTMLFormElement).addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    pageForum.classList.add("show");
+    pageHome.classList.remove("show");
+    pageUsers.classList.remove("show");
+
+    forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
+        try {
+            if (isLoggedIn) {
+                const formData = new FormData(event.currentTarget as HTMLFormElement, event.submitter);
+                const action = formData.get("searchType") as string;
+                const searchFor = formData.get("searchFor") as string;
+
+                console.log("DEBUG: Forum Search: ", action, searchFor);
+                switch (action) {
+                    case "messages": forumApp.searchMessages(searchFor, pageForum); break;
+                    case "threads": forumApp.searchThreads(searchFor, pageForum); break;
+                }
+            }
+            else {
+                console.log("DEBUG: Not logged in, cannot search the forums.");
+            }
+        }
+        catch (error) {
+            console.error("DEBUG: Error during forum search.", error.message);
+        }
+    });
+});
+
+
 
 /*** ROUTES *********************************************************************/
 

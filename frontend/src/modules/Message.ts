@@ -141,6 +141,9 @@ export default class Message {
         const thisMessageElem = htmlUtilities.createHTMLFromTemplate("tpl-forum-message", targetContainer, values, attributes, true);
         const repliesElement = thisMessageElem.querySelector(`.forum-message-replies`) as HTMLElement;
         const replyBtns = thisMessageElem.querySelector(".forum-message-buttons") as HTMLFormElement;
+        const replyButton = replyBtns.querySelector(`button[value="reply"]`) as HTMLButtonElement;
+        const editButton = replyBtns.querySelector(`button[value="edit"]`) as HTMLButtonElement;
+        const deleteButton = replyBtns.querySelector(`button[value="delete"]`) as HTMLButtonElement;
         replyBtns.addEventListener("submit", this.onMessageButtonsSubmit.bind(this));
 
         // Add admin badge next to the name if the author is an admin. 
@@ -157,16 +160,23 @@ export default class Message {
                 msgWrapper.classList.add("deleted");
             }
 
-            const msgButtons = replyBtns.querySelectorAll("button");
-            if (msgButtons) {
-                msgButtons.forEach((button: HTMLButtonElement) => { button.disabled = true; });
-            }
+            replyButton.disabled = true;
+            editButton.disabled = true;
+            deleteButton.disabled = true;
             replyBtns.classList.add("hide");
         }
+        else if ((this.app.user && this.app.user.admin) || (this.app.user && (this.app.user.id == this.author.id))) {
+            editButton.disabled = false;
+            deleteButton.disabled = false;
+        }
+        else {
+            editButton.disabled = true;
+            deleteButton.disabled = true;
+            editButton.classList.add("hide");
+            deleteButton.classList.add("hide");
+        }
 
-        // TODO: Bara för testning, ta bort och styla ordentligt sen.
-        // thisMessageElem.style.marginLeft = `${replyDepth}rem`;
-
+        // TODO: Stop drawing replies at a certain depth of the reply chain, or display differently? 
         replyDepth++;
         for (const message of this.replies) {
             message.display(repliesElement, replyDepth);

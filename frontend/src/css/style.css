@@ -115,3 +115,9 @@ footer {
 .hide {
     display: none !important;
 }
+
+#page-home h2 {
+    font-size: 5em;
+    text-align: center;
+    margin: 0;
+}

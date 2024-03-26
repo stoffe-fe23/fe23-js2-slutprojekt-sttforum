@@ -12,7 +12,7 @@ import Message from "./Message.ts";
 import User from "./User.ts";
 import RestApi from "./RestApi.ts";
 import UserList from "./UserList.ts";
-import { ForumInfoAPI, UserData, StatusResponseAPI } from "./TypeDefs.ts";
+import { ForumInfoAPI, UserData, StatusResponseAPI, ForumMessageContextAPI, ForumThreadInfoAPI } from "./TypeDefs.ts";
 import * as htmlUtilities from "./htmlUtilities";
 
 export default class ForumApp {
@@ -72,30 +72,30 @@ export default class ForumApp {
     public async showForumPicker(outBox: HTMLElement): Promise<void> {
         // Show buttons for all available forums
         outBox.innerHTML = "";
-        if (this.isLoggedIn()) {
-            const forumList: ForumInfoAPI[] = await this.api.getJson(`forum/list`);
-            if (forumList && forumList.length) {
-                for (const forum of forumList) {
-                    const forumData = {
-                        id: forum.id,
-                        name: forum.name,
-                        icon: forum.icon.length ? this.mediaUrl + 'forumicons/' + forum.icon : new URL('../images/forum-icon.png', import.meta.url).toString(),
-                        threadCount: forum.threadCount
-                    }
-                    const forumButton = htmlUtilities.createHTMLFromTemplate("tpl-forum-button", outBox, forumData, { "data-forumid": forum.id });
 
-                    forumButton.addEventListener("click", (event) => {
-                        const button = event.currentTarget as HTMLButtonElement;
-                        if (button && button.dataset && button.dataset.forumid) {
-                            this.router.navigate(`/forum/${button.dataset.forumid}`);
-                        }
-                    });
+        htmlUtilities.createHTMLElement("h2", "Forums", outBox, "forumlist-title");
+        const forumButtonWrapper = htmlUtilities.createHTMLElement("div", "", outBox, "forumlist-forums");
+
+        const forumList: ForumInfoAPI[] = await this.api.getJson(`forum/list`);
+        if (forumList && forumList.length) {
+            for (const forum of forumList) {
+                const forumData = {
+                    id: forum.id,
+                    name: forum.name,
+                    icon: forum.icon.length ? this.mediaUrl + 'forumicons/' + forum.icon : new URL('../images/forum-icon.png', import.meta.url).toString(),
+                    threadCount: forum.threadCount
                 }
+                const forumButton = htmlUtilities.createHTMLFromTemplate("tpl-forum-button", forumButtonWrapper, forumData, { "data-forumid": forum.id });
+
+                forumButton.addEventListener("click", (event) => {
+                    const button = event.currentTarget as HTMLButtonElement;
+                    if (button && button.dataset && button.dataset.forumid) {
+                        this.router.navigate(`/forum/${button.dataset.forumid}`);
+                    }
+                });
             }
         }
-        else {
-            throw new Error("You must be logged in the view the forums.");
-        }
+
     }
 
 
@@ -250,5 +250,67 @@ export default class ForumApp {
     public showUserProfile(userId: string, userPage: HTMLElement): void {
         const userList = new UserList(this);
         userList.displayUserProfile(userId, userPage);
+    }
+
+    /*
+    
+    */
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Search forums for message text.
+    public async searchMessages(searchForText: string, resultsTarget: HTMLElement): Promise<void> {
+        const response = await this.api.postJson("forum/search/messages", { searchFor: searchForText }) as StatusResponseAPI;
+        console.log("DEBUG: Message search result", response);
+        if (response && response.data) {
+            const results = response.data as ForumMessageContextAPI[];
+
+            resultsTarget.innerHTML = "";
+            htmlUtilities.createHTMLElement("h2", "Search results", resultsTarget, "search-title");
+            const resultsWrapper = htmlUtilities.createHTMLElement("div", "", resultsTarget, "search-results");
+
+            if (results.length) {
+                for (const result of results) {
+                    const values = {
+                        threadLink: `/thread/${result.thread.id}`,
+                        threadTitle: result.thread.title,
+                        messageDate: htmlUtilities.dateTimeToString(result.message.date),
+                        messageText: htmlUtilities.getTruncatedString(result.message.message, 200)
+                    }
+                    htmlUtilities.createHTMLFromTemplate("tpl-search-result", resultsWrapper, values);
+                }
+            }
+            else {
+                htmlUtilities.createHTMLElement("div", "No messages match your search.", resultsTarget, "search-noresults");
+            }
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Search forums for thread topics.
+    public async searchThreads(searchForText: string, resultsTarget: HTMLElement): Promise<void> {
+        const response = await this.api.postJson("forum/search/threads", { searchFor: searchForText }) as StatusResponseAPI;
+        console.log("DEBUG: Thread search result", response);
+        if (response && response.data) {
+            const results = response.data as ForumThreadInfoAPI[];
+
+            resultsTarget.innerHTML = "";
+            htmlUtilities.createHTMLElement("h2", "Search results", resultsTarget, "search-title");
+            const resultsWrapper = htmlUtilities.createHTMLElement("div", "", resultsTarget, "search-results");
+
+            if (results.length) {
+                for (const result of results) {
+                    const values = {
+                        threadLink: `/thread/${result.id}`,
+                        threadTitle: result.title,
+                        threadDate: htmlUtilities.dateTimeToString(result.lastUpdate),
+                        threadLastBy: result.lastAuthor
+                    }
+                    htmlUtilities.createHTMLFromTemplate("tpl-search-result-thread", resultsWrapper, values);
+                }
+            }
+            else {
+                htmlUtilities.createHTMLElement("div", "No thread topics match your search.", resultsTarget, "search-noresults");
+            }
+        }
     }
 }

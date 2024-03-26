@@ -99,6 +99,12 @@
     color: black;
 }
 
+.section-user-list h2 {
+    text-align: center;
+    font-size: 5em;
+    margin: 0;
+}
+
 
 .section-user {
     background-color: lightgray;
@@ -111,7 +117,7 @@
         "profile-posts profile-posts";
     grid-template-columns: auto 1fr;
     gap: 0px 2rem;
-    align-items: start;
+    align-items: end;
     justify-content: start;
     max-width: 700px;
     margin: 0 auto;
@@ -202,8 +208,8 @@
 
 .users-profile-post-title {
     font-weight: 700;
-    padding: 0px 1rem;
-    background-color: black;
+    padding: 0.2rem 1rem;
+    background-color: rgb(33, 36, 48);
     color: white;
 }
 

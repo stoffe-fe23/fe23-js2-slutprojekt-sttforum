@@ -1,0 +1,95 @@
+#searchform {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    color: white;
+    padding: 1rem 2rem;
+}
+
+#searchform input,
+#searchform select {
+    padding: 0.5rem 0.75rem;
+    min-height: 2.2rem;
+    outline: 0;
+    margin: 0;
+    border: 0;
+}
+
+#searchform input {
+    border-radius: 15px 0px 0px 15px;
+}
+
+#searchform button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.9rem;
+    padding: 0.4rem 0.75rem;
+    margin: 0;
+    border-radius: 0px 15px 15px 0px;
+    border: 0px;
+    background-color: orange;
+    font-weight: 300;
+    cursor: pointer;
+    min-height: 2.2rem;
+    outline: 0;
+}
+
+#searchform button:focus,
+#searchform button:not(:disabled):hover {
+    background-color: yellow;
+    box-shadow: 0px 0px 15px yellow, 0px 0px 30px orange;
+    outline: 0;
+}
+
+
+h2.search-title {
+    font-size: 5em;
+    text-align: center;
+    margin: 0;
+}
+
+.search-result {
+    background-color: lightgray;
+    margin: 0.5rem auto;
+    display: grid;
+    justify-content: space-between;
+    align-items: center;
+    grid-template-areas:
+        "search-result-title search-result-date"
+        "search-result-text search-result-text";
+    grid-template-columns: 1fr auto;
+    max-width: 800px;
+}
+
+.search-result-title {
+    grid-area: search-result-title;
+    background-color: rgb(46, 46, 46);
+    color: white;
+    padding: 0.5rem;
+}
+
+.search-result-title a {
+    color: white;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.search-result-date {
+    grid-area: search-result-date;
+    padding: 0.5rem;
+    background-color: rgb(46, 46, 46);
+    color: white;
+}
+
+.search-result-author,
+.search-result-text {
+    grid-area: search-result-text;
+    padding: 0.5rem;
+}
+
+.search-result-author::before {
+    content: "Last post by: ";
+    font-weight: 700;
+}
