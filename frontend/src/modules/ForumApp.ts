@@ -323,4 +323,17 @@ export default class ForumApp {
             }
         }
     }
+
+    public showError(errorMsg: string) {
+        const errorDiv = document.querySelector("#error") as HTMLElement
+        errorDiv.classList.add("show")
+        errorDiv.innerText = errorMsg;
+        const closeButton = document.createElement("button") as HTMLButtonElement
+        closeButton.innerText = "Close"
+        errorDiv.append(closeButton)
+        closeButton.addEventListener("click", (event) => {
+            errorDiv.classList.remove("show")
+        })
+
+    }
 }

@@ -8,6 +8,7 @@
 import ForumApp from "./modules/ForumApp";
 import Message from "./modules/Message.js";
 import * as htmlUtilities from "./modules/htmlUtilities.js";
+import { ApiError } from "./modules/RestApi.ts";
 
 
 const forumApp = new ForumApp('http://localhost:3000/api'); // https://localhost:3000/api
@@ -44,7 +45,12 @@ forumApp.load().then(() => {
             (document.querySelector("#login-password") as HTMLInputElement).value = "";
             forumApp.router.navigate('/');
         }).catch((error) => {
-            console.error("DEBUG: Login error", error.message);
+
+            if ((error instanceof ApiError) && (error.errorCode == 401)) {
+                console.log("login error", error)
+                forumApp.showError("invalid login or password")
+            }
+            // console.error("DEBUG: Login error", error.message);
 
         });
     }
