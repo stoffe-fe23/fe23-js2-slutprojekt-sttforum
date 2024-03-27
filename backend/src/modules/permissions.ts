@@ -46,6 +46,25 @@ export function isAdmin(req: Request, res: Response, next: NextFunction) {
 
 
 /////////////////////////////////////////////////////////////////////////////////////
+// Check if the currently logged in user matches the userId set in the URL parameter.  
+export function isCurrentUser(req: Request, res: Response, next: NextFunction) {
+    try {
+        if (req.isAuthenticated()
+            && req.user
+            && req.params.userId
+            && ((req.user as ForumUser).admin || ((req.user as ForumUser).id == req.params.userId))) {
+            return next();
+        }
+    }
+    catch (error) {
+        console.log("isCurrentUser error", error);
+    }
+
+    res.status(401);
+    res.json({ error: "401 Not Authorized" });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
 // Check if the user is logged in and is the owner of a particular resource, or 
 // has administrator permissions. 
 export function isOwner(req: Request, res: Response, next: NextFunction) {

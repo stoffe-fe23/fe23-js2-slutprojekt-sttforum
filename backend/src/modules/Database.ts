@@ -142,7 +142,7 @@ class Database {
 
     ////////////////////////////////////////////////////////////////////////////////////
     // Edit the info of an existing user account
-    public editUser(userId: string, userName: string = "", password: string = "", email: string = "", picture: string = "") {
+    public editUser(userId: string, userName: string = "", password: string = "", email: string = "", picture: string = ""): UserData {
         const userObj = this.getUser(userId);
         if (userObj) {
             userObj.name = userName.length ? userName : userObj.name;
@@ -160,6 +160,19 @@ class Database {
             };
             return userData;
         }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    // Delete the specified user from the system. 
+    public deleteUser(userId: string): boolean {
+        const idx = this.storage.userDB.findIndex((user) => user.id == userId);
+        if (idx != -1) {
+            this.storage.userDB.splice(idx, 1);
+            this.storage.saveUsers();
+            return true;
+        }
+        return false;
     }
 
     /************************************* FORUMS *************************************/
