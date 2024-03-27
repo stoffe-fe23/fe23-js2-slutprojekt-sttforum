@@ -232,3 +232,11 @@
 .users-profile-post-text {
     padding: 0.5rem 1rem;
 }
+
+#def-pic-container{
+    display: flex;
+}
+
+#def-pic-container img{
+    max-width: 50px;
+}
