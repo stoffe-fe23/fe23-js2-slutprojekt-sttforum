@@ -10,7 +10,7 @@ import fs from 'fs';
 import multer from "multer";
 import dataStorage from "./Database.js";
 import { UserData, ForumUser } from "./TypeDefs.js";
-import { isLoggedIn, isOwner, isAdmin } from "./permissions.js";
+import { isLoggedIn, isOwner, isAdmin, isCurrentUser } from "./permissions.js";
 import {
     validationErrorHandler,
     validFileTypes,
@@ -123,7 +123,14 @@ userAPI.post("/profile/update", isLoggedIn, userPictureUpload.single('picture'),
                 if (!req.file) {
                     console.log("DEBUG: No profile picture submitted!");
                 }
-                const userObj = dataStorage.editUser((req.user as ForumUser).id, req.body.username, req.body.password, req.body.email, req.file ? req.file.filename ?? "" : "");
+                let pictureName = req.file ? req.file.filename ?? "" : "";
+                if (!req.file || !req.file.filename.length) {
+                    if (['def-pic-1.png', 'def-pic-2.png', 'def-pic-3.png'].includes(req.body.defaultPicture)) {
+                        pictureName = req.body.defaultPicture;
+                    }
+                }
+
+                const userObj = dataStorage.editUser((req.user as ForumUser).id, req.body.username, req.body.password, req.body.email, pictureName);
                 if (userObj) {
                     dataStorage.updateAuthorInfo(userObj.id);
                 }
@@ -139,6 +146,24 @@ userAPI.post("/profile/update", isLoggedIn, userPictureUpload.single('picture'),
     catch (error) {
         res.status(500);
         res.json({ error: "Error trying to save user profile. " + error.message });
+    }
+});
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Get the public profile of the specified user with their most recent posts.
+userAPI.get('/delete/:userId', isCurrentUser, validateUserId, validationErrorHandler, (req: Request, res: Response) => {
+    if (req.params && req.params.userId) {
+        const userProfile = dataStorage.getPublicUserProfile(req.params.userId);
+        if (userProfile) {
+            userProfile.recentPosts.sort((a, b) => b.date - a.date);
+            userProfile.recentPosts = userProfile.recentPosts.slice(0, Math.min(userProfile.recentPosts.length, POST_HISTORY_MAX));
+
+            res.json({ message: `User profile`, data: userProfile });
+        }
+        else {
+            res.status(404);
+            res.json({ error: `User not found.`, data: req.params.userId });
+        }
     }
 });
 

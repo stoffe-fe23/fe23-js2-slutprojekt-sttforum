@@ -398,7 +398,21 @@
                         "message": "Ett annat nytt meddelande, fungerar detta som det ska?",
                         "deleted": false,
                         "date": 1710860432902,
-                        "replies": []
+                        "replies": [
+                            {
+                                "id": "2f2536be-9a9c-4154-90eb-d9956dcad7fe",
+                                "author": {
+                                    "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                                    "userName": "Stoffe",
+                                    "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png",
+                                    "admin": true
+                                },
+                                "message": "Någerlunda i alla fall...",
+                                "deleted": false,
+                                "date": 1711525583622,
+                                "replies": []
+                            }
+                        ]
                     }
                 ],
                 "forum": {
