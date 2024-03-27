@@ -35,6 +35,12 @@ export default class User {
         // TODO: Redraw forums to update icon/name on users posts? 
     }
 
+    public async deleteUser():Promise<void>{
+        
+        const res = await this.app.api.deleteJson(`user/delete${this.id}`);
+        
+
+    }
 
     // TODO: Methods for viewing and editing the user profile
 

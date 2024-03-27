@@ -100,6 +100,7 @@ forumApp.load().then(() => {
             htmlUtilities.createHTMLElement("div", `You must be <a href="/login" data-navigo>logged in</a> to view the forums.`, pageForum, 'error-not-logged-in', null, true);
         });
     }
+    
 
     profileDialog.close();
 });
