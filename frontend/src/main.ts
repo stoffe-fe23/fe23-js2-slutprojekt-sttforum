@@ -88,6 +88,7 @@ forumApp.load().then(() => {
             if (isLoggedIn && forumApp.user) {
                 const formData = new FormData(event.currentTarget as HTMLFormElement);
                 forumApp.user.updateUserProfile(formData);
+                
             }
         });
     }
