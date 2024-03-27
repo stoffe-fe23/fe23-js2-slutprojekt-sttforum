@@ -13,6 +13,7 @@ export default class User {
     public userName: string;
     public email: string;
     public picture: string;
+    public pictureName: string;
     public admin: boolean;
     private app: ForumApp;
 
@@ -23,6 +24,7 @@ export default class User {
             this.userName = userData.name;
             this.email = userData.email;
             this.picture = (userData.picture.length ? `${this.app.mediaUrl}userpictures/${userData.picture}` : new URL('../images/user-icon.png', import.meta.url).toString());
+            this.pictureName = userData.picture;
             this.admin = userData.admin;
         }
     }

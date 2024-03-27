@@ -129,6 +129,9 @@ userAPI.post("/profile/update", isLoggedIn, userPictureUpload.single('picture'),
                     if (defaultPictureNames.includes(req.body.defaultPicture)) {
                         pictureName = req.body.defaultPicture;
                     }
+                    else if ((req.body.defaultPicture == "custom") && defaultPictureNames.includes((req.user as ForumUser).picture)) {
+                        pictureName = "user-icon.png";
+                    }
                 }
 
                 const userObj = dataStorage.editUser((req.user as ForumUser).id, req.body.username, req.body.password, req.body.email, pictureName);

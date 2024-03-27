@@ -27,7 +27,7 @@
                                 "author": {
                                     "id": "5bcca996-929a-4451-a889-3a2267c6e216",
                                     "userName": "John Doe",
-                                    "picture": "user-icon.png"
+                                    "picture": "def-pic-3.png"
                                 },
                                 "message": "And now over to something completely different!",
                                 "deleted": false,
@@ -39,7 +39,7 @@
                                 "author": {
                                     "id": "5bcca996-929a-4451-a889-3a2267c6e216",
                                     "userName": "John Doe",
-                                    "picture": "user-icon.png"
+                                    "picture": "def-pic-3.png"
                                 },
                                 "message": "Kanske det...",
                                 "deleted": false,
@@ -104,7 +104,7 @@
                                         "author": {
                                             "id": "5bcca996-929a-4451-a889-3a2267c6e216",
                                             "userName": "John Doe",
-                                            "picture": "user-icon.png",
+                                            "picture": "def-pic-3.png",
                                             "admin": false
                                         },
                                         "message": "Man kan ju hoppas det i alla fall!",

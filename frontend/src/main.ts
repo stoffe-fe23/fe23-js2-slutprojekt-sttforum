@@ -18,6 +18,7 @@ const pageForum = document.querySelector("#page-forum") as HTMLElement;
 const pageUsers = document.querySelector("#page-users") as HTMLElement;
 const loginDialog = document.querySelector("#user-login") as HTMLDialogElement;
 
+export const defaultPictureNames = ['def-pic-1.png', 'def-pic-2.png', 'def-pic-3.png'];
 
 console.log("PAGE LOADED!", htmlUtilities.dateTimeToString(Date.now()));
 
@@ -68,6 +69,19 @@ forumApp.load().then(() => {
             (document.querySelector("#user-profile-email") as HTMLInputElement).value = forumApp.user.email;
             (document.querySelector("#user-profile-picture-view") as HTMLImageElement).src = forumApp.user.picture;
 
+            if (defaultPictureNames.includes(forumApp.user.pictureName)) {
+                const selectedPic = document.querySelector(`#def-pic-container input[name="defaultPicture"][value="${forumApp.user.pictureName}"]`) as HTMLInputElement;
+                if (selectedPic) {
+                    selectedPic.checked = true;
+                }
+            }
+            else {
+                const selectedPic = document.querySelector(`#def-pic-container input[name="defaultPicture"][value="custom"]`) as HTMLInputElement;
+                if (selectedPic) {
+                    selectedPic.checked = true;
+                }
+            }
+
             // These should only have a value when changing what is already set. 
             (document.querySelector("#user-profile-picture") as HTMLInputElement).value = "";
             (document.querySelector("#user-profile-password") as HTMLInputElement).value = "";
@@ -79,6 +93,13 @@ forumApp.load().then(() => {
             showLoginDialog();
         }
     });
+});
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// When clicking on the picture upload field on the user profile, select the "custom" portrait option. 
+(document.querySelector("#user-profile-picture") as HTMLInputElement).addEventListener("click", (event) => {
+    (document.querySelector("#def-pic-custom") as HTMLInputElement).checked = true;
 });
 
 
@@ -116,7 +137,7 @@ forumApp.load().then(() => {
                     if (confirm("Are you REALLY sure you want to remove your account? This cannot be undone.")) {
                         if (forumApp.user) {
                             forumApp.user.deleteUser().then(() => {
-                                alert("Your user has been deleted.");
+                                alert("Your user account has been deleted.");
                                 forumApp.router.navigate("/");
                             });
                         }
