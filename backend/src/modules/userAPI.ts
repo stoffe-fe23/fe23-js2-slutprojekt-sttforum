@@ -125,6 +125,7 @@ userAPI.post("/profile/update", isLoggedIn, userPictureUpload.single('picture'),
                 }
                 let pictureName = req.file ? req.file.filename ?? "" : "";
                 if (!req.file || !req.file.filename.length) {
+                    // TODO: Do not hardcode the default images...
                     if (['def-pic-1.png', 'def-pic-2.png', 'def-pic-3.png'].includes(req.body.defaultPicture)) {
                         pictureName = req.body.defaultPicture;
                     }
@@ -153,12 +154,8 @@ userAPI.post("/profile/update", isLoggedIn, userPictureUpload.single('picture'),
 // Get the public profile of the specified user with their most recent posts.
 userAPI.get('/delete/:userId', isCurrentUser, validateUserId, validationErrorHandler, (req: Request, res: Response) => {
     if (req.params && req.params.userId) {
-        const userProfile = dataStorage.getPublicUserProfile(req.params.userId);
-        if (userProfile) {
-            userProfile.recentPosts.sort((a, b) => b.date - a.date);
-            userProfile.recentPosts = userProfile.recentPosts.slice(0, Math.min(userProfile.recentPosts.length, POST_HISTORY_MAX));
-
-            res.json({ message: `User profile`, data: userProfile });
+        if (dataStorage.deleteUser(req.params.userId)) {
+            res.json({ message: `User deleted`, data: req.params.userId });
         }
         else {
             res.status(404);
