@@ -6,6 +6,41 @@
     Stylesheet for displaying and managing forums, threads and messages.
 */
 
+.forum-breadcrumb {
+    display: flex;
+    justify-content: center;
+}
+
+.breadcrumb-link {
+    font-weight: 700;
+    text-decoration: none;
+    background-color: lightskyblue;
+    color: black;
+    padding: 0.2rem 0;
+}
+
+.breadcrumb-link:hover,
+.breadcrumb-link:focus {
+    text-decoration: underline;
+    color: darkblue;
+}
+
+.breadcrumb-link:not(:last-of-type)::after {
+    content: "→";
+    padding: 0px 0.5rem;
+}
+
+.breadcrumb-link:first-of-type {
+    padding-left: 2rem;
+    border-radius: 15px 0px 0px 15px;
+}
+
+.breadcrumb-link:last-of-type {
+    padding-right: 2rem;
+    border-radius: 0px 15px 15px 0px;
+}
+
+
 .forumlist-title {
     font-size: 5em;
     margin: 0;

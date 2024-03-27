@@ -3,7 +3,7 @@
     Grupp : STTForum
 
     Thread.ts
-    Class for managing a discussion and displaying its messages. 
+    Class for managing a discussion thread and displaying its messages. 
 */
 import Message from "./Message.ts";
 import ForumApp from "./ForumApp.ts";
@@ -21,16 +21,32 @@ export default class Thread {
     public forumInfo: ForumDisplayInfo | null;
     private app: ForumApp;
 
-    // Factory function for creating a new Thread object from existing thread data.
-    static async create(app: ForumApp, threadId: string, threadData: ForumThreadAPI | null = null,): Promise<Thread | null> {
-        if (app.isLoggedIn()) {
-            if (!threadData && threadId.length) {
-                threadData = await app.api.getJson(`forum/thread/get/${threadId}`);
-            }
 
+    constructor(app: ForumApp, threadData: ForumThreadAPI | null = null) {
+        this.app = app;
+        this.posts = [];
+
+        if (threadData) {
+            this.id = threadData.id;
+            this.title = threadData.title;
+            this.date = threadData.date;
+            this.active = threadData.active;
+            this.forumInfo = threadData.forum ?? null;
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Factory function for creating a new Thread object from thread data fetched from the server, 
+    // or a set of complete thread data in the format received from the server. 
+    static async create(app: ForumApp, threadId: string, threadData: ForumThreadAPI | null = null,): Promise<Thread | null> {
+        if (!threadData && threadId.length) {
+            threadData = await app.api.getJson(`forum/thread/get/${threadId}`);
+        }
+
+        if (threadData) {
             const obj = new Thread(app, threadData);
 
-            if (threadData && threadData.posts && threadData.posts.length) {
+            if (threadData.posts && threadData.posts.length) {
                 for (const post of threadData.posts) {
                     const newMessage = await Message.create(app, "", post);
                     if (newMessage) {
@@ -38,15 +54,17 @@ export default class Thread {
                     }
                 }
             }
-
             return obj;
         }
+
         return null;
     }
 
-    // Factory method creating a new thread on the server and returning the new Thread object.
-    static async new(app: ForumApp, targetId: string, threadTitle: string, messageText: string,): Promise<Thread | null> {
-        if (app.isLoggedIn() && threadTitle.length && messageText.length) {
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Factory method creating a new thread on the server and returning the resulting new Thread object.
+    static async new(app: ForumApp, targetId: string, threadTitle: string, messageText: string): Promise<Thread | null> {
+        if (threadTitle.length && messageText.length) {
             const threadData = {
                 title: threadTitle,
                 message: messageText,
@@ -60,24 +78,9 @@ export default class Thread {
     }
 
 
-    constructor(app: ForumApp, threadData: ForumThreadAPI | null = null) {
-        if (threadData) {
-            this.app = app;
-            this.id = threadData.id;
-            this.title = threadData.title;
-            this.date = threadData.date;
-            this.active = threadData.active;
-            this.forumInfo = threadData.forum ?? null;
-            this.posts = [];
-        }
-    }
-
-    // Generate HTML to display this discussion thread
+    ////////////////////////////////////////////////////////////////////////////////////////////////    
+    // Generate HTML to display this discussion thread and its message content.
     public display(targetContainer: HTMLElement | null = null): HTMLElement {
-        if (!this.app.isLoggedIn()) {
-            throw new Error("You must be logged on to view the forum threads.");
-        }
-
         const values: ThreadDisplayInfo = {
             title: this.title,
             date: htmlUtilities.dateTimeToString(this.date),
@@ -96,21 +99,24 @@ export default class Thread {
         for (const message of this.posts) {
             message.display(messagesElement);
         }
+        this.app.router.updatePageLinks();
 
         return threadElement;
     }
 
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////    
+    // Submit handler for creating a new message in this thread. 
     private onNewPostFormSubmit(event) {
         event.preventDefault();
-
-        console.log("DEBUG: Creating new post in thread...");
         const form = event.currentTarget as HTMLFormElement;
         const formData = new FormData(form);
-
         this.newMessage(formData.get("message") as string);
         form.reset();
     }
 
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////    
     // Create a new message in this thread by the currently logged in user and save it to the server. 
     public async newMessage(messageText: string) {
         if (this.app.isLoggedIn()) {

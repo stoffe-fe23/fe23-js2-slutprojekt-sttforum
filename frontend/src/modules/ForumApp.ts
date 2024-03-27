@@ -127,9 +127,19 @@ export default class ForumApp {
                 // Display the thread within its parent forum wrapper. 
                 if (foundThread.forumInfo) {
                     foundThread.forumInfo.icon = foundThread.forumInfo.icon.length ? this.mediaUrl + 'forumicons/' + foundThread.forumInfo.icon : new URL('../images/forum-icon.png', import.meta.url).toString()
+
                     const forumElement = htmlUtilities.createHTMLFromTemplate("tpl-thread-forum", outBox, foundThread.forumInfo, { "data-forumid": foundThread.forumInfo.id });
                     const threadsElement = forumElement.querySelector(`.forum-thread`) as HTMLElement;
+
                     foundThread.display(threadsElement);
+
+                    const breadcrumb = forumElement.querySelector(".forum-breadcrumb") as HTMLElement;
+                    if (breadcrumb) {
+                        htmlUtilities.createHTMLElement("a", "Forums", breadcrumb, "breadcrumb-link", { href: `/forums`, "data-navigo": "true" });
+                        htmlUtilities.createHTMLElement("a", foundThread.forumInfo.name, breadcrumb, "breadcrumb-link", { href: `/forum/${foundThread.forumInfo.id}`, "data-navigo": "true" });
+                        htmlUtilities.createHTMLElement("a", foundThread.title, breadcrumb, "breadcrumb-link", { href: `/thread/${foundThread.id}`, "data-navigo": "true" });
+                        this.router.updatePageLinks();
+                    }
                 }
                 else {
                     // If the thread for some reason is not in a forum, just display it on its own. 

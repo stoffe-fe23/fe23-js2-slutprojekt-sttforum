@@ -3,17 +3,12 @@
     Grupp : STTForum
 
     Message.ts
-    Class for managing a message in a thread or in reply to another message. 
+    Class for managing a message in either a thread or in the reply chain of another message. 
 */
 import User from "./User";
 import * as htmlUtilities from './htmlUtilities.ts';
 import ForumApp from "./ForumApp.ts";
 import { UserAuthor, MessageDisplayInfo, ForumMessageAPI, StatusResponseAPI, APIQueryData } from "./TypeDefs.ts";
-
-
-// Ignorera Typescript-gnäll här tills vidare, Parcel-bildklydd för testning. 
-// Ta bort sen. Ska förhoppningsvis funka sen när bildlänkarna kommer från servern och inte blir kvaddade av Parcel. 
-// import userIcon from "../images/user-icon.png";
 
 
 export default class Message {
@@ -26,25 +21,38 @@ export default class Message {
     private app: ForumApp;
 
 
+    constructor(app: ForumApp, messageData: ForumMessageAPI | null) {
+        this.app = app;
+        this.replies = [];
+
+        if (messageData) {
+            this.id = messageData.id;
+            this.author = messageData.author;
+            this.author.picture = (messageData.author && messageData.author.picture && messageData.author.picture.length) ? app.mediaUrl + 'userpictures/' + messageData.author.picture : new URL('../images/user-icon.png', import.meta.url).toString();
+            this.deleted = messageData.deleted;
+            this.date = messageData.date;
+            this.message = messageData.message;
+        }
+    }
+
+
     /////////////////////////////////////////////////////////////////////////////////////////////////
     // Factory method to load message data from the server and return a message object with it, since constructor cannot be async...
     static async create(app: ForumApp, messageId: string = "", messageData: ForumMessageAPI | null = null): Promise<Message | null> {
-        if (app.isLoggedIn()) {
-            if (!messageData && messageId.length) {
-                messageData = await app.api.getJson(`forum/message/get/${messageId}`);
-            }
+        if (!messageData && messageId.length) {
+            messageData = await app.api.getJson(`forum/message/get/${messageId}`);
+        }
 
-            if (messageData) {
-                const obj = new Message(app, messageData);
+        if (messageData) {
+            const obj = new Message(app, messageData);
 
-                for (const reply of messageData.replies) {
-                    const newMessage = await Message.create(app, "", reply);
-                    if (newMessage) {
-                        obj.replies.push(newMessage);
-                    }
+            for (const reply of messageData.replies) {
+                const newMessage = await Message.create(app, "", reply);
+                if (newMessage) {
+                    obj.replies.push(newMessage);
                 }
-                return obj;
             }
+            return obj;
         }
         return null;
     }
@@ -68,22 +76,6 @@ export default class Message {
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
-    // Create message object and fill it with the specified data, if any is submitted.
-    constructor(app: ForumApp, messageData: ForumMessageAPI | null) {
-        this.app = app;
-        if (messageData) {
-            this.id = messageData.id;
-            this.author = messageData.author;
-            this.author.picture = (messageData.author && messageData.author.picture && messageData.author.picture.length) ? app.mediaUrl + 'userpictures/' + messageData.author.picture : new URL('../images/user-icon.png', import.meta.url).toString();
-            this.deleted = messageData.deleted;
-            this.date = messageData.date;
-            this.message = messageData.message;
-            this.replies = [];
-        }
-    }
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////
     // Add a new reply to this message
     public async newReply(messageText: string): Promise<Message | null> {
         const message = await Message.new(this.app, this.id, messageText, 'reply');
@@ -99,12 +91,24 @@ export default class Message {
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
-    // Mark this message as deleted.
+    // Soft delete this message (replies to it are kept and it is still shown but marked as deleted)
     public async delete(): Promise<void> {
         const deleteResponse: StatusResponseAPI = await this.app.api.deleteJson(`forum/message/delete/${this.id}`);
         if (deleteResponse && deleteResponse.message) {
             if (deleteResponse.message != "Deleted message") {
                 console.log("DEBUG: Incorrect response from Message Delete call");
+            }
+        }
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    // Completely remove this message, and all replies to it. (admin-only)
+    public async remove(): Promise<void> {
+        const deleteResponse: StatusResponseAPI = await this.app.api.deleteJson(`forum/message/remove/${this.id}`);
+        if (deleteResponse && deleteResponse.message) {
+            if (deleteResponse.message != "Removed message") {
+                console.log("DEBUG: Incorrect response from Message Remove call");
             }
         }
     }
@@ -126,7 +130,7 @@ export default class Message {
     /////////////////////////////////////////////////////////////////////////////////////////////////
     // Generate HTML to display this message
     public display(targetContainer: HTMLElement | null = null, replyDepth: number = 0): HTMLElement {
-        let values: MessageDisplayInfo = {
+        const values: MessageDisplayInfo = {
             id: this.id,
             authorId: this.author.id,
             authorName: this.author.userName,
@@ -136,14 +140,15 @@ export default class Message {
             date: htmlUtilities.dateTimeToString(this.date)
         };
         const attributes = { "data-messageid": this.id };
-        console.log("AUTHOR ID IS", this.author.id);
 
         const thisMessageElem = htmlUtilities.createHTMLFromTemplate("tpl-forum-message", targetContainer, values, attributes, true);
         const repliesElement = thisMessageElem.querySelector(`.forum-message-replies`) as HTMLElement;
+
         const replyBtns = thisMessageElem.querySelector(".forum-message-buttons") as HTMLFormElement;
         const replyButton = replyBtns.querySelector(`button[value="reply"]`) as HTMLButtonElement;
         const editButton = replyBtns.querySelector(`button[value="edit"]`) as HTMLButtonElement;
         const deleteButton = replyBtns.querySelector(`button[value="delete"]`) as HTMLButtonElement;
+
         replyBtns.addEventListener("submit", this.onMessageButtonsSubmit.bind(this));
 
         // Add admin badge next to the name if the author is an admin. 
@@ -154,6 +159,7 @@ export default class Message {
             }
         }
 
+        // If a message is soft-deleted, remove hide its buttons and display it differently. 
         if (this.deleted) {
             const msgWrapper = thisMessageElem.querySelector(".forum-message-wrapper") as HTMLElement;
             if (msgWrapper) {
@@ -165,6 +171,7 @@ export default class Message {
             deleteButton.disabled = true;
             replyBtns.classList.add("hide");
         }
+        // If current user is either the author of the message or admin, allow editing/deleting. 
         else if ((this.app.user && this.app.user.admin) || (this.app.user && (this.app.user.id == this.author.id))) {
             editButton.disabled = false;
             deleteButton.disabled = false;
@@ -176,7 +183,9 @@ export default class Message {
             deleteButton.classList.add("hide");
         }
 
-        // TODO: Stop drawing replies at a certain depth of the reply chain, or display differently? 
+        // TODO: Stop drawing replies at a certain depth of the reply chain, or display differently,
+        // to prevent the thread view from becoming too squished. 
+
         replyDepth++;
         for (const message of this.replies) {
             message.display(repliesElement, replyDepth);
@@ -211,7 +220,6 @@ export default class Message {
                 messageDialog.showModal();
                 break;
             case "delete":
-                console.log("DEBUG: Delete message.");
                 if (confirm("Are you sure you wish to delete this message?")) {
                     this.delete();
                 }
