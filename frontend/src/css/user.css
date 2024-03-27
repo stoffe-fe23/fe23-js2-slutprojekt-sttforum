@@ -241,3 +241,12 @@
 #def-pic-container img{
     max-width: 50px;
 }
+
+#def-pic-container input{
+    position:absolute;
+    left: -100px;
+}
+
+#def-pic-container input:checked + label {
+    background-color: lightgray;
+}
