@@ -18,6 +18,8 @@ export const validFileTypes = {
     'image/webp': '.webp'
 };
 
+export const defaultPictureNames = ['def-pic-1.png', 'def-pic-2.png', 'def-pic-3.png'];
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Check for validation errors. Stop if any are found and send back error response to client. 
@@ -288,9 +290,16 @@ function validateNewUserName(value: string, { req }): boolean {
 // Validate user ID parameter
 export const validateUserId = [
     param("userId")
-        .exists().withMessage('The user ID of the profile to show must be specifiec.').bail()
+        .exists().withMessage('The user ID of an existing user must be specified.').bail()
         .isUUID('all').withMessage('Invalid User ID specified.').bail()
         .custom(validateUserIdExists).withMessage('The specified user does not exist.').bail(),
+];
+
+export const validateProfileUserId = [
+    param("userId")
+        .exists().withMessage('The user ID of the profile to show must be specified.').bail()
+        .isUUID('all').withMessage('No valid user ID has been set to display the profile of.').bail()
+        .custom(validateUserIdExists).withMessage('The user does not exist, unable to display profile.').bail(),
 ];
 
 function validateUserIdExists(value: string): boolean {

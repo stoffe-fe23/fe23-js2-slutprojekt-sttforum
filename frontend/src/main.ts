@@ -45,13 +45,10 @@ forumApp.load().then(() => {
             (document.querySelector("#login-password") as HTMLInputElement).value = "";
             forumApp.router.navigate('/');
         }).catch((error) => {
-
             if ((error instanceof ApiError) && (error.errorCode == 401)) {
                 console.log("login error", error)
                 forumApp.showError("invalid login or password")
             }
-            // console.error("DEBUG: Login error", error.message);
-
         });
     }
     loginDialog.close();
@@ -59,7 +56,8 @@ forumApp.load().then(() => {
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Handler for clicking on the User button in the top left corner
+// Handler for clicking on the User button in the top left corner.
+// Show user profile form if logged in, or the login form if not. 
 (document.querySelector("#current-user") as HTMLElement).addEventListener("click", (event) => {
     forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
         if (isLoggedIn && forumApp.user) {
@@ -89,38 +87,45 @@ forumApp.load().then(() => {
 (document.querySelector("#user-profile-form") as HTMLFormElement).addEventListener("submit", (event) => {
     event.preventDefault();
     const profileDialog = document.querySelector("#user-profile") as HTMLDialogElement;
+
+    // Update profile button
     if ((event.submitter as HTMLButtonElement).id == "user-profile-submit") {
         forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
             if (isLoggedIn && forumApp.user) {
                 const formData = new FormData(event.currentTarget as HTMLFormElement);
                 forumApp.user.updateUserProfile(formData);
-                
+
             }
         });
     }
+    // Log off button
     else if ((event.submitter as HTMLButtonElement).id == "user-profile-logout") {
         forumApp.userLogoff().then(() => {
-            console.log("User logged off!");
+            console.log("DEBUG: User logged off!");
             forumApp.router.navigate('/');
             pageForum.innerHTML = "";
             htmlUtilities.createHTMLElement("div", `You must be <a href="/login" data-navigo>logged in</a> to view the forums.`, pageForum, 'error-not-logged-in', null, true);
         });
     }
-
-    else if ((event.submitter as HTMLButtonElement).id == "user-delete-submit"){
-        if(confirm("Are really sure to permanent delete is user?")){
-            if(forumApp.user){
-                forumApp.user.deleteUser()
-                    .then(() => {
-                        forumApp.userLogoff();
-                        alert("Your user has been deleted.");
-                        forumApp.router.navigate("/");
-                    }); 
+    // Delete account button
+    else if ((event.submitter as HTMLButtonElement).id == "user-delete-submit") {
+        console.log("DEBUG: User Delete!!!");
+        forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
+            if (isLoggedIn) {
+                if (confirm("Are you sure you wish to delete your user account?")) {
+                    if (confirm("Are you REALLY sure you want to remove your account? This cannot be undone.")) {
+                        if (forumApp.user) {
+                            forumApp.user.deleteUser().then(() => {
+                                alert("Your user has been deleted.");
+                                forumApp.router.navigate("/");
+                            });
+                        }
+                    }
+                }
             }
-        }
+        });
     }
 
-    
     profileDialog.close();
 });
 
@@ -214,6 +219,12 @@ forumApp.load().then(() => {
 });
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Close button in error message
+(document.querySelector("#error button") as HTMLButtonElement).addEventListener("click", (event) => {
+    (document.querySelector("#error") as HTMLElement).classList.remove("show");
+})
+
 
 /*** ROUTES *********************************************************************/
 
@@ -253,7 +264,6 @@ forumApp.router.on('/forum/:forumId', (route) => {
     pageUsers.classList.remove("show");
     forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
         console.log("DEBUG: Show Forum threads!");
-
         if (isLoggedIn) {
             if (route && route.data && route.data.forumId) {
                 forumApp.showForum(route.data.forumId, pageForum);
@@ -265,7 +275,6 @@ forumApp.router.on('/forum/:forumId', (route) => {
 
 //////////////////////////////////////////////////////////////////////////////////
 // Show the posts in a discussion thread. 
-// TODO: Figure out why going to this route reloads the page while the others do not. 
 forumApp.router.on("/thread/:threadId", (route) => {
     pageForum.classList.add("show");
     pageHome.classList.remove("show");
@@ -314,24 +323,30 @@ forumApp.router.on("/user/profile/:userid", (routeInfo) => {
 
     forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
         console.log("DEBUG: Show public user profile!");
-
-        if (isLoggedIn) {
-            if (routeInfo && routeInfo.data) {
-                forumApp.showUserProfile(routeInfo.data.userid, pageUsers);
+        try {
+            if (isLoggedIn) {
+                if (routeInfo && routeInfo.data) {
+                    forumApp.showUserProfile(routeInfo.data.userid, pageUsers);
+                }
+                else {
+                    console.log("DEBUG: No User ID specified, cannot show profile.")
+                }
             }
             else {
-                console.log("DEBUG: No User ID specified, cannot show profile.")
+                console.log("DEBUG: User not logged on, not permitted to view user profiles.")
             }
         }
-        else {
-            console.log("DEBUG: User not logged on, not permitted to view user profiles.")
+        catch (error) {
+            forumApp.showError(error.message);
         }
     });
 });
 
 
 //////////////////////////////////////////////////////////////////////////////////
-// Route to display the user login dialog box.
+// Route to directly display the user login dialog box.
+// Used for links in messages, clicking the User button in upper left does the same
+// but does not use this route. 
 forumApp.router.on("/login", () => {
     console.log("DEBUG: Show login screen!");
     showLoginDialog();

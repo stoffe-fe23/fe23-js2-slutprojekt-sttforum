@@ -259,7 +259,10 @@ export default class ForumApp {
     // Displays the public profile of the user with the specified user ID. 
     public showUserProfile(userId: string, userPage: HTMLElement): void {
         const userList = new UserList(this);
-        userList.displayUserProfile(userId, userPage);
+        userList.displayUserProfile(userId, userPage).catch((error) => {
+            throw error;
+            // TEST!!!
+        });
     }
 
     /*
@@ -324,16 +327,12 @@ export default class ForumApp {
         }
     }
 
-    public showError(errorMsg: string) {
-        const errorDiv = document.querySelector("#error") as HTMLElement
+    public showError(errorText: string) {
+        const errorDiv = document.querySelector("#error") as HTMLElement;
+        const errorMsg = errorDiv.querySelector("#error-message") as HTMLElement;
+
+        errorMsg.innerHTML = errorText;
         errorDiv.classList.add("show")
-        errorDiv.innerText = errorMsg;
-        const closeButton = document.createElement("button") as HTMLButtonElement
-        closeButton.innerText = "Close"
-        errorDiv.append(closeButton)
-        closeButton.addEventListener("click", (event) => {
-            errorDiv.classList.remove("show")
-        })
 
     }
 }
