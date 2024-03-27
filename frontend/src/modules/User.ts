@@ -36,8 +36,8 @@ export default class User {
     }
 
     public async deleteUser():Promise<void>{
-        
-        const res = await this.app.api.deleteJson(`user/delete${this.id}`);
+        await this.app.userLogoff();
+        const res = await this.app.api.deleteJson(`user/delete/${this.id}`);
         
 
     }

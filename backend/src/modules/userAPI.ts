@@ -152,7 +152,7 @@ userAPI.post("/profile/update", isLoggedIn, userPictureUpload.single('picture'),
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Get the public profile of the specified user with their most recent posts.
-userAPI.get('/delete/:userId', isCurrentUser, validateUserId, validationErrorHandler, (req: Request, res: Response) => {
+userAPI.delete('/delete/:userId', isCurrentUser, validateUserId, validationErrorHandler, (req: Request, res: Response) => {
     if (req.params && req.params.userId) {
         if (dataStorage.deleteUser(req.params.userId)) {
             res.json({ message: `User deleted`, data: req.params.userId });

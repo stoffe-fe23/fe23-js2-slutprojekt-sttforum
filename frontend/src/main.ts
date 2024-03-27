@@ -106,8 +106,21 @@ forumApp.load().then(() => {
             htmlUtilities.createHTMLElement("div", `You must be <a href="/login" data-navigo>logged in</a> to view the forums.`, pageForum, 'error-not-logged-in', null, true);
         });
     }
-    
 
+    else if ((event.submitter as HTMLButtonElement).id == "user-delete-submit"){
+        if(confirm("Are really sure to permanent delete is user?")){
+            if(forumApp.user){
+                forumApp.user.deleteUser()
+                    .then(() => {
+                        forumApp.userLogoff();
+                        alert("Your user has been deleted.");
+                        forumApp.router.navigate("/");
+                    }); 
+            }
+        }
+    }
+
+    
     profileDialog.close();
 });
 
