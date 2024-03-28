@@ -96,7 +96,7 @@ forumApp.load().then(() => {
                 const loginForm = document.querySelector("#login-form") as HTMLFormElement;
                 const registerForm = document.querySelector("#user-register-form") as HTMLFormElement;
                 const regBtnContainer = document.querySelector("#register-button-container") as HTMLElement;
-                
+
                 loginForm.classList.remove("hide");
                 registerForm.classList.add("hide");
                 regBtnContainer.classList.remove("hide");

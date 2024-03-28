@@ -81,19 +81,19 @@
             </form>
 
             <div id="register-button-container">
-                <span>Dont have an accout?</span>
+                <span>New to STT?</span>
                 <button id="register-button">Register</button>
             </div>
              
     
             <form id="user-register-form">
                 <h2>Register new user</h2>
-                <input type="text" id="user-register-name" name="username" value="" placeholder="Your username" > <!--Har tagit bort requied för att kunna testa-->
-                <input type="email" id="user-register-email" name="email" value="" placeholder="Your e-mail address" ><!--Har tagit bort requied för att kunna testa-->
+                <input type="text" id="user-register-name" name="username" value="" placeholder="Your username" required> 
+                <input type="email" id="user-register-email" name="email" value="" placeholder="Your e-mail address" required>
                 <input type="password" id="user-register-password" name="password" value="" placeholder="Choose a password">
                 <input type="password" id="user-register-password-confirm" name="password-confirm" value="" placeholder="Confirm password">
                 <button id="user-register-submit">Register</button>
-                <button id="user-register-cancel">Cancel</button>
+                <button id="user-register-cancel" formnovalidate>Cancel</button>
             </form>
             
         </dialog>
