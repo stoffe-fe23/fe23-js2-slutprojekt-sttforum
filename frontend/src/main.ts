@@ -61,7 +61,6 @@ forumApp.load().then(() => {
 // Show user profile form if logged in, or the login form if not. 
 (document.querySelector("#current-user") as HTMLElement).addEventListener("click", (event) => {
 
-    
     forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
         if (isLoggedIn && forumApp.user) {
             const profileDialog = document.querySelector("#user-profile") as HTMLDialogElement;
@@ -93,20 +92,23 @@ forumApp.load().then(() => {
         }
         else {
             showLoginDialog();
-            ///// Ton \\\\\
-            const registerForm = document.querySelector("#user-register-form") as HTMLFormElement;
-            registerForm.classList.add("hide");
-
-            const regBtnContainer = document.querySelector("#register-button-container") as  HTMLElement;
-            regBtnContainer.addEventListener("click", () => {
-                const loginForm = document.querySelector("#login-form") as HTMLFormElement;
-                loginForm.classList.add("hide");
-                regBtnContainer.classList.add("hide");
-                registerForm.classList.remove("hide");
-            })
+                ///// Ton \\\\\
+                const registerForm = document.querySelector("#user-register-form") as HTMLFormElement;
+                registerForm.classList.add("hide");
         }
     });
 });
+
+///// Ton \\\\\
+(document.querySelector("#register-button") as HTMLButtonElement).addEventListener("click", () => {
+    const registerForm = document.querySelector("#user-register-form") as HTMLFormElement;
+    const loginForm = document.querySelector("#login-form") as HTMLFormElement;
+    const regBtnContainer = document.querySelector("#register-button-container") as HTMLElement;
+
+    registerForm.classList.remove("hide");
+    loginForm.classList.add("hide");
+    regBtnContainer.classList.add("hide");
+} );
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
