@@ -105,10 +105,12 @@
             <form id="user-profile-form">
                 <img src="images/user-icon.png" id="user-profile-picture-view" alt="Profile picture">
                 <h2>User profile</h2>
-                <input type="text" id="user-profile-name" name="username" value="" min-length="2" max-length="20" placeholder="Your username" required>
-                <input type="email" id="user-profile-email" name="email" value="" max-length="128" placeholder="Your e-mail address" required>
-                <input type="password" id="user-profile-password" name="password" value="" min-length="4" max-length="40" placeholder="Change password">
-                <input type="password" id="user-profile-password-confirm" name="password-confirm" value="" min-length="4" max-length="40" placeholder="Confirm password">
+                <input type="text" id="user-profile-name" class="user-profile-input" name="username" value="" min-length="2" max-length="20" placeholder="Your username" required>
+                <input type="email" id="user-profile-email" class="user-profile-input" name="email" value="" max-length="128" placeholder="Your e-mail address" required>
+                <input type="password" id="user-profile-password" class="user-profile-input" name="password" value="" min-length="4" max-length="40" placeholder="Change password">
+                <input type="password" id="user-profile-password-confirm" class="user-profile-input" name="password-confirm" value="" min-length="4" max-length="40" placeholder="Confirm password">
+
+                <h4>Profile picture</h4>
                 <div id="def-pic-container">
                     <input type="radio" id="def-pic-custom" name="defaultPicture" value="custom">
                     <label for="def-pic-custom"><img src="./images/user-icon.png" alt=""></label>
@@ -120,11 +122,11 @@
                     <label for="def-pic-3"><img src="./images/def-pic-3.png" alt=""></label>
                 </div>
                 <input type="file" id="user-profile-picture" name="picture" value="" accept="image/png, image/jpeg, image/gif, image/webp">
-                <div class="profile-buttons">
+                <div id="user-profile-button">
                     <button id="user-profile-submit">Save</button>
-                    <button formnovalidate>Close</button>
-                    <button id="user-profile-logout" formnovalidate>Log off</button>
-                    <button id="user-delete-submit">Delete user</button>
+                    <button formnovalidate class="profile-buttons">Close</button>
+                    <button id="user-profile-logout" formnovalidate class="profile-buttons">Log off</button>
+                    <button id="user-delete-submit" class="profile-buttons">Delete user</button>
                 </div>
             </form>
         </dialog>
