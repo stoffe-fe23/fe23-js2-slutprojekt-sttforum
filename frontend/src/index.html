@@ -79,14 +79,23 @@
                 <input type="password" name="password" id="login-password" placeholder="Password" min-length="6" max-length="40" required>
                 <button id="button-login">Log in</button><button id="button-cancel" formnovalidate>Cancel</button>
             </form>
+
+            <div id="register-button-container">
+                <span>Dont have an accout?</span>
+                <button id="register-button">Register</button>
+            </div>
+             
+    
             <form id="user-register-form">
                 <h2>Register new user</h2>
-                <input type="text" id="user-register-name" name="username" value="" placeholder="Your username" required>
-                <input type="email" id="user-register-email" name="email" value="" placeholder="Your e-mail address" required>
+                <input type="text" id="user-register-name" name="username" value="" placeholder="Your username" > <!--Har tagit bort requied för att kunna testa-->
+                <input type="email" id="user-register-email" name="email" value="" placeholder="Your e-mail address" ><!--Har tagit bort requied för att kunna testa-->
                 <input type="password" id="user-register-password" name="password" value="" placeholder="Choose a password">
                 <input type="password" id="user-register-password-confirm" name="password-confirm" value="" placeholder="Confirm password">
                 <button id="user-register-submit">Register</button>
+                <button id="user-register-cancel">Cancel</button>
             </form>
+            
         </dialog>
         <!-- Dialog for replying to a message or editing a messsage -->
         <dialog id="message-editor-dialog">
@@ -105,10 +114,12 @@
             <form id="user-profile-form">
                 <img src="images/user-icon.png" id="user-profile-picture-view" alt="Profile picture">
                 <h2>User profile</h2>
-                <input type="text" id="user-profile-name" name="username" value="" min-length="2" max-length="20" placeholder="Your username" required>
-                <input type="email" id="user-profile-email" name="email" value="" max-length="128" placeholder="Your e-mail address" required>
-                <input type="password" id="user-profile-password" name="password" value="" min-length="4" max-length="40" placeholder="Change password">
-                <input type="password" id="user-profile-password-confirm" name="password-confirm" value="" min-length="4" max-length="40" placeholder="Confirm password">
+                <input type="text" id="user-profile-name" class="user-profile-input" name="username" value="" min-length="2" max-length="20" placeholder="Your username" required>
+                <input type="email" id="user-profile-email" class="user-profile-input" name="email" value="" max-length="128" placeholder="Your e-mail address" required>
+                <input type="password" id="user-profile-password" class="user-profile-input" name="password" value="" min-length="4" max-length="40" placeholder="Change password">
+                <input type="password" id="user-profile-password-confirm" class="user-profile-input" name="password-confirm" value="" min-length="4" max-length="40" placeholder="Confirm password">
+
+                <h4>Profile picture</h4>
                 <div id="def-pic-container">
                     <input type="radio" id="def-pic-custom" name="defaultPicture" value="custom">
                     <label for="def-pic-custom"><img src="./images/user-icon.png" alt=""></label>
@@ -120,11 +131,11 @@
                     <label for="def-pic-3"><img src="./images/def-pic-3.png" alt=""></label>
                 </div>
                 <input type="file" id="user-profile-picture" name="picture" value="" accept="image/png, image/jpeg, image/gif, image/webp">
-                <div class="profile-buttons">
+                <div id="user-profile-button">
                     <button id="user-profile-submit">Save</button>
-                    <button formnovalidate>Close</button>
-                    <button id="user-profile-logout" formnovalidate>Log off</button>
-                    <button id="user-delete-submit">Delete user</button>
+                    <button formnovalidate class="profile-buttons">Close</button>
+                    <button id="user-profile-logout" formnovalidate class="profile-buttons">Log off</button>
+                    <button id="user-delete-submit" class="profile-buttons">Delete user</button>
                 </div>
             </form>
         </dialog>

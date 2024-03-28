@@ -59,6 +59,7 @@ forumApp.load().then(() => {
 // Handler for clicking on the User button in the top left corner.
 // Show user profile form if logged in, or the login form if not. 
 (document.querySelector("#current-user") as HTMLElement).addEventListener("click", (event) => {
+
     forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
         if (isLoggedIn && forumApp.user) {
             const profileDialog = document.querySelector("#user-profile") as HTMLDialogElement;
@@ -90,9 +91,28 @@ forumApp.load().then(() => {
         }
         else {
             showLoginDialog();
+                ///// Ton \\\\\
+                const loginForm = document.querySelector("#login-form") as HTMLFormElement;
+                const registerForm = document.querySelector("#user-register-form") as HTMLFormElement;
+                const regBtnContainer = document.querySelector("#register-button-container") as HTMLElement;
+                
+                loginForm.classList.remove("hide");
+                registerForm.classList.add("hide");
+                regBtnContainer.classList.remove("hide");
         }
     });
 });
+
+///// Ton \\\\\
+(document.querySelector("#register-button") as HTMLButtonElement).addEventListener("click", () => {
+    const registerForm = document.querySelector("#user-register-form") as HTMLFormElement;
+    const loginForm = document.querySelector("#login-form") as HTMLFormElement;
+    const regBtnContainer = document.querySelector("#register-button-container") as HTMLElement;
+
+    registerForm.classList.remove("hide");
+    loginForm.classList.add("hide");
+    regBtnContainer.classList.add("hide");
+} );
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -155,6 +175,7 @@ forumApp.load().then(() => {
 (document.querySelector("#user-register-form") as HTMLFormElement).addEventListener("submit", (event) => {
     event.preventDefault();
     console.log("Register form submit");
+    
     if ((event.submitter as HTMLButtonElement).id == "user-register-submit") {
         const formData = new FormData(event.currentTarget as HTMLFormElement);
         forumApp.userRegister(
@@ -170,6 +191,14 @@ forumApp.load().then(() => {
                 console.error("Login error", error.message);
 
             });
+    }
+
+      ///// Ton \\\\\
+    else if ((event.submitter as HTMLButtonElement).id == "user-register-cancel"){
+        console.log("Hej Ton");
+        console.log((event.submitter as HTMLButtonElement).id);
+        
+        
     }
     loginDialog.close();
 });
@@ -390,3 +419,4 @@ function showLoginDialog() {
 
 
 forumApp.router.resolve();
+

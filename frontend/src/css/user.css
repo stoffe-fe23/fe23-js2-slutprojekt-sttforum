@@ -48,6 +48,8 @@
     height: 200px;
     object-fit: cover;
     border-radius: 50%;
+    margin-left: 25px;
+    
 }
 
 .profile-buttons {
@@ -82,9 +84,9 @@
     padding: 1rem;
 }
 
-.user-profile-name {
-    text-align: center;
+.user-profile-input {
     margin-top: 0.7rem;
+    width: 100%;
 }
 
 .profile-icon {
@@ -240,6 +242,7 @@
 
 #def-pic-container img{
     max-width: 50px;
+    padding: 0.2rem;
 }
 
 #def-pic-container input{
@@ -249,4 +252,45 @@
 
 #def-pic-container input:checked + label {
     background-color: lightgray;
+}
+
+#user-profile-form h4{
+  margin: 0.7rem 0 0 0 ;
+}
+
+#def-pic-container label{
+    padding: 0.4rem;
+    border-radius: 50%;
+}
+
+#user-profile-submit{
+    background-color: orange;
+    border: none;
+    padding: 0.3rem;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.profile-buttons{
+    background-color: orange;
+    border: none;
+    padding: 0.3rem;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-left: 0.4rem;
+}
+
+#user-profile{
+    border-radius: 10px;
+}
+
+/* #user-login{
+
+} */
+
+.hide{
+    display: none;
+}
+
+#user-register-form input{
+    display: block;
 }
