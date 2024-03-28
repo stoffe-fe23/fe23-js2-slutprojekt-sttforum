@@ -60,6 +60,8 @@ forumApp.load().then(() => {
 // Handler for clicking on the User button in the top left corner.
 // Show user profile form if logged in, or the login form if not. 
 (document.querySelector("#current-user") as HTMLElement).addEventListener("click", (event) => {
+
+    
     forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
         if (isLoggedIn && forumApp.user) {
             const profileDialog = document.querySelector("#user-profile") as HTMLDialogElement;
@@ -91,6 +93,17 @@ forumApp.load().then(() => {
         }
         else {
             showLoginDialog();
+            ///// Ton \\\\\
+            const registerForm = document.querySelector("#user-register-form") as HTMLFormElement;
+            registerForm.classList.add("hide");
+
+            const regBtnContainer = document.querySelector("#register-button-container") as  HTMLElement;
+            regBtnContainer.addEventListener("click", () => {
+                const loginForm = document.querySelector("#login-form") as HTMLFormElement;
+                loginForm.classList.add("hide");
+                regBtnContainer.classList.add("hide");
+                registerForm.classList.remove("hide");
+            })
         }
     });
 });
@@ -171,6 +184,12 @@ forumApp.load().then(() => {
                 console.error("Login error", error.message);
 
             });
+    }
+
+      ///// Ton \\\\\
+    else if ((event.submitter as HTMLButtonElement).id == "user-register-cancel"){
+        console.log("Hej Ton");
+        
     }
     loginDialog.close();
 });
@@ -391,3 +410,4 @@ function showLoginDialog() {
 
 
 forumApp.router.resolve();
+

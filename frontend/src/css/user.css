@@ -282,3 +282,15 @@
 #user-profile{
     border-radius: 10px;
 }
+
+/* #user-login{
+
+} */
+
+.hide{
+    display: none;
+}
+
+#user-register-form input{
+    display: block;
+}
