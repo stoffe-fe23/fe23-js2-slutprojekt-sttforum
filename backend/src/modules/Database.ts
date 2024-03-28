@@ -175,6 +175,23 @@ class Database {
         return false;
     }
 
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    // Soft-delete all posts by the specified user.
+    public deletePostsByUser(userId: string): number {
+        const userPosts = this.getMessagesByUser(userId);
+        let postCounter: number = 0;
+        if (userPosts) {
+            for (const post of userPosts) {
+                post.message.deleted = true;
+                post.message.message = "(This message has been deleted.)";
+                postCounter++;
+            }
+            dataStorage.storage.saveForums();
+        }
+        return postCounter;
+    }
+
     /************************************* FORUMS *************************************/
 
     ////////////////////////////////////////////////////////////////////////////////////

@@ -9,7 +9,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import fs from 'fs';
 import multer from "multer";
 import dataStorage from "./Database.js";
-import { UserData, ForumUser } from "./TypeDefs.js";
+import { UserData, ForumUser, ForumMessageContext } from "./TypeDefs.js";
 import { isLoggedIn, isOwner, isAdmin, isCurrentUser } from "./permissions.js";
 import {
     validationErrorHandler,
@@ -17,7 +17,9 @@ import {
     validateUserProfile,
     fileErrorHandler,
     validateUserRegister,
-    validateUserId
+    validateUserId,
+    validateProfileUserId,
+    defaultPictureNames
 } from "./validation.js";
 
 
@@ -47,7 +49,7 @@ userAPI.get('/list', isLoggedIn, (req: Request, res: Response) => {
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Get the public profile of the specified user with their most recent posts.
-userAPI.get('/profile/:userId', isLoggedIn, validateUserId, validationErrorHandler, (req: Request, res: Response) => {
+userAPI.get('/profile/:userId', isLoggedIn, validateProfileUserId, validationErrorHandler, (req: Request, res: Response) => {
     if (req.params && req.params.userId) {
         const userProfile = dataStorage.getPublicUserProfile(req.params.userId);
         if (userProfile) {
@@ -120,14 +122,15 @@ userAPI.post("/profile/update", isLoggedIn, userPictureUpload.single('picture'),
     try {
         if (req.user && (req.user as ForumUser).id) {
             if (!req.body.password.length || (req.body.password && req.body['password-confirm'] && (req.body.password.length > 3) && (req.body.password == req.body['password-confirm']))) {
-                if (!req.file) {
-                    console.log("DEBUG: No profile picture submitted!");
-                }
+
+                // Set one of the default images, or a user uploaded image if any. 
                 let pictureName = req.file ? req.file.filename ?? "" : "";
                 if (!req.file || !req.file.filename.length) {
-                    // TODO: Do not hardcode the default images...
-                    if (['def-pic-1.png', 'def-pic-2.png', 'def-pic-3.png'].includes(req.body.defaultPicture)) {
+                    if (defaultPictureNames.includes(req.body.defaultPicture)) {
                         pictureName = req.body.defaultPicture;
+                    }
+                    else if ((req.body.defaultPicture == "custom") && defaultPictureNames.includes((req.user as ForumUser).picture)) {
+                        pictureName = "user-icon.png";
                     }
                 }
 
@@ -151,16 +154,46 @@ userAPI.post("/profile/update", isLoggedIn, userPictureUpload.single('picture'),
 });
 
 //////////////////////////////////////////////////////////////////////////////////////////////
-// Get the public profile of the specified user with their most recent posts.
+// Delete the specified user from the system.
 userAPI.delete('/delete/:userId', isCurrentUser, validateUserId, validationErrorHandler, (req: Request, res: Response) => {
     if (req.params && req.params.userId) {
-        if (dataStorage.deleteUser(req.params.userId)) {
-            res.json({ message: `User deleted`, data: req.params.userId });
+        let responseSent: boolean = false;
+        const userId = req.params.userId;
+        const currentUser = req.user as ForumUser;
+
+        console.log("DELETE ACCOUNT", userId);
+
+        // Soft-delete all posts made by this user.
+        dataStorage.deletePostsByUser(userId);
+
+        // Log off the user if they are currently logged on (i.e. it is not an admin deleting the user). 
+        if (currentUser && (currentUser.id == userId)) {
+            console.log("LOG OFF DELETED USER", userId);
+            req.logout((error) => {
+                if (error) {
+                    responseSent = true;
+                    res.status(500);
+                    res.json({ error: `Error logging out deleted user.`, data: userId });
+                }
+            });
+        }
+
+        // Remove the user from the DB
+        if (dataStorage.deleteUser(userId)) {
+            console.log("DELETE USER", userId);
+            if (!responseSent) {
+                responseSent = true;
+                res.json({ message: `User deleted`, data: userId });
+            }
         }
         else {
-            res.status(404);
-            res.json({ error: `User not found.`, data: req.params.userId });
+            if (!responseSent) {
+                responseSent = true;
+                res.status(404);
+                res.json({ error: `User not found.`, data: userId });
+            }
         }
+
     }
 });
 

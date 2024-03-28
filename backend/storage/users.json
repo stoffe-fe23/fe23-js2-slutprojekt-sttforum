@@ -12,7 +12,7 @@
         "id": "5bcca996-929a-4451-a889-3a2267c6e216",
         "name": "John Doe",
         "email": "jdoe@example.com",
-        "picture": "user-icon.png",
+        "picture": "def-pic-3.png",
         "password": "feec7bb6467ec241b75798b321c6f1781b857cdf29784d155ab6226946b96ae3c46a9c17ec0c9cb0e65f461dd9a4197fc76ad8ac425fe35a66944eec06ae6e7a",
         "token": "594c21ce7dfc074a2547632ae576bf3b24a52925affa2e4c7fcaca89dc1e548b",
         "admin": false

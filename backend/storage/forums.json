@@ -27,7 +27,7 @@
                                 "author": {
                                     "id": "5bcca996-929a-4451-a889-3a2267c6e216",
                                     "userName": "John Doe",
-                                    "picture": "user-icon.png"
+                                    "picture": "def-pic-3.png"
                                 },
                                 "message": "And now over to something completely different!",
                                 "deleted": false,
@@ -39,7 +39,7 @@
                                 "author": {
                                     "id": "5bcca996-929a-4451-a889-3a2267c6e216",
                                     "userName": "John Doe",
-                                    "picture": "user-icon.png"
+                                    "picture": "def-pic-3.png"
                                 },
                                 "message": "Kanske det...",
                                 "deleted": false,
@@ -104,7 +104,7 @@
                                         "author": {
                                             "id": "5bcca996-929a-4451-a889-3a2267c6e216",
                                             "userName": "John Doe",
-                                            "picture": "user-icon.png",
+                                            "picture": "def-pic-3.png",
                                             "admin": false
                                         },
                                         "message": "Man kan ju hoppas det i alla fall!",
@@ -217,7 +217,49 @@
                         "message": "Måste fixa så listan uppdateras med när en ny tråd skapas...",
                         "deleted": false,
                         "date": 1711219091661,
-                        "replies": []
+                        "replies": [
+                            {
+                                "id": "dda32b00-6963-4f8d-8b2e-dbd846778a45",
+                                "author": {
+                                    "id": "e44d666a-7aa5-4496-8835-1f25e8e1be32",
+                                    "userName": "Tess Testare",
+                                    "picture": "def-pic-2.png",
+                                    "admin": false
+                                },
+                                "message": "(This message has been deleted.)",
+                                "deleted": true,
+                                "date": 1711561396461,
+                                "replies": [
+                                    {
+                                        "id": "53a70aaa-6929-4ccc-bad7-a1cf292c2bbe",
+                                        "author": {
+                                            "id": "e44d666a-7aa5-4496-8835-1f25e8e1be32",
+                                            "userName": "Tess Testare",
+                                            "picture": "def-pic-2.png",
+                                            "admin": false
+                                        },
+                                        "message": "(This message has been deleted.)",
+                                        "deleted": true,
+                                        "date": 1711561512746,
+                                        "replies": [
+                                            {
+                                                "id": "fb9a9166-6c42-409b-8937-c5b2af49bf12",
+                                                "author": {
+                                                    "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                                                    "userName": "Stoffe",
+                                                    "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96.png",
+                                                    "admin": true
+                                                },
+                                                "message": "Förhoppningsvis.",
+                                                "deleted": false,
+                                                "date": 1711561584919,
+                                                "replies": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
                     }
                 ],
                 "forum": {

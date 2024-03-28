@@ -49,12 +49,16 @@ export function isAdmin(req: Request, res: Response, next: NextFunction) {
 // Check if the currently logged in user matches the userId set in the URL parameter.  
 export function isCurrentUser(req: Request, res: Response, next: NextFunction) {
     try {
+        const currentUser = req.user as ForumUser;
+        console.log("IS CURRENT USER?", req.isAuthenticated(), currentUser ?? "No current user!", req.params.userId ?? "No user id!");
         if (req.isAuthenticated()
-            && req.user
+            && currentUser
             && req.params.userId
-            && ((req.user as ForumUser).admin || ((req.user as ForumUser).id == req.params.userId))) {
+            && (currentUser.admin || (currentUser.id == req.params.userId))) {
+            console.log("isCurrentUser: YES");
             return next();
         }
+        console.log("isCurrentUser: NO");
     }
     catch (error) {
         console.log("isCurrentUser error", error);

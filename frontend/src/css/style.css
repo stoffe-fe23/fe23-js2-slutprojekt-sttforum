@@ -49,6 +49,8 @@ header #mainmenu {
 header h1 {
     margin: 0px 0px 0px 1rem;
     padding: 0.3rem;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 header nav ul {
@@ -122,27 +124,54 @@ footer {
     margin: 0;
 }
 
-#error{
+#error {
+    position: fixed;
+    left: 0px;
     display: none;
-}
-#error.show{
-    text-align: center;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
     width: 20rem;
-    padding: 3rem;
-    border-radius: 5px;
-    border: solid black 2px;
-    display: block;
-    position: absolute ;
-    top: 10rem;
-    left: 0; 
-  right: 0; 
-  margin-left: auto; 
-  margin-right: auto; 
-    /* top: 10rem; left: 10rem; */
-    background-color: red;
-    font-weight: bold;
-
+    border-radius: 0px 15px 15px 0px;
+    background-color: darkred;
+    color: white;
+    font-weight: 700;
+    min-width: 450px;
+    opacity: 0.95;
+    box-shadow: 3px 3px 9px rgba(0, 0, 0, 0.3);
+    z-index: 10;
 }
-#error button{
-    margin-top: 2rem;
+
+#error.show {
+    display: flex;
+}
+
+#error-message {
+    text-align: left;
+    padding: 0.5rem;
+}
+
+#error ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+
+#error img {
+    flex-grow: 0;
+    flex-shrink: 0;
+    padding: 0.5rem;
+}
+
+#error button {
+    flex-grow: 0;
+    flex-shrink: 0;
+    border: 0;
+    background-color: black;
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    margin: 0.5rem;
 }
