@@ -8,6 +8,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import fs from 'fs';
 import multer from "multer";
+import { sendClientUpdate, closeClientSocket } from "./server.js";
 import dataStorage from "./Database.js";
 import { UserData, ForumUser, ForumMessageContext } from "./TypeDefs.js";
 import { isLoggedIn, isOwner, isAdmin, isCurrentUser } from "./permissions.js";
@@ -136,7 +137,15 @@ userAPI.post("/profile/update", isLoggedIn, userPictureUpload.single('picture'),
 
                 const userObj = dataStorage.editUser((req.user as ForumUser).id, req.body.username, req.body.password, req.body.email, pictureName);
                 if (userObj) {
+                    const userProfileData: UserData = {
+                        id: userObj.id,
+                        name: userObj.name,
+                        email: userObj.email,
+                        picture: userObj.picture,
+                        admin: userObj.admin
+                    }
                     dataStorage.updateAuthorInfo(userObj.id);
+                    sendClientUpdate({ action: "edit", type: "user", data: userProfileData }, req);
                 }
                 res.status(200);
                 res.json({ message: `User profile updated.`, data: userObj });
@@ -170,6 +179,7 @@ userAPI.delete('/delete/:userId', isCurrentUser, validateUserId, validationError
         if (currentUser && (currentUser.id == userId)) {
             console.log("LOG OFF DELETED USER", userId);
             req.logout((error) => {
+                closeClientSocket(userId);
                 if (error) {
                     responseSent = true;
                     res.status(500);
@@ -181,6 +191,7 @@ userAPI.delete('/delete/:userId', isCurrentUser, validateUserId, validationError
         // Remove the user from the DB
         if (dataStorage.deleteUser(userId)) {
             console.log("DELETE USER", userId);
+            sendClientUpdate({ action: "delete", type: "user", data: { id: userId } }, req);
             if (!responseSent) {
                 responseSent = true;
                 res.json({ message: `User deleted`, data: userId });

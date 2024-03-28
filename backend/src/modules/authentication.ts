@@ -14,6 +14,7 @@ import sessionFileStore from 'session-file-store';
 import dotenv from 'dotenv';
 import { Request, Response, NextFunction } from 'express';
 
+import { closeClientSocket } from "./server.js";
 import dataStorage from "./Database.js";
 import { ForumUser, UserData } from "./TypeDefs.js";
 import { generatePasswordHash } from "./password.js";
@@ -100,7 +101,9 @@ userAPI.post("/login", passport.authenticate('local', { failWithError: true }), 
 ////////////////////////////////////////////////////////////////////////////////////
 // Route for an authenticated user to log off manually. 
 userAPI.get("/logout", isLoggedIn, (req: Request, res: Response, next: NextFunction) => {
+    const userId = (req.user as ForumUser).id;
     req.logout((error) => {
+        closeClientSocket(userId);
         console.log("LOGOFF", req.user);
         if (error) {
             return next(error);
