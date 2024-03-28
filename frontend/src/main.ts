@@ -94,12 +94,11 @@ forumApp.load().then(() => {
             showLoginDialog();
                 ///// Ton \\\\\
                 const loginForm = document.querySelector("#login-form") as HTMLFormElement;
-                loginForm.classList.remove("hide");
-                
                 const registerForm = document.querySelector("#user-register-form") as HTMLFormElement;
-                registerForm.classList.add("hide");
-
                 const regBtnContainer = document.querySelector("#register-button-container") as HTMLElement;
+                
+                loginForm.classList.remove("hide");
+                registerForm.classList.add("hide");
                 regBtnContainer.classList.remove("hide");
         }
     });
