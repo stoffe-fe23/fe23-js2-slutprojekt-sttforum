@@ -39,7 +39,6 @@ export default class User {
         await this.app.userLogoff();
         const res = await this.app.api.deleteJson(`user/delete/${this.id}`);
         
-
     }
 
     // TODO: Methods for viewing and editing the user profile
