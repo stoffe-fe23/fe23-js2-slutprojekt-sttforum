@@ -93,8 +93,14 @@ forumApp.load().then(() => {
         else {
             showLoginDialog();
                 ///// Ton \\\\\
+                const loginForm = document.querySelector("#login-form") as HTMLFormElement;
+                loginForm.classList.remove("hide");
+                
                 const registerForm = document.querySelector("#user-register-form") as HTMLFormElement;
                 registerForm.classList.add("hide");
+
+                const regBtnContainer = document.querySelector("#register-button-container") as HTMLElement;
+                regBtnContainer.classList.remove("hide");
         }
     });
 });
@@ -171,6 +177,7 @@ forumApp.load().then(() => {
 (document.querySelector("#user-register-form") as HTMLFormElement).addEventListener("submit", (event) => {
     event.preventDefault();
     console.log("Register form submit");
+    
     if ((event.submitter as HTMLButtonElement).id == "user-register-submit") {
         const formData = new FormData(event.currentTarget as HTMLFormElement);
         forumApp.userRegister(
@@ -191,6 +198,8 @@ forumApp.load().then(() => {
       ///// Ton \\\\\
     else if ((event.submitter as HTMLButtonElement).id == "user-register-cancel"){
         console.log("Hej Ton");
+        console.log((event.submitter as HTMLButtonElement).id);
+        
         
     }
     loginDialog.close();
