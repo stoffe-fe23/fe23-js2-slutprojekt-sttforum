@@ -195,6 +195,19 @@ export default class Message {
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
+    // If this message is currently displayed on the page, update its info to match the content
+    // of this object. 
+    public update() {
+        const updateMessage = document.querySelector(`article[data-messageid="${this.id}"]`);
+        if (updateMessage) {
+            console.log("Message - found Update Element!");
+            const messageHTML = this.display();
+            updateMessage.replaceWith(messageHTML);
+        }
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
     // Submit handler for the Reply/Edit/Delete buttons on a message
     private onMessageButtonsSubmit(event) {
         event.preventDefault();

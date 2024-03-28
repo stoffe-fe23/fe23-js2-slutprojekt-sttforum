@@ -7,12 +7,50 @@
 */
 import express from "express";
 import { Request, Response, NextFunction } from 'express';
+import { app, getWss, applyTo, sendClientUpdate } from "./modules/server.js";
 import cors from "cors";
 import forumAPI from "./modules/forumAPI.js";
 import userAPI from "./modules/userAPI.js";
 import dataStorage from "./modules/Database.js";
 import { sessionSetup, passport } from "./modules/authentication.js";
-import { isLoggedIn, isAdmin } from "./modules/permissions.js";
+import { ForumUser, SocketNotificationData } from "./modules/TypeDefs.js";
+
+/* class CustomWebSocket extends WebSocket {
+    userId: string; // Your custom property (user ID)
+  }
+
+  declare module 'express' {
+    interface Application {
+      ws(route: string, handler: (ws: CustomWebSocket, req: Request) => void): void;
+    }
+  } 
+ */
+
+/* declare module "express-ws" {
+    interface UserWebsocketRequestHandler extends WebsocketRequestHandler {
+        userId: string
+    }
+} */
+
+/* declare module 'express' {
+    interface Application {
+      ws(route: string, handler: (ws: WebSocket, req: Request) => void): void;
+    }
+  }
+
+interface ExtWebSocket extends WebSocket {
+    userId: string;
+}
+ */
+/*
+declare module 'express' {
+  interface Application {
+    ws(route: string, handler: (ws: WebSocket, req: Request) => void): void;
+  }
+}
+*/
+
+
 // import https from "https";
 // import fs from "fs";
 // import path from 'path';
@@ -25,7 +63,10 @@ import { isLoggedIn, isAdmin } from "./modules/permissions.js";
     cert: fs.readFileSync("./ssl/localhost.pem"),
 };
  */
-const app = express();
+/* const app = express();
+const socketServer = expressWs(app); */
+// const { app, getWss, applyTo } = expressWs(express());
+
 
 // Note: Allow-Origin "*" will block fetch() calls on the client from sending cookies to server :(
 // and req.headers.origin is sometimes undefined for some reason, so have to hardcode an origin
@@ -64,7 +105,6 @@ app.get('/*', function(req, res, next) {
 
 
 
-
 // Set up session and authentication middleware
 app.use(sessionSetup);
 app.use(passport.initialize());
@@ -81,29 +121,33 @@ app.use('/api/user', userAPI);
 app.use('/api/forum', forumAPI);
 
 
-/* // Test route: user logged in with admin permissions
-app.get("/test/:testid", (req: Request, res: Response) => {
-    res.json({
-        message: "Test!",
-        method: req.method,
-        origin: req.headers.origin ?? "Not set",
-        host: req.headers.host ?? "Not set",
-        referer: req.headers.referer ?? "Not set",
-        body: req.body,
-        params: req.params,
-        path: req.path,
-        url: req.url
+app.ws("/api/updates", (ws, req: Request) => {
+    const userId = (req.user && (req.user as ForumUser).id ? (req.user as ForumUser).id : "0");
+
+    // Setup connection. Close connection if it is not by an authenticated user. 
+    if ((userId != "0") && req.isAuthenticated()) {
+        (ws as any).userId = userId;
+        console.log("SOCKET ESTABLISHED: ", (ws as any).userId);
+    }
+    else {
+        const response: SocketNotificationData = {
+            action: "error",
+            type: "authentication",
+            data: { status: 401, message: "Not Authorized" }
+        }
+        ws.send(JSON.stringify(response));
+        ws.close();
+        // console.log("SOCKET DENIED: Not authenticated.");
+    }
+
+    ws.on("close", (socket: WebSocket) => {
+        console.log(`SOCKET CLOSED: `, (socket as any).userId ?? "No user ID");
+    });
+
+    ws.on("error", (error) => {
+        console.log("SOCKET ERROR: ", error);
     });
 });
-// Test route: user logged in
-app.get("/protected", isLoggedIn, (req: Request, res: Response) => {
-    console.log("HEADER", req.socket.remoteAddress);
-    res.json({ message: "Authenticated!" });
-});
-// Test route: user logged in with admin permissions
-app.get("/admin", isAdmin, (req: Request, res: Response) => {
-    res.json({ message: "Administrator!" });
-}); */
 
 
 // General error handler

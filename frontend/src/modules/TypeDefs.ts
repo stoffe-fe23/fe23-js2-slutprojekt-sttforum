@@ -96,27 +96,28 @@ export type StatusResponseAPI = {
     data?: object
 }
 
-// Used by RestApi class
+export type SocketNotificationData = {
+    action: 'add' | 'edit' | 'delete' | 'error',
+    type: 'forum' | 'thread' | 'message' | 'reply' | 'user' | 'authentication' | 'error',
+    data?: object
+}
 
-// Parameters when doing an API request
+
 export type APIQueryParams = Record<string, string | Array<string>> | null;
-
-// Data passed to the API functions when doing a non-GET request
 export type APIQueryValue = string | number | boolean | Array<string | number>;
 export type APIQueryData = FormData | Record<string, APIQueryValue> | null;
-
-// Tracking info about the last API query performed
 export type APILastRequest = {
     url: URL | null,
     method: 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'None',
     options: RequestInit | undefined
 }
-
 export type APIStatusResponse = {
     response: UserData,
     status: number,
     ok: boolean
 }
+
+
 export type PublicUserProfilePost = {
     id: string,
     threadId: string,

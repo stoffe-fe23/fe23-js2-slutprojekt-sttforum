@@ -122,3 +122,10 @@ export type ForumMessageInfo = {
     date: number,
     replyCount: number
 }
+
+export type SocketNotificationData = {
+    action: 'add' | 'edit' | 'delete' | 'error',
+    type: 'forum' | 'thread' | 'message' | 'reply' | 'user' | 'authentication' | 'error',
+    data: object,
+    source?: string
+}

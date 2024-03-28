@@ -30,7 +30,6 @@ forumApp.load().then(() => {
 });
 
 
-
 /*** EVENT HANDLERS *************************************************************/
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,8 +46,8 @@ forumApp.load().then(() => {
             forumApp.router.navigate('/');
         }).catch((error) => {
             if ((error instanceof ApiError) && (error.errorCode == 401)) {
-                console.log("login error", error)
-                forumApp.showError("invalid login or password")
+                console.log("DEBUG: login error", error);
+                forumApp.showError("Invalid username or password.");
             }
         });
     }

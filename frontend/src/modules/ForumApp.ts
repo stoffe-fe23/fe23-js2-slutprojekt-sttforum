@@ -12,7 +12,7 @@ import Message from "./Message.ts";
 import User from "./User.ts";
 import RestApi from "./RestApi.ts";
 import UserList from "./UserList.ts";
-import { ForumInfoAPI, UserData, StatusResponseAPI, ForumMessageContextAPI, ForumThreadInfoAPI } from "./TypeDefs.ts";
+import { ForumInfoAPI, UserData, StatusResponseAPI, ForumMessageContextAPI, ForumThreadInfoAPI, SocketNotificationData, ForumMessageAPI, ForumThreadAPI } from "./TypeDefs.ts";
 import * as htmlUtilities from "./htmlUtilities";
 
 export default class ForumApp {
@@ -21,15 +21,21 @@ export default class ForumApp {
     public router: Navigo;
     public mediaUrl: string;
     public userLoginInit: boolean;
+    private socketClient: WebSocket | null;
+    private apiUrl: string;
 
 
     constructor(apiUrl: string) {
         this.api = new RestApi(apiUrl);
         this.router = new Navigo("/"); // { linksSelector: "a" }
         this.userLoginInit = false;
+        this.apiUrl = apiUrl;
 
         const mediaUrl = new URL(apiUrl);
         this.mediaUrl = `${mediaUrl.protocol}//${mediaUrl.hostname}:${mediaUrl.port}/media/`;
+
+        this.socketClient = null;
+        //        this.establishSocketConnection();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,6 +61,7 @@ export default class ForumApp {
             this.user = new User(this, apiResponse.data as UserData);
             this.userLoginInit = true;
             this.displayCurrentUser();
+            this.reEstablishSocketConnection();
             console.log("DEBUG: User is logged in: ", this.user.userName);
         }
         else if (apiResponse.message == "No User") {
@@ -102,16 +109,11 @@ export default class ForumApp {
     ////////////////////////////////////////////////////////////////////////////////////////////
     // Display a list of the threads in the specified forum.
     public async showForum(forumId: string, outBox: HTMLElement): Promise<void> {
-        if (this.isLoggedIn()) {
-            // const foundForum = this.forums.find((forum) => forum.id == forumId);
-            const foundForum = await Forum.create(this, forumId);
-            if (foundForum) {
-                outBox.innerHTML = "";
-                foundForum.display(outBox);
-            }
-        }
-        else {
-            throw new Error("You must be logged in the view the forum topics.");
+        // const foundForum = this.forums.find((forum) => forum.id == forumId);
+        const foundForum = await Forum.create(this, forumId);
+        if (foundForum) {
+            outBox.innerHTML = "";
+            foundForum.display(outBox);
         }
     }
 
@@ -119,37 +121,34 @@ export default class ForumApp {
     ////////////////////////////////////////////////////////////////////////////////////////////
     // Display all the posts/replies in the specified thread
     public async showThread(threadId: string, outBox: HTMLElement): Promise<void> {
-        if (this.isLoggedIn()) {
-            const foundThread = await Thread.create(this, threadId);
-            if (foundThread) {
-                outBox.innerHTML = "";
 
-                // Display the thread within its parent forum wrapper. 
-                if (foundThread.forumInfo) {
-                    foundThread.forumInfo.icon = foundThread.forumInfo.icon.length ? this.mediaUrl + 'forumicons/' + foundThread.forumInfo.icon : new URL('../images/forum-icon.png', import.meta.url).toString()
+        const foundThread = await Thread.create(this, threadId);
+        if (foundThread) {
+            outBox.innerHTML = "";
 
-                    const forumElement = htmlUtilities.createHTMLFromTemplate("tpl-thread-forum", outBox, foundThread.forumInfo, { "data-forumid": foundThread.forumInfo.id });
-                    const threadsElement = forumElement.querySelector(`.forum-thread`) as HTMLElement;
+            // Display the thread within its parent forum wrapper. 
+            if (foundThread.forumInfo) {
+                foundThread.forumInfo.icon = foundThread.forumInfo.icon.length ? this.mediaUrl + 'forumicons/' + foundThread.forumInfo.icon : new URL('../images/forum-icon.png', import.meta.url).toString()
 
-                    foundThread.display(threadsElement);
+                const forumElement = htmlUtilities.createHTMLFromTemplate("tpl-thread-forum", outBox, foundThread.forumInfo, { "data-forumid": foundThread.forumInfo.id });
+                const threadsElement = forumElement.querySelector(`.forum-thread`) as HTMLElement;
 
-                    const breadcrumb = forumElement.querySelector(".forum-breadcrumb") as HTMLElement;
-                    if (breadcrumb) {
-                        htmlUtilities.createHTMLElement("a", "Forums", breadcrumb, "breadcrumb-link", { href: `/forums`, "data-navigo": "true" });
-                        htmlUtilities.createHTMLElement("a", foundThread.forumInfo.name, breadcrumb, "breadcrumb-link", { href: `/forum/${foundThread.forumInfo.id}`, "data-navigo": "true" });
-                        htmlUtilities.createHTMLElement("a", foundThread.title, breadcrumb, "breadcrumb-link", { href: `/thread/${foundThread.id}`, "data-navigo": "true" });
-                        this.router.updatePageLinks();
-                    }
-                }
-                else {
-                    // If the thread for some reason is not in a forum, just display it on its own. 
-                    foundThread.display(outBox);
+                foundThread.display(threadsElement);
+
+                const breadcrumb = forumElement.querySelector(".forum-breadcrumb") as HTMLElement;
+                if (breadcrumb) {
+                    htmlUtilities.createHTMLElement("a", "Forums", breadcrumb, "breadcrumb-link", { href: `/forums`, "data-navigo": "true" });
+                    htmlUtilities.createHTMLElement("a", foundThread.forumInfo.name, breadcrumb, "breadcrumb-link", { href: `/forum/${foundThread.forumInfo.id}`, "data-navigo": "true" });
+                    htmlUtilities.createHTMLElement("a", foundThread.title, breadcrumb, "breadcrumb-link", { href: `/thread/${foundThread.id}`, "data-navigo": "true" });
+                    this.router.updatePageLinks();
                 }
             }
+            else {
+                // If the thread for some reason is not in a forum, just display it on its own. 
+                foundThread.display(outBox);
+            }
         }
-        else {
-            throw new Error("You must be logged in the view forum posts.");
-        }
+
     }
 
 
@@ -206,6 +205,7 @@ export default class ForumApp {
         const response: StatusResponseAPI = await this.api.postJson("user/login", postData);
         if (response && response.message && (response.message == "Login successful")) {
             await this.loadCurrentUser();
+            //            this.reEstablishSocketConnection();
         }
         else {
             console.log("Login failed! ", response);
@@ -327,6 +327,7 @@ export default class ForumApp {
         }
     }
 
+
     public showError(errorText: string) {
         const errorDiv = document.querySelector("#error") as HTMLElement;
         const errorMsg = errorDiv.querySelector("#error-message") as HTMLElement;
@@ -334,5 +335,113 @@ export default class ForumApp {
         errorMsg.innerHTML = errorText;
         errorDiv.classList.add("show")
 
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Establish a websocket connection with server to listen for update notices. 
+    private establishSocketConnection(): void {
+        const url = new URL(this.apiUrl);
+        if (!this.socketClient || (this.socketClient.readyState == WebSocket.CLOSED)) {
+            // Create socket connection to server
+            this.socketClient = new WebSocket(`ws://${url.hostname}:${url.port}/api/updates`);
+            console.log("SOCKET CLIENT", `ws://${url.hostname}:${url.port}/api/updates`, this.socketClient);
+
+            // Listen for incoming messages on the socket
+            this.socketClient.addEventListener("message", (event) => {
+                if (event.data) {
+                    const updateData: SocketNotificationData = JSON.parse(event.data);
+                    this.processServerUpdateNotice(updateData);
+                    console.log("SOCKET DATA: ", updateData);
+                }
+            });
+
+            // Socket connection is closed, attempt to reconnect. 
+            // TODO: Timeout after X number of retries... 
+            this.socketClient.addEventListener("close", (event) => {
+                console.log("SOCKET CLOSE: ", event);
+                setTimeout(this.reEstablishSocketConnection.bind(this), 4000);
+            });
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Reconnect websocket connection to server if logged in.
+    private reEstablishSocketConnection() {
+        this.userLoginCheck().then((isLoggedIn: boolean) => {
+            if (isLoggedIn) {
+                console.log("Reinitializing server connection...");
+                if (this.socketClient && (this.socketClient.readyState != WebSocket.CLOSED) && (this.socketClient.readyState != WebSocket.CLOSING)) {
+                    this.socketClient.close();
+                }
+
+                this.establishSocketConnection();
+            }
+        });
+
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Handle update notice from server, updating displayed info if relevant. 
+    private async processServerUpdateNotice(updateData: SocketNotificationData): Promise<void> {
+        if (updateData.data) {
+            if (updateData.action == "add") {
+                // A message is updated, redraw it if visible on the page. 
+                if ((updateData.type == "message") || (updateData.type == "reply")) {
+                    // TODO: Add a new message to a thread, or reply chain of another message
+                }
+                else if (updateData.type == "thread") {
+                    // TODO: Add a new thread to a forum thread list
+                }
+                else if (updateData.type == "forum") {
+                    // TODO: Update forum name / status on picker, threadlist and thread view. 
+                }
+                else if (updateData.type == "user") {
+                    // TODO: Add new user to the user list. 
+                }
+            }
+            else if (updateData.action == "edit") {
+                // A message is updated, redraw it if visible on the page. 
+                if ((updateData.type == "message") || (updateData.type == "reply")) {
+                    const theMessage = await Message.create(this, "", updateData.data as ForumMessageAPI);
+                    if (theMessage) {
+                        theMessage.update();
+                    }
+                }
+                else if (updateData.type == "thread") {
+                    const theThread = await Thread.create(this, "", updateData.data as ForumThreadAPI);
+                    if (theThread) {
+                        theThread.update();
+                    }
+                }
+                else if (updateData.type == "forum") {
+                    // TODO: Update forum name / status on picker, threadlist and thread view. 
+                }
+                else if (updateData.type == "user") {
+                    // TODO: Update name and picture on posts, public profile and user list
+                    // If user == the currently logged in user, update their name / pic in the menu too. 
+                }
+            }
+            else if (updateData.action == "delete") {
+                // A message is updated, redraw it if visible on the page. 
+                if ((updateData.type == "message") || (updateData.type == "reply")) {
+                    // TODO: Remove message from the page.
+                }
+                else if (updateData.type == "thread") {
+                    // TODO: Remove thread from the page.
+                }
+                else if (updateData.type == "forum") {
+                    // TODO: Remove forum from the page.
+                }
+                else if (updateData.type == "user") {
+                    // TODO: Remove a user from the userlist / leave their profile page.
+                }
+            }
+            else if (updateData.action == "error") {
+
+            }
+        }
     }
 }

@@ -9,6 +9,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import dataStorage from "./Database.js";
 import { isLoggedIn, isOwner, isAdmin } from "./permissions.js";
 import { ForumInfo, ForumUser, ForumContentInfo, ForumThreadInfo } from "./TypeDefs.js";
+import { sendClientUpdate } from "./server.js";
 import {
     validationErrorHandler,
     validateForumId,
@@ -231,6 +232,7 @@ forumAPI.post('/search/threads', isLoggedIn, validateSearchString, validationErr
 forumAPI.post('/create', isAdmin, validateNewForum, validationErrorHandler, (req: Request, res: Response) => {
     try {
         const newForum = dataStorage.addForum(req.body.name, req.body.icon);
+        sendClientUpdate({ action: "add", type: "forum", data: newForum }, req);
         res.status(201);
         res.json({ message: `New forum added`, data: newForum });
     }
@@ -248,6 +250,7 @@ forumAPI.post('/thread/create', isLoggedIn, validateNewThread, validationErrorHa
         const authorId = (req.user as ForumUser).id;
         const newThread = dataStorage.addThread(req.body.forumId, req.body.title, true);
         dataStorage.addMessage(newThread.id, authorId, req.body.message);
+        sendClientUpdate({ action: "add", type: "thread", data: newThread, source: req.body.forumId }, req);
         res.status(201);
         res.json({ message: `New thread added`, data: newThread });
     }
@@ -264,6 +267,7 @@ forumAPI.post('/message/create', isLoggedIn, validateNewMessage, validationError
     try {
         const authorId = (req.user as ForumUser).id;
         const newMessage = dataStorage.addMessage(req.body.threadId, authorId, req.body.message);
+        sendClientUpdate({ action: "add", type: "message", data: newMessage, source: req.body.threadId }, req);
         res.status(201);
         res.json({ message: `New post added`, data: newMessage });
     }
@@ -280,8 +284,9 @@ forumAPI.post('/message/reply', isLoggedIn, validateNewReply, validationErrorHan
     try {
         const authorId = (req.user as ForumUser).id;
         const newReply = dataStorage.addReply(req.body.messageId, authorId, req.body.message);
+        sendClientUpdate({ action: "add", type: "message", data: newReply }, req);
         res.status(201);
-        res.json({ message: `New reply added`, data: newReply });
+        res.json({ message: `New reply added`, data: newReply, source: req.body.messageId });
     }
     catch (error) {
         res.status(500);
@@ -299,7 +304,8 @@ forumAPI.post('/message/reply', isLoggedIn, validateNewReply, validationErrorHan
 forumAPI.patch('/thread/edit/:threadId', isAdmin, validateEditThread, validationErrorHandler, (req: Request, res: Response) => {
     console.log("DEBUG: Edit thread: ", req.params.threadId);
     try {
-        dataStorage.editThread(req.params.threadId, req.body.title);
+        const editedThread = dataStorage.editThread(req.params.threadId, req.body.title);
+        sendClientUpdate({ action: "edit", type: "thread", data: editedThread }, req);
         res.json({ message: `Edited thread`, data: req.params.threadId });
     }
     catch (error) {
@@ -316,6 +322,7 @@ forumAPI.delete('/thread/delete/:threadId', isAdmin, validateThreadId, validatio
 
     try {
         dataStorage.deleteThread(req.params.threadId);
+        sendClientUpdate({ action: "delete", type: "thread", data: { id: req.params.threadId } }, req);
         res.json({ message: `Deleted thread`, data: req.params.threadId });
     }
     catch (error) {
@@ -331,6 +338,7 @@ forumAPI.patch('/message/edit', isOwner, validateEditMessage, validationErrorHan
 
     try {
         const editedMessage = dataStorage.editMessage(req.body.messageId, req.body.message);
+        sendClientUpdate({ action: "edit", type: "message", data: editedMessage }, req);
         res.json({ message: `Edited message`, data: editedMessage });
     }
     catch (error) {
@@ -345,7 +353,8 @@ forumAPI.delete('/message/delete/:messageId', isOwner, validateMessageId, valida
     console.log("Delete message", req.params.messageId);
 
     try {
-        dataStorage.softDeleteMessage(req.params.messageId, true);
+        const deletedMessage = dataStorage.softDeleteMessage(req.params.messageId, true);
+        sendClientUpdate({ action: "edit", type: "message", data: deletedMessage }, req);
         res.json({ message: `Deleted message`, data: req.params.messageId });
     }
     catch (error) {
@@ -360,6 +369,7 @@ forumAPI.delete('/message/remove/:messageId', isAdmin, validateMessageId, valida
 
     try {
         dataStorage.deleteMessage(req.params.messageId);
+        sendClientUpdate({ action: "delete", type: "message", data: { id: req.params.messageId } }, req);
         res.json({ message: `Removed message`, data: req.params.messageId });
     }
     catch (error) {

@@ -8,7 +8,7 @@
 import Message from "./Message.ts";
 import ForumApp from "./ForumApp.ts";
 import * as htmlUtilities from "./htmlUtilities.ts";
-import { ThreadDisplayInfo, ForumThreadAPI, ForumDisplayInfo } from "./TypeDefs.ts";
+import { ThreadDisplayInfo, ForumThreadAPI, ForumDisplayInfo, ForumThreadStats, ForumMessageAPI } from "./TypeDefs.ts";
 
 
 
@@ -106,6 +106,46 @@ export default class Thread {
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////    
+    // Generate HTML for the row of this thread in a forum thread list. 
+    public getThreadListEntry() {
+        const stats: ForumThreadStats = this.getThreadStats();
+        const values = {
+            id: this.id,
+            title: this.title,
+            date: htmlUtilities.dateTimeToString(this.date),
+            active: this.active,
+            postCount: stats.postCount,
+            lastUpdated: htmlUtilities.dateTimeToString(stats.lastUpdated),
+            lastAuthor: stats.lastAuthor,
+            link: `/thread/${this.id}`
+        }
+        return htmlUtilities.createHTMLFromTemplate("tpl-forum-thread-list", null, values, { "data-threadid": this.id });
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    // If this message is currently displayed on the page, update its info to match the content
+    // of this object. 
+    public update() {
+        // Thread page, displaying its messages
+        const updateThread = document.querySelector(`section[data-threadid="${this.id}"]`);
+        if (updateThread) {
+            console.log("Thread - found Update Element!");
+            const threadHTML = this.display();
+            updateThread.replaceWith(threadHTML);
+        }
+
+        // Thread list of a forum
+        const updateThreadList = document.querySelector(`article[data-threadid="${this.id}"]`);
+        if (updateThreadList) {
+            console.log("Thread List - found Update Element!");
+            const threadHTML = this.getThreadListEntry();
+            updateThreadList.replaceWith(threadHTML);
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////    
     // Submit handler for creating a new message in this thread. 
     private onNewPostFormSubmit(event) {
         event.preventDefault();
@@ -128,5 +168,47 @@ export default class Thread {
                 throw new Error(`An error occurred when creating a new message. (${this.id})`);
             }
         }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////    
+    // Calculate total post count, last date updated and last user who posted in this thread. 
+    public getThreadStats(): ForumThreadStats {
+        let threadStats: ForumThreadStats = {
+            postCount: 0,
+            lastUpdated: 0,
+            lastAuthor: ""
+        }
+
+        // Function to count the messages and get the date of the latest message
+        function checkThreadMessages(): ForumThreadStats {
+            threadStats.postCount = 0;
+            for (const message of this.posts) {
+                threadStats.postCount++;
+                if (message.date > threadStats.lastUpdated) {
+                    threadStats.lastUpdated = message.date;
+                    threadStats.lastAuthor = message.author.userName;
+                }
+                checkThreadReplies(message.replies);
+            }
+
+            return threadStats;
+        }
+
+        // Function to count the replies and get the date of the latest reply/message
+        function checkThreadReplies(messages: Message[]): void {
+            for (const message of messages) {
+                threadStats.postCount++;
+                if (message.date > threadStats.lastUpdated) {
+                    threadStats.lastUpdated = message.date;
+                    threadStats.lastAuthor = message.author.userName;
+                }
+                if (message.replies && message.replies.length) {
+                    checkThreadReplies(message.replies);
+                }
+            }
+        }
+
+        return checkThreadMessages();
     }
 }
