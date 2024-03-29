@@ -491,6 +491,42 @@ class Database {
         return threadsSearch(messageId, this);
     }
 
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    // Find the thread the message with the specified message ID belongs to. 
+    public getMessageThread(messageId: string): ForumThread | null {
+        // Search all forum threads for the message ID, return the thread if a match is found.
+        function threadSearch(messageId: string, database: Database): ForumThread | null {
+            let foundMsg: ForumMessage | null = null;
+            for (const forum of database.storage.forumDB) {
+                for (const thread of forum.threads) {
+                    foundMsg = messageSearch(messageId, thread.posts);
+                    if (foundMsg) {
+                        return thread;
+                    }
+                }
+            }
+            return null;
+        }
+
+        // Recursively search reply chains for a matching message ID.
+        function messageSearch(messageId: string, messages: ForumMessage[]): ForumMessage | null {
+            for (const message of messages) {
+                if (message.id === messageId) {
+                    return message;
+                }
+                else if (message.replies && message.replies.length) {
+                    const result = messageSearch(messageId, message.replies);
+                    if (result) {
+                        return result;
+                    }
+                }
+            }
+        }
+        return threadSearch(messageId, this);
+    }
+
+
     ////////////////////////////////////////////////////////////////////////////////////
     // Find all messages posted by the specified user.
     public getMessagesByUser(userId: string): ForumMessageContext[] {

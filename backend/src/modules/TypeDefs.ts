@@ -127,5 +127,10 @@ export type SocketNotificationData = {
     action: 'add' | 'edit' | 'delete' | 'error',
     type: 'forum' | 'thread' | 'message' | 'reply' | 'user' | 'authentication' | 'error',
     data: object,
-    source?: string
+    source?: SocketNotificationSource
+}
+
+export type SocketNotificationSource = {
+    parent: string,
+    thread?: string
 }

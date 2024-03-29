@@ -99,7 +99,22 @@ export type StatusResponseAPI = {
 export type SocketNotificationData = {
     action: 'add' | 'edit' | 'delete' | 'error',
     type: 'forum' | 'thread' | 'message' | 'reply' | 'user' | 'authentication' | 'error',
-    data?: object
+    data: object,
+    source?: SocketNotificationSource
+}
+
+export type NotificationDataDelete = {
+    id: string;
+}
+
+export type NotificationDataError = {
+    status: number,
+    message: string
+}
+
+export type SocketNotificationSource = {
+    parent: string,
+    thread?: string
 }
 
 export type ForumThreadStats = {

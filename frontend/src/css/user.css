@@ -18,6 +18,7 @@
     pointer-events: auto;
     border-radius: 0 0 35px 0;
     min-width: 100px;
+    min-height: 100px;
 }
 
 #user-image {
@@ -321,6 +322,10 @@
 }
 
 #user-profile-pic-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     margin: 1rem 0px 0px 0px;
     padding: 0 0.5rem 0.5rem 0.5rem;
     border: 1px solid lightgray;

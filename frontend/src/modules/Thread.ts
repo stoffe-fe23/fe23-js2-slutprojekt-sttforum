@@ -127,8 +127,9 @@ export default class Thread {
     // If this message is currently displayed on the page, update its info to match the content
     // of this object. 
     public update() {
+        console.log("DEBUG: Update parent thread.", this.id);
         // Thread page, displaying its messages
-        const updateThread = document.querySelector(`section[data-threadid="${this.id}"]`);
+        const updateThread = document.querySelector(`section[data-threadid="${this.id}"].forum-thread`);
         if (updateThread) {
             console.log("Thread - found Update Element!");
             const threadHTML = this.display();
@@ -136,11 +137,26 @@ export default class Thread {
         }
 
         // Thread list of a forum
-        const updateThreadList = document.querySelector(`article[data-threadid="${this.id}"]`);
+        const updateThreadList = document.querySelector(`article[data-threadid="${this.id}"].forum-thread-list`);
         if (updateThreadList) {
-            console.log("Thread List - found Update Element!");
+            console.log("DEBUG: Thread List - found Update Element!");
             const threadHTML = this.getThreadListEntry();
             updateThreadList.replaceWith(threadHTML);
+        }
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    // Add an entry for this thread to the forum thread list of the specified forum, if it is displayed
+    // on the page. 
+    public addToThreadListDisplay(forumId: string) {
+        const parentForum = document.querySelector(`section[data-forumid="${forumId}"].forum`) as HTMLElement;
+        if (parentForum) {
+            const threadsBox = parentForum.querySelector(".forum-threads") as HTMLElement;
+            if (threadsBox) {
+                const threadHTML = this.getThreadListEntry();
+                threadsBox.prepend(threadHTML);
+            }
         }
     }
 
@@ -181,9 +197,9 @@ export default class Thread {
         }
 
         // Function to count the messages and get the date of the latest message
-        function checkThreadMessages(): ForumThreadStats {
+        function checkThreadMessages(messages: Message[]): ForumThreadStats {
             threadStats.postCount = 0;
-            for (const message of this.posts) {
+            for (const message of messages) {
                 threadStats.postCount++;
                 if (message.date > threadStats.lastUpdated) {
                     threadStats.lastUpdated = message.date;
@@ -209,6 +225,6 @@ export default class Thread {
             }
         }
 
-        return checkThreadMessages();
+        return checkThreadMessages(this.posts);
     }
 }

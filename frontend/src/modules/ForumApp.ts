@@ -22,7 +22,10 @@ import {
     SocketNotificationData,
     ForumMessageAPI,
     ForumThreadAPI,
-    UserAuthor
+    UserAuthor,
+    NotificationDataDelete,
+    NotificationDataError,
+    SocketNotificationSource
 } from "./TypeDefs.ts";
 
 export default class ForumApp {
@@ -177,7 +180,7 @@ export default class ForumApp {
             }
             else {
                 userName.innerText = "Log in";
-                userImage.src = new URL('../images/user-icon.png', import.meta.url).toString();
+                userImage.src = this.getUserPictureUrl("");
             }
         });
 
@@ -395,31 +398,62 @@ export default class ForumApp {
 
     ////////////////////////////////////////////////////////////////////////////////////////////
     // Handle update notice from server, updating displayed info if relevant. 
+    // TODO: Break up this massive function into more digestible chunks.  
     private async processServerUpdateNotice(updateData: SocketNotificationData): Promise<void> {
         if (updateData.data) {
+            // Something new has been added, add it to the page if the target location is displayed. 
             if (updateData.action == "add") {
-                // A message is updated, redraw it if visible on the page. 
-                if ((updateData.type == "message") || (updateData.type == "reply")) {
-                    // TODO: Add a new message to a thread, or reply chain of another message
+                if (updateData.type == "message") {
+                    const parentThreadId = (updateData.source as SocketNotificationSource).parent ?? "0";
+                    if (parentThreadId != "0") {
+                        const theMessage = await Message.create(this, "", updateData.data as ForumMessageAPI);
+                        const parentThread = await Thread.create(this, parentThreadId);
+
+                        if (parentThread && theMessage) {
+                            theMessage.addToThreadDisplay(parentThreadId);
+                            theMessage.addToAuthorActivityDisplay(parentThread);
+                            parentThread.update();
+                        }
+                    }
+                }
+                if (updateData.type == "reply") {
+                    const parentMessageId = (updateData.source as SocketNotificationSource).parent ?? "0";
+                    const parentThreadId = (updateData.source as SocketNotificationSource).thread ?? "0";
+                    if ((parentMessageId != "0") && (parentThreadId != "0")) {
+                        const theReply = await Message.create(this, "", updateData.data as ForumMessageAPI);
+                        const parentThread = await Thread.create(this, parentThreadId);
+
+                        if (parentThread && theReply) {
+                            theReply.addToRepliesDisplay(parentMessageId);
+                            theReply.addToAuthorActivityDisplay(parentThread);
+                            parentThread.update();
+                        }
+                    }
                 }
                 else if (updateData.type == "thread") {
-                    // TODO: Add a new thread to a forum thread list
-                }
-                else if (updateData.type == "forum") {
-                    // TODO: Update forum name / status on picker, threadlist and thread view. 
+                    const parentForumId = (updateData.source as SocketNotificationSource).parent ?? "0";
+                    if (parentForumId != "0") {
+                        const newThread = await Thread.create(this, "", updateData.data as ForumThreadAPI);
+                        if (newThread) {
+                            newThread.addToThreadListDisplay(parentForumId);
+
+                            if (newThread.posts && newThread.posts.length) {
+                                newThread.posts[0].addToAuthorActivityDisplay(newThread);
+                            }
+                        }
+                    }
                 }
                 else if (updateData.type == "user") {
                     // TODO: Add new user to the user list. 
                 }
             }
+            // Something has been edited, update it on page if currently displayed. 
             else if (updateData.action == "edit") {
-                // A message is updated, redraw it if visible on the page. 
                 if ((updateData.type == "message") || (updateData.type == "reply")) {
                     const theMessage = await Message.create(this, "", updateData.data as ForumMessageAPI);
                     if (theMessage) {
                         theMessage.update();
                     }
-                    // TODO: Update recent posts on user profile as well... 
                 }
                 else if (updateData.type == "thread") {
                     const theThread = await Thread.create(this, "", updateData.data as ForumThreadAPI);
@@ -427,12 +461,7 @@ export default class ForumApp {
                         theThread.update();
                     }
                 }
-                else if (updateData.type == "forum") {
-                    // TODO: Update forum name / status on picker, threadlist and thread view. 
-                }
                 else if (updateData.type == "user") {
-                    // TODO: Update name and picture on posts, public profile and user list
-                    // If user == the currently logged in user, update their name / pic in the menu too. 
                     const updateUser = updateData.data as UserAuthor;
                     this.updatePostsUserData(updateUser);
                     this.updateProfileUserData(updateUser);
@@ -444,24 +473,81 @@ export default class ForumApp {
                     }
                 }
             }
+            // Something has been deleted. Remove it from the page if shown. 
             else if (updateData.action == "delete") {
-                // A message is updated, redraw it if visible on the page. 
                 if ((updateData.type == "message") || (updateData.type == "reply")) {
-                    // TODO: Remove message from the page.
+                    const parentThreadId = (updateData.source as SocketNotificationSource).thread ?? "0";
+                    const delMessage = updateData.data as NotificationDataDelete;
+                    const delForumMessage = document.querySelector(`article[data-messageid="${delMessage.id}"].forum-message`) as HTMLElement;
+                    const delProfileMessage = document.querySelector(`article[data-messageid="${delMessage.id}"].users-profile-post-entry`) as HTMLElement;
+                    const parentThread = await Thread.create(this, parentThreadId);
+
+                    if (delForumMessage) {
+                        delForumMessage.remove();
+                    }
+                    if (delProfileMessage) {
+                        delProfileMessage.remove();
+                    }
+
+                    if (parentThread) {
+                        parentThread.update();
+                    }
                 }
                 else if (updateData.type == "thread") {
-                    // TODO: Remove thread from the page.
-                }
-                else if (updateData.type == "forum") {
-                    // TODO: Remove forum from the page.
+                    const delThread = updateData.data as NotificationDataDelete;
+                    const delThreadListing = document.querySelector(`article[data-threadid="${delThread.id}"].forum-thread-list`) as HTMLElement;
+                    const delThreadView = document.querySelector(`section[data-threadid="${delThread.id}"].forum-thread`) as HTMLElement;
+                    if (delThreadListing) {
+                        delThreadListing.remove();
+                    }
+                    if (delThreadView) {
+                        delThreadView.remove();
+                        this.router.navigate("/forums");
+                    }
                 }
                 else if (updateData.type == "user") {
-                    // TODO: Remove a user from the userlist / leave their profile page.
+                    const delUser = updateData.data as NotificationDataDelete;
+                    this.deleteUserDisplayUpdate(delUser.id);
                 }
             }
             else if (updateData.action == "error") {
-
+                const errorInfo = updateData.data as NotificationDataError;
+                if (updateData.type == "authentication") {
+                    if (errorInfo.status == 401) {
+                        this.showError(`Server connection closed: ${errorInfo.message}`);
+                    }
+                }
+                else {
+                    this.showError(`An error occurred: ${errorInfo.message}`);
+                }
             }
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Update displayed info about a user who just got absolutely deleted. 
+    private deleteUserDisplayUpdate(userId: string): void {
+        // Change author info on displayed posts.
+        const userData: UserAuthor = {
+            id: userId,
+            userName: "Deleted user",
+            picture: "user-icon.png",
+            admin: false
+        }
+        this.updatePostsUserData(userData);
+
+        // Remove from displayed user list
+        const userListEntry = document.querySelector(`article[data-userid="${userData.id}"].article-user-list`);
+        if (userListEntry) {
+            userListEntry.remove();
+        }
+
+        // On their user profile, clear and move away
+        const userProfile = document.querySelector(`section[data-userid="${userData.id}"].section-user`);
+        if (userProfile) {
+            userProfile.remove();
+            this.router.navigate("/users");
         }
     }
 
@@ -482,9 +568,12 @@ export default class ForumApp {
         }
     }
 
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Update displayed info about this user on the user list and public profile pages. 
     private updateProfileUserData(userData: UserAuthor) {
         // User list
-        const userListEntry = document.querySelector(`.user-container article[data-userid="${userData.id}"]`);
+        const userListEntry = document.querySelector(`article[data-userid="${userData.id}"].article-user-list`);
         if (userListEntry) {
             const userIcon = userListEntry.querySelector(".profile-icon") as HTMLImageElement;
             const userName = userListEntry.querySelector(".user-profile-name") as HTMLElement;
@@ -494,7 +583,7 @@ export default class ForumApp {
             userName.innerText = userData.userName;
         }
         // Public user profile
-        const userProfile = document.querySelector(`#page-users section[data-userid="${userData.id}"]`);
+        const userProfile = document.querySelector(`section[data-userid="${userData.id}"].section-user`);
         if (userProfile) {
             const userIcon = userProfile.querySelector(".users-profile-icon") as HTMLImageElement;
             const userName = userProfile.querySelector(".users-profile-name") as HTMLElement;

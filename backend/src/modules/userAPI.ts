@@ -100,8 +100,17 @@ userAPI.post("/register", validateUserRegister, validationErrorHandler, (req: Re
                 name: newUser.name,
                 email: newUser.email,
                 picture: newUser.picture,
-                admin: false
+                admin: newUser.admin
             }
+
+            const userProfileData: ForumAuthor = {
+                id: newUser.id,
+                userName: newUser.name,
+                picture: newUser.picture,
+                admin: newUser.admin
+            }
+
+            sendClientUpdate({ action: "add", type: "user", data: userProfileData }, req);
             res.status(201);
             res.json({ message: `New user added.`, data: newUserData });
         }
@@ -222,7 +231,7 @@ function configureFileUpload() {
             if (req.user && (req.user as ForumUser).id) {
                 console.log("Multer Filename", file, req.user);
                 const userId = (req.user as ForumUser).id;
-                returnCallback(null, userId + extension);
+                returnCallback(null, `${userId}-${Date.now()}${extension}`);
             }
         }
     });

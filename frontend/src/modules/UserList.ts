@@ -78,7 +78,7 @@ export default class UserList {
                         "postLink": `/thread/${post.threadId}`,
                         "message": htmlUtilities.getTruncatedString(post.message, 200)
                     }
-                    const postrow = htmlUtilities.createHTMLFromTemplate("tpl-user-posts", postContainer, postvalues);
+                    const postrow = htmlUtilities.createHTMLFromTemplate("tpl-user-posts", postContainer, postvalues, { "data-messageid": post.id, "data-threadid": post.threadId });
                 }
             }
             else {

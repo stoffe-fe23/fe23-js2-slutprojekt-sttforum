@@ -6,6 +6,7 @@
     Class for managing a message in either a thread or in the reply chain of another message. 
 */
 import User from "./User";
+import Thread from "./Thread.ts";
 import * as htmlUtilities from './htmlUtilities.ts';
 import ForumApp from "./ForumApp.ts";
 import { UserAuthor, MessageDisplayInfo, ForumMessageAPI, StatusResponseAPI, APIQueryData } from "./TypeDefs.ts";
@@ -197,12 +198,77 @@ export default class Message {
     /////////////////////////////////////////////////////////////////////////////////////////////////
     // If this message is currently displayed on the page, update its info to match the content
     // of this object. 
-    public update() {
-        const updateMessage = document.querySelector(`article[data-messageid="${this.id}"]`);
+    public update(): void {
+        // The post in a forum
+        const updateMessage = document.querySelector(`article[data-messageid="${this.id}"].forum-message`);
         if (updateMessage) {
             console.log("Message - found Update Element!");
             const messageHTML = this.display();
             updateMessage.replaceWith(messageHTML);
+        }
+
+        // Recent activity on the profile page
+        const profileMessage = document.querySelector(`article[data-messageid="${this.id}"].users-profile-post-entry`);
+        if (profileMessage) {
+            if (this.deleted) {
+                profileMessage.remove();
+            }
+            else {
+                const postDate = profileMessage.querySelector(".users-profile-post-date") as HTMLElement;
+                const postText = profileMessage.querySelector(".users-profile-post-text") as HTMLElement;
+                postDate.innerText = htmlUtilities.dateTimeToString(this.date);
+                postText.innerText = this.message;
+            }
+        }
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    // Inserts this message in the message list if the target thread is being displayed. 
+    public addToThreadDisplay(threadId: string): void {
+        const targetThread = document.querySelector(`section[data-threadid="${threadId}"].forum-thread`) as HTMLElement;
+        if (targetThread) {
+            const messageContainer = targetThread.querySelector(`.forum-thread-messages`) as HTMLElement;
+            if (messageContainer) {
+                const messageHTML = this.display();
+                messageContainer.prepend(messageHTML);
+            }
+        }
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    // Inserts this message into the replies list of the target/parent message if it is being displayed. 
+    public addToRepliesDisplay(messageId: string): void {
+        const parentMessage = document.querySelector(`article[data-messageid="${messageId}"].forum-message`);
+        if (parentMessage) {
+            const repliesContainer = parentMessage.querySelector(`.forum-message-replies`) as HTMLElement;
+            if (repliesContainer) {
+                const messageHTML = this.display();
+                repliesContainer.append(messageHTML);
+            }
+        }
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    // Inserts this message into the recent activity list of the author if their public profile is shown. 
+    public async addToAuthorActivityDisplay(parentThread: Thread): Promise<void> {
+        const profilePage = document.querySelector(`section[data-userid="${this.author.id}"].section-user`) as HTMLElement;
+        if (profilePage) {
+            const profileMessagesBox = profilePage.querySelector(`.users-profile-posts`);
+            if (profileMessagesBox) {
+                const postvalues = {
+                    "postDate": htmlUtilities.dateTimeToString(this.date),
+                    "threadTitle": parentThread.title,
+                    "postLink": `/thread/${parentThread.id}`,
+                    "message": htmlUtilities.getTruncatedString(this.message, 200)
+                }
+                const newMessage = htmlUtilities.createHTMLFromTemplate("tpl-user-posts", null, postvalues, { "data-messageid": this.id, "data-threadid": parentThread.id });
+                if (newMessage) {
+                    profileMessagesBox.prepend(newMessage);
+                }
+            }
         }
     }
 
