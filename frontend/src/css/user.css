@@ -424,3 +424,53 @@ label[for="user-profile-picture"] {
 #user-register-form input {
     display: block;
 }
+
+#login-form button {
+    margin-top: 0.5rem;
+    background-color: orange;
+    border: none;
+    border-radius: 10px;
+    padding: 0.3rem 0.5rem;
+    cursor: pointer;
+}
+
+#button-cancel {
+    margin-left: 0.5rem;
+}
+
+#user-login {
+    border-radius: 10px;
+    padding: 2rem;
+}
+
+#register-button-container {
+    margin-top: 1rem;
+}
+
+#register-button-container span {
+    font-size: 0.85rem;
+}
+
+#register-button {
+    background: none;
+    border: none;
+    color: rgb(69, 125, 247);
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+#user-register-form input {
+    margin-top: 0.7rem;
+    border: none;
+    border-bottom: 1px solid black;
+    outline: none;
+}
+
+#user-register-form button {
+    margin-top: 0.5rem;
+    background-color: orange;
+    border: none;
+    padding: 0.3rem 0.5rem;
+    border-radius: 10px;
+    cursor: pointer;
+}
