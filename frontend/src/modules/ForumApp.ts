@@ -444,7 +444,8 @@ export default class ForumApp {
                     }
                 }
                 else if (updateData.type == "user") {
-                    // TODO: Add new user to the user list. 
+                    const newUser = updateData.data as UserAuthor;
+                    this.addToUserListDisplay(newUser);
                 }
             }
             // Something has been edited, update it on page if currently displayed. 
@@ -593,6 +594,29 @@ export default class ForumApp {
             userIcon.alt = `${userData.userName} profile picture`;
             userName.innerText = userData.userName;
             userAdmin.innerText = (userData.admin ? "Admin" : "User");
+        }
+    }
+
+    private addToUserListDisplay(userData: UserAuthor) {
+        const userList = document.querySelector(".section-user-list .user-container");
+        if (userList) {
+            const values = {
+                "profilePic": this.getUserPictureUrl(userData.picture),
+                "username": userData.userName,
+                "userLink": "/user/profile/" + userData.id
+            }
+            const userCard = htmlUtilities.createHTMLFromTemplate("tpl-user-list-user", null, values, { "data-userid": userData.id });
+
+            // Find where to insert the new card. List should already be sorted alphabetically, so
+            // just find the first user it should be inserted before. 
+            for (const card of userList.children) {
+                const currName = (card.querySelector(".user-profile-name") as HTMLElement).innerText;
+
+                if (userData.userName.localeCompare(currName) < 0) {
+                    userList.insertBefore(userCard, card);
+                    break;
+                }
+            }
         }
     }
 

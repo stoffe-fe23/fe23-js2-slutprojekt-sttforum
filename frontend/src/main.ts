@@ -188,27 +188,25 @@ forumApp.load().then(() => {
             formData.get("email") as string).then(() => {
                 console.log("Login");
                 alert("User account created!");
-                forumApp.router.navigate('/login');
+                // forumApp.router.navigate('/login');
+                showLoginDialog();
 
             }).catch((error) => {
                 console.error("Login error", error.message);
 
             });
     }
-
     ///// Ton \\\\\
     else if ((event.submitter as HTMLButtonElement).id == "user-register-cancel") {
         console.log("Hej Ton");
         console.log((event.submitter as HTMLButtonElement).id);
-
-
     }
     loginDialog.close();
 });
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-// New user registration form submit
+// Submit handler for the message editor form. Used to create replies to messages, and edit existing messages. 
 (document.querySelector("#message-editor-form") as HTMLFormElement).addEventListener("submit", async (event) => {
     event.preventDefault();
 
@@ -415,6 +413,11 @@ function showLoginDialog() {
         if (!isLoggedIn) {
             (document.querySelector("#login-username") as HTMLInputElement).value = "";
             (document.querySelector("#login-password") as HTMLInputElement).value = "";
+
+            (document.querySelector("#user-register-form") as HTMLFormElement).classList.add("hide");
+            (document.querySelector("#login-form") as HTMLFormElement).classList.remove("hide");
+            (document.querySelector("#register-button-container") as HTMLElement).classList.remove("hide");
+
             loginDialog.showModal();
         }
     });
