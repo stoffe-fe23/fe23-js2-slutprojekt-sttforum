@@ -7,11 +7,6 @@
 */
 
 
-#login-form input {
-    display: block;
-}
-
-
 #current-user {
     display: flex;
     justify-content: center;
@@ -37,6 +32,20 @@
     font-weight: 700;
     padding: 0 0.5rem;
     text-align: center;
+    line-height: 100%;
+}
+
+#user-profile-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    color: white;
+}
+
+#user-profile-form h2 {
+    margin: 0.5rem 0.25rem 0.25rem 0.25rem;
 }
 
 #user-profile-form input {
@@ -48,17 +57,89 @@
     height: 200px;
     object-fit: cover;
     border-radius: 50%;
-    margin-left: 25px;
-    
+    border: 2px solid rgb(105, 103, 119);
 }
 
-.profile-buttons {
-    margin-top: 1.5rem;
+#user-login {
+    border-radius: 10px;
+    background-color: black;
+    color: white;
+    padding: 1rem 1.5rem;
+    border: 10px solid black;
 }
 
 #user-register-form,
 #login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+#user-register-form input,
+#login-form input {
     display: block;
+    border: 0px;
+    border-radius: 12px;
+    padding: 0.3rem 0.6rem;
+    width: 100%;
+}
+
+#register-buttons,
+#login-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.5rem;
+    gap: 1rem;
+    width: 100%;
+}
+
+#register-button,
+#register-buttons button,
+#login-buttons button {
+    background-color: orange;
+    border: none;
+    padding: 0.3rem 0.6rem;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#register-buttons button:first-of-type,
+#login-buttons button:first-of-type {
+    font-weight: 700;
+}
+
+#register-buttons button:hover,
+#register-buttons button:focus,
+#register-button:hover,
+#register-button:focus,
+#login-buttons button:hover,
+#login-buttons button:focus {
+    background-color: yellow;
+    box-shadow: 0px 0px 12px yellow;
+}
+
+#register-button-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+    gap: 0.5rem;
+}
+
+#register-button-container span {
+    font-weight: 700;
+}
+
+#login-form h2 {
+    margin: 0px 0px 0.5rem 0px;
+}
+
+#user-register-form,
+#login-form {
+    display: flex;
 }
 
 #user-register-form.hide,
@@ -82,6 +163,7 @@
     min-height: 200px;
     border-radius: 10px;
     padding: 1rem;
+    overflow: hidden;
 }
 
 .user-profile-input {
@@ -95,6 +177,10 @@
     object-fit: cover;
     border-radius: 10px;
     border-radius: 50%;
+}
+
+.user-profile-name {
+    text-align: center;
 }
 
 .user-link {
@@ -198,8 +284,8 @@
     width: 100%;
     background-color: rgba(0, 0, 0, 0.2);
     box-shadow: -3px 2px 8px rgba(0, 0, 0, 0.1);
-    margin: 0.5rem 0 0.5rem 0.5rem;
-    border-radius: 15px 0px 0px 15px;
+    margin: 0.5rem 1.5rem 0.5rem 0.5rem;
+    border-radius: 15px;
     overflow: hidden;
 }
 
@@ -236,17 +322,37 @@
     padding: 0.5rem 1rem;
 }
 
-#def-pic-container{
+#user-profile-pic-wrapper {
+    margin: 1rem 0px 0px 0px;
+    padding: 0 0.5rem 0.5rem 0.5rem;
+    border: 1px solid lightgray;
+    width: 100%;
+    border-radius: 12px;
+}
+
+label[for="user-profile-picture"] {
+    display: block;
+    font-size: 0.9em;
+    font-weight: 700;
+    padding-top: 0.5rem;
+}
+
+#user-profile-pic-wrapper h4 {
+    padding: 0 0 0.5rem 0;
+    margin: 0;
+}
+
+#def-pic-container {
     display: flex;
 }
 
-#def-pic-container img{
+#def-pic-container img {
     max-width: 50px;
     padding: 0.2rem;
 }
 
-#def-pic-container input{
-    position:absolute;
+#def-pic-container input {
+    position: absolute;
     left: -100px;
 }
 
@@ -254,43 +360,67 @@
     background-color: lightgray;
 }
 
-#user-profile-form h4{
-  margin: 0.7rem 0 0 0 ;
+#def-pic-container label[for="def-pic-custom"] img {
+    border-radius: 50%;
 }
 
-#def-pic-container label{
+#user-profile-form h4 {
+    margin: 0.7rem 0 0 0;
+}
+
+#def-pic-container label {
     padding: 0.4rem;
     border-radius: 50%;
 }
 
-#user-profile-submit{
-    background-color: orange;
-    border: none;
-    padding: 0.3rem;
-    border-radius: 10px;
-    cursor: pointer;
-}
-.profile-buttons{
-    background-color: orange;
-    border: none;
-    padding: 0.3rem;
-    border-radius: 10px;
-    cursor: pointer;
-    margin-left: 0.4rem;
+#user-profile-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.5rem 0 0.5rem;
+    margin-top: 1rem;
 }
 
-#user-profile{
+#user-profile-button button {
+    background-color: orange;
+    border: none;
+    padding: 0.3rem 0.6rem;
     border-radius: 10px;
+    cursor: pointer;
 }
+
+#user-profile-button button:first-of-type {
+    font-weight: 700;
+}
+
+#user-profile-button button:hover,
+#user-profile-button button:focus {
+    background-color: yellow;
+    box-shadow: 0px 0px 12px yellow;
+}
+
+#user-profile {
+    border-radius: 10px;
+    background-color: black;
+    padding: 1rem 2rem;
+}
+
+#user-profile input {
+    border: 0px;
+    border-radius: 12px;
+    padding: 0.3rem 0.6rem;
+}
+
 
 /* #user-login{
 
 } */
 
-.hide{
+.hide {
     display: none;
 }
 
-#user-register-form input{
+#user-register-form input {
     display: block;
 }

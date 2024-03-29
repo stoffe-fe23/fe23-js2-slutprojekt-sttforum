@@ -10,7 +10,7 @@ import fs from 'fs';
 import multer from "multer";
 import { sendClientUpdate, closeClientSocket } from "./server.js";
 import dataStorage from "./Database.js";
-import { UserData, ForumUser, ForumMessageContext } from "./TypeDefs.js";
+import { UserData, ForumUser, ForumMessageContext, ForumAuthor } from "./TypeDefs.js";
 import { isLoggedIn, isOwner, isAdmin, isCurrentUser } from "./permissions.js";
 import {
     validationErrorHandler,
@@ -137,10 +137,9 @@ userAPI.post("/profile/update", isLoggedIn, userPictureUpload.single('picture'),
 
                 const userObj = dataStorage.editUser((req.user as ForumUser).id, req.body.username, req.body.password, req.body.email, pictureName);
                 if (userObj) {
-                    const userProfileData: UserData = {
+                    const userProfileData: ForumAuthor = {
                         id: userObj.id,
-                        name: userObj.name,
-                        email: userObj.email,
+                        userName: userObj.name,
                         picture: userObj.picture,
                         admin: userObj.admin
                     }
@@ -170,14 +169,13 @@ userAPI.delete('/delete/:userId', isCurrentUser, validateUserId, validationError
         const userId = req.params.userId;
         const currentUser = req.user as ForumUser;
 
-        console.log("DELETE ACCOUNT", userId);
+        console.log("DEBUG: DELETE ACCOUNT", userId);
 
         // Soft-delete all posts made by this user.
         dataStorage.deletePostsByUser(userId);
 
         // Log off the user if they are currently logged on (i.e. it is not an admin deleting the user). 
         if (currentUser && (currentUser.id == userId)) {
-            console.log("LOG OFF DELETED USER", userId);
             req.logout((error) => {
                 closeClientSocket(userId);
                 if (error) {
@@ -190,7 +188,6 @@ userAPI.delete('/delete/:userId', isCurrentUser, validateUserId, validationError
 
         // Remove the user from the DB
         if (dataStorage.deleteUser(userId)) {
-            console.log("DELETE USER", userId);
             sendClientUpdate({ action: "delete", type: "user", data: { id: userId } }, req);
             if (!responseSent) {
                 responseSent = true;

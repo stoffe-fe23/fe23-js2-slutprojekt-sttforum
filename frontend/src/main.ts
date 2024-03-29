@@ -59,15 +59,16 @@ forumApp.load().then(() => {
 // Handler for clicking on the User button in the top left corner.
 // Show user profile form if logged in, or the login form if not. 
 (document.querySelector("#current-user") as HTMLElement).addEventListener("click", (event) => {
-
     forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
         if (isLoggedIn && forumApp.user) {
             const profileDialog = document.querySelector("#user-profile") as HTMLDialogElement;
+            const customImage = document.querySelector(`#def-pic-container label[for="def-pic-custom"] img`) as HTMLImageElement;
 
             // Load current user info into the form fields. 
             (document.querySelector("#user-profile-name") as HTMLInputElement).value = forumApp.user.userName;
             (document.querySelector("#user-profile-email") as HTMLInputElement).value = forumApp.user.email;
             (document.querySelector("#user-profile-picture-view") as HTMLImageElement).src = forumApp.user.picture;
+            customImage.src = forumApp.getUserPictureUrl("");
 
             if (defaultPictureNames.includes(forumApp.user.pictureName)) {
                 const selectedPic = document.querySelector(`#def-pic-container input[name="defaultPicture"][value="${forumApp.user.pictureName}"]`) as HTMLInputElement;
@@ -78,6 +79,7 @@ forumApp.load().then(() => {
             else {
                 const selectedPic = document.querySelector(`#def-pic-container input[name="defaultPicture"][value="custom"]`) as HTMLInputElement;
                 if (selectedPic) {
+                    customImage.src = forumApp.user.picture;
                     selectedPic.checked = true;
                 }
             }
@@ -90,15 +92,16 @@ forumApp.load().then(() => {
             profileDialog.showModal();
         }
         else {
+            // User not logged in, show the login dialog box. 
             showLoginDialog();
-                ///// Ton \\\\\
-                const loginForm = document.querySelector("#login-form") as HTMLFormElement;
-                const registerForm = document.querySelector("#user-register-form") as HTMLFormElement;
-                const regBtnContainer = document.querySelector("#register-button-container") as HTMLElement;
-                
-                loginForm.classList.remove("hide");
-                registerForm.classList.add("hide");
-                regBtnContainer.classList.remove("hide");
+            ///// Ton \\\\\
+            const loginForm = document.querySelector("#login-form") as HTMLFormElement;
+            const registerForm = document.querySelector("#user-register-form") as HTMLFormElement;
+            const regBtnContainer = document.querySelector("#register-button-container") as HTMLElement;
+
+            loginForm.classList.remove("hide");
+            registerForm.classList.add("hide");
+            regBtnContainer.classList.remove("hide");
         }
     });
 });
@@ -112,7 +115,7 @@ forumApp.load().then(() => {
     registerForm.classList.remove("hide");
     loginForm.classList.add("hide");
     regBtnContainer.classList.add("hide");
-} );
+});
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -175,7 +178,7 @@ forumApp.load().then(() => {
 (document.querySelector("#user-register-form") as HTMLFormElement).addEventListener("submit", (event) => {
     event.preventDefault();
     console.log("Register form submit");
-    
+
     if ((event.submitter as HTMLButtonElement).id == "user-register-submit") {
         const formData = new FormData(event.currentTarget as HTMLFormElement);
         forumApp.userRegister(
@@ -193,12 +196,12 @@ forumApp.load().then(() => {
             });
     }
 
-      ///// Ton \\\\\
-    else if ((event.submitter as HTMLButtonElement).id == "user-register-cancel"){
+    ///// Ton \\\\\
+    else if ((event.submitter as HTMLButtonElement).id == "user-register-cancel") {
         console.log("Hej Ton");
         console.log((event.submitter as HTMLButtonElement).id);
-        
-        
+
+
     }
     loginDialog.close();
 });

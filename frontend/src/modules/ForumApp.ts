@@ -12,8 +12,18 @@ import Message from "./Message.ts";
 import User from "./User.ts";
 import RestApi from "./RestApi.ts";
 import UserList from "./UserList.ts";
-import { ForumInfoAPI, UserData, StatusResponseAPI, ForumMessageContextAPI, ForumThreadInfoAPI, SocketNotificationData, ForumMessageAPI, ForumThreadAPI } from "./TypeDefs.ts";
 import * as htmlUtilities from "./htmlUtilities";
+import {
+    ForumInfoAPI,
+    UserData,
+    StatusResponseAPI,
+    ForumMessageContextAPI,
+    ForumThreadInfoAPI,
+    SocketNotificationData,
+    ForumMessageAPI,
+    ForumThreadAPI,
+    UserAuthor
+} from "./TypeDefs.ts";
 
 export default class ForumApp {
     public api: RestApi;
@@ -260,8 +270,7 @@ export default class ForumApp {
     public showUserProfile(userId: string, userPage: HTMLElement): void {
         const userList = new UserList(this);
         userList.displayUserProfile(userId, userPage).catch((error) => {
-            throw error;
-            // TEST!!!
+            this.showError(error.message);
         });
     }
 
@@ -328,13 +337,14 @@ export default class ForumApp {
     }
 
 
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Display error messages to the user
     public showError(errorText: string) {
         const errorDiv = document.querySelector("#error") as HTMLElement;
         const errorMsg = errorDiv.querySelector("#error-message") as HTMLElement;
 
         errorMsg.innerHTML = errorText;
-        errorDiv.classList.add("show")
-
+        errorDiv.classList.add("show");
     }
 
 
@@ -409,6 +419,7 @@ export default class ForumApp {
                     if (theMessage) {
                         theMessage.update();
                     }
+                    // TODO: Update recent posts on user profile as well... 
                 }
                 else if (updateData.type == "thread") {
                     const theThread = await Thread.create(this, "", updateData.data as ForumThreadAPI);
@@ -422,6 +433,15 @@ export default class ForumApp {
                 else if (updateData.type == "user") {
                     // TODO: Update name and picture on posts, public profile and user list
                     // If user == the currently logged in user, update their name / pic in the menu too. 
+                    const updateUser = updateData.data as UserAuthor;
+                    this.updatePostsUserData(updateUser);
+                    this.updateProfileUserData(updateUser);
+
+                    if (this.user && (updateUser.id == this.user.id)) {
+                        this.user.userName = updateUser.userName;
+                        this.user.picture = this.getUserPictureUrl(updateUser.picture);
+                        this.displayCurrentUser();
+                    }
                 }
             }
             else if (updateData.action == "delete") {
@@ -443,5 +463,57 @@ export default class ForumApp {
 
             }
         }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Update the author info of all displayed posts on the page authored by the specified user. 
+    private updatePostsUserData(userData: UserAuthor) {
+        const authorPosts = document.querySelectorAll(`article[data-authorid="${userData.id}"]`);
+        if (authorPosts && authorPosts.length) {
+            authorPosts.forEach((msg) => {
+                const authorPic = msg.querySelector(".author-picture") as HTMLImageElement;
+                const authorName = msg.querySelector(".author-name span") as HTMLElement;
+                authorPic.src = this.getUserPictureUrl(userData.picture);
+                authorPic.alt = `${userData.userName} profile picture`;
+                authorName.innerText = userData.userName;
+                authorName.classList[userData.admin ? "add" : "remove"]("admin");
+            })
+        }
+    }
+
+    private updateProfileUserData(userData: UserAuthor) {
+        // User list
+        const userListEntry = document.querySelector(`.user-container article[data-userid="${userData.id}"]`);
+        if (userListEntry) {
+            const userIcon = userListEntry.querySelector(".profile-icon") as HTMLImageElement;
+            const userName = userListEntry.querySelector(".user-profile-name") as HTMLElement;
+
+            userIcon.src = this.getUserPictureUrl(userData.picture);
+            userIcon.alt = `${userData.userName} profile picture`;
+            userName.innerText = userData.userName;
+        }
+        // Public user profile
+        const userProfile = document.querySelector(`#page-users section[data-userid="${userData.id}"]`);
+        if (userProfile) {
+            const userIcon = userProfile.querySelector(".users-profile-icon") as HTMLImageElement;
+            const userName = userProfile.querySelector(".users-profile-name") as HTMLElement;
+            const userAdmin = userProfile.querySelector(".users-profile-admin") as HTMLElement;
+
+            userIcon.src = this.getUserPictureUrl(userData.picture);
+            userIcon.alt = `${userData.userName} profile picture`;
+            userName.innerText = userData.userName;
+            userAdmin.innerText = (userData.admin ? "Admin" : "User");
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Get a full URL to the user profile picture specified. 
+    public getUserPictureUrl(pictureName: string) {
+        if (pictureName && (pictureName.length > 4)) {
+            return `${this.mediaUrl}userpictures/${pictureName}`;
+        }
+        return new URL('../images/user-icon.png', import.meta.url).toString();
     }
 }

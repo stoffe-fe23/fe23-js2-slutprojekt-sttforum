@@ -77,25 +77,27 @@
                 <h2>Log in</h2>
                 <input type="text" name="username" id="login-username" placeholder="User name" min-length="2" max-length="20" required>
                 <input type="password" name="password" id="login-password" placeholder="Password" min-length="6" max-length="40" required>
-                <button id="button-login">Log in</button><button id="button-cancel" formnovalidate>Cancel</button>
+                <div id="login-buttons"><button id="button-login">Log in</button><button id="button-cancel" formnovalidate>Cancel</button></div>
             </form>
 
             <div id="register-button-container">
-                <span>Dont have an accout?</span>
+                <span>Don't have an account?</span>
                 <button id="register-button">Register</button>
             </div>
-             
-    
+
+
             <form id="user-register-form">
                 <h2>Register new user</h2>
-                <input type="text" id="user-register-name" name="username" value="" placeholder="Your username" > <!--Har tagit bort requied för att kunna testa-->
-                <input type="email" id="user-register-email" name="email" value="" placeholder="Your e-mail address" ><!--Har tagit bort requied för att kunna testa-->
+                <input type="text" id="user-register-name" name="username" value="" placeholder="Your username"> <!--Har tagit bort requied för att kunna testa-->
+                <input type="email" id="user-register-email" name="email" value="" placeholder="Your e-mail address"><!--Har tagit bort requied för att kunna testa-->
                 <input type="password" id="user-register-password" name="password" value="" placeholder="Choose a password">
                 <input type="password" id="user-register-password-confirm" name="password-confirm" value="" placeholder="Confirm password">
-                <button id="user-register-submit">Register</button>
-                <button id="user-register-cancel">Cancel</button>
+                <div id="register-buttons">
+                    <button id="user-register-submit">Register</button>
+                    <button id="user-register-cancel">Cancel</button>
+                </div>
             </form>
-            
+
         </dialog>
         <!-- Dialog for replying to a message or editing a messsage -->
         <dialog id="message-editor-dialog">
@@ -118,24 +120,26 @@
                 <input type="email" id="user-profile-email" class="user-profile-input" name="email" value="" max-length="128" placeholder="Your e-mail address" required>
                 <input type="password" id="user-profile-password" class="user-profile-input" name="password" value="" min-length="4" max-length="40" placeholder="Change password">
                 <input type="password" id="user-profile-password-confirm" class="user-profile-input" name="password-confirm" value="" min-length="4" max-length="40" placeholder="Confirm password">
-
-                <h4>Profile picture</h4>
-                <div id="def-pic-container">
-                    <input type="radio" id="def-pic-custom" name="defaultPicture" value="custom">
-                    <label for="def-pic-custom"><img src="./images/user-icon.png" alt=""></label>
-                    <input type="radio" id="def-pic-1" name="defaultPicture" value="def-pic-1.png">
-                    <label for="def-pic-1"><img src="./images/def-pic-1.png" alt=""></label>
-                    <input type="radio" id="def-pic-2" name="defaultPicture" value="def-pic-2.png">
-                    <label for="def-pic-2"><img src="./images/def-pic-2.png" alt=""></label>
-                    <input type="radio" id="def-pic-3" name="defaultPicture" value="def-pic-3.png">
-                    <label for="def-pic-3"><img src="./images/def-pic-3.png" alt=""></label>
+                <div id="user-profile-pic-wrapper">
+                    <h4>Profile picture</h4>
+                    <div id="def-pic-container">
+                        <input type="radio" id="def-pic-custom" name="defaultPicture" value="custom">
+                        <label for="def-pic-custom"><img src="./images/user-icon.png" alt="Custom picture" title="Custom profile picture"></label>
+                        <input type="radio" id="def-pic-1" name="defaultPicture" value="def-pic-1.png">
+                        <label for="def-pic-1"><img src="./images/def-pic-1.png" alt="Profile picture: Dog"></label>
+                        <input type="radio" id="def-pic-2" name="defaultPicture" value="def-pic-2.png">
+                        <label for="def-pic-2"><img src="./images/def-pic-2.png" alt="Profile picture: Fox"></label>
+                        <input type="radio" id="def-pic-3" name="defaultPicture" value="def-pic-3.png">
+                        <label for="def-pic-3"><img src="./images/def-pic-3.png" alt="Profile picture: Owl"></label>
+                    </div>
+                    <label for="user-profile-picture">Upload custom profile picture:</label>
+                    <input type="file" id="user-profile-picture" name="picture" value="" accept="image/png, image/jpeg, image/gif, image/webp">
                 </div>
-                <input type="file" id="user-profile-picture" name="picture" value="" accept="image/png, image/jpeg, image/gif, image/webp">
                 <div id="user-profile-button">
                     <button id="user-profile-submit">Save</button>
                     <button formnovalidate class="profile-buttons">Close</button>
-                    <button id="user-profile-logout" formnovalidate class="profile-buttons">Log off</button>
-                    <button id="user-delete-submit" class="profile-buttons">Delete user</button>
+                    <button formnovalidate id="user-profile-logout" class="profile-buttons">Log off</button>
+                    <button formnovalidate id="user-delete-submit" class="profile-buttons">Delete user</button>
                 </div>
             </form>
         </dialog>
@@ -210,7 +214,7 @@
     </template>
     <!-- Template for a forum thread message -->
     <template id="tpl-forum-message">
-        <article class="forum-message" data-messageid="0">
+        <article class="forum-message" data-messageid="0" data-authorid="0">
             <div class="forum-message-wrapper">
                 <div class="forum-message-header">
                     <img class="author-picture" src="images/user-icon.png" data-template="authorPicture">
@@ -244,7 +248,7 @@
     </template>
     <!-- Templates for the public user profile -->
     <template id="tpl-user">
-        <section class="section-user">
+        <section class="section-user" data-userid="0">
             <h2 data-template="UserProfile">User Profile</h2>
             <img class="users-profile-icon" data-template="profilePic">
             <div class="users-profile-name" data-template="username"></div>

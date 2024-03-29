@@ -5,10 +5,12 @@
     Database.ts
     Database abstraction layer. 
     Class and global object for reading and writing subsets of data in the database. 
-    Currently uses simple JSON file storage, but could be replaced with an actual database here
-    using the same public methods. 
+    Currently uses simple JSON file storage, but could theoretically be replaced with 
+    an actual DBMS here using the same public methods. 
     
     Initializes storage and caches data from files in the storage property. 
+    Any data reads will be from this cache. Updates or new data will first be
+    done on the cache, which will then be written to disk in its entirety. 
 */
 import DataStore from "./Datastore.js";
 import crypto from 'crypto';
@@ -164,7 +166,7 @@ class Database {
 
 
     ////////////////////////////////////////////////////////////////////////////////////
-    // Delete the specified user from the system. 
+    // Delete the specified user account from the system. 
     public deleteUser(userId: string): boolean {
         const idx = this.storage.userDB.findIndex((user) => user.id == userId);
         if (idx != -1) {
@@ -178,13 +180,17 @@ class Database {
 
     ////////////////////////////////////////////////////////////////////////////////////
     // Soft-delete all posts by the specified user.
-    public deletePostsByUser(userId: string): number {
+    public deletePostsByUser(userId: string, keepAuthorInfo: boolean = false): number {
         const userPosts = this.getMessagesByUser(userId);
         let postCounter: number = 0;
         if (userPosts) {
             for (const post of userPosts) {
                 post.message.deleted = true;
                 post.message.message = "(This message has been deleted.)";
+                if (!keepAuthorInfo) {
+                    post.message.author.userName = "Deleted user";
+                    post.message.author.picture = "user-icon.png";
+                }
                 postCounter++;
             }
             dataStorage.storage.saveForums();

@@ -37,7 +37,7 @@ export default class UserList {
             for (const user of userData) {
                 const attribute = { "data-userid": user.id };
                 const values = {
-                    "profilePic": (user.picture.length ? `${this.app.mediaUrl}userpictures/${user.picture}` : new URL('../images/user-icon.png', import.meta.url).toString()),
+                    "profilePic": this.app.getUserPictureUrl(user.picture),
                     "username": user.userName,
                     "userLink": "/user/profile/" + user.id
                 }
@@ -62,12 +62,12 @@ export default class UserList {
             const userData = res.data as PublicUserProfile;
 
             const values = {
-                "profilePic": (userData.picture.length ? `${this.app.mediaUrl}userpictures/${userData.picture}` : new URL('../images/user-icon.png', import.meta.url).toString()),
+                "profilePic": this.app.getUserPictureUrl(userData.picture),
                 "username": userData.userName,
                 "postCounter": userData.postCount,
                 "profileAdmin": userData.admin ? "Admin" : "User"
             }
-            const userProfileEl = htmlUtilities.createHTMLFromTemplate("tpl-user", userPage, values);
+            const userProfileEl = htmlUtilities.createHTMLFromTemplate("tpl-user", userPage, values, { "data-userid": userData.id });
             const postContainer = userProfileEl.querySelector(".users-profile-posts") as HTMLElement;
 
             if (userData.recentPosts.length) {

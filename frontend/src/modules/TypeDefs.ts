@@ -102,6 +102,12 @@ export type SocketNotificationData = {
     data?: object
 }
 
+export type ForumThreadStats = {
+    postCount: number,
+    lastUpdated: number,
+    lastAuthor: string
+}
+
 
 export type APIQueryParams = Record<string, string | Array<string>> | null;
 export type APIQueryValue = string | number | boolean | Array<string | number>;

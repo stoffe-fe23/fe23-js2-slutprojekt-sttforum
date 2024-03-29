@@ -139,7 +139,7 @@ export default class Message {
             message: this.message ?? "",
             date: htmlUtilities.dateTimeToString(this.date)
         };
-        const attributes = { "data-messageid": this.id };
+        const attributes = { "data-messageid": this.id, "data-authorid": this.author.id };
 
         const thisMessageElem = htmlUtilities.createHTMLFromTemplate("tpl-forum-message", targetContainer, values, attributes, true);
         const repliesElement = thisMessageElem.querySelector(`.forum-message-replies`) as HTMLElement;
