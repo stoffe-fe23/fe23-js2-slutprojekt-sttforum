@@ -23,7 +23,7 @@ export default class User {
             this.id = userData.id;
             this.userName = userData.name;
             this.email = userData.email;
-            this.picture = (userData.picture.length ? `${this.app.mediaUrl}userpictures/${userData.picture}` : new URL('../images/user-icon.png', import.meta.url).toString());
+            this.picture = app.getUserPictureUrl(userData.picture);
             this.pictureName = userData.picture;
             this.admin = userData.admin;
         }

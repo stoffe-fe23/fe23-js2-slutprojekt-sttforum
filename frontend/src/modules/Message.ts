@@ -28,7 +28,7 @@ export default class Message {
         if (messageData) {
             this.id = messageData.id;
             this.author = messageData.author;
-            this.author.picture = (messageData.author && messageData.author.picture && messageData.author.picture.length) ? app.mediaUrl + 'userpictures/' + messageData.author.picture : new URL('../images/user-icon.png', import.meta.url).toString();
+            this.author.picture = app.getUserPictureUrl(messageData.author.picture);
             this.deleted = messageData.deleted;
             this.date = messageData.date;
             this.message = messageData.message;
