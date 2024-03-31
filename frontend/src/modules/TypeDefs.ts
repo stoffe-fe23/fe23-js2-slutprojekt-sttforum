@@ -31,7 +31,8 @@ export type ForumMessageAPI = {
     message: string,
     deleted: boolean,
     date: number,
-    replies: ForumMessageAPI[]
+    replies: ForumMessageAPI[],
+    likes: string[]
 }
 
 export type ForumThreadAPI = {
@@ -78,6 +79,7 @@ export type MessageDisplayInfo = {
     authorLink: string,
     message: string,
     date: string;
+    likes: number;
 }
 
 export type ThreadDisplayInfo = {
@@ -97,7 +99,7 @@ export type StatusResponseAPI = {
 }
 
 export type SocketNotificationData = {
-    action: 'add' | 'edit' | 'delete' | 'error',
+    action: 'add' | 'edit' | 'delete' | 'like' | 'error',
     type: 'forum' | 'thread' | 'message' | 'reply' | 'user' | 'authentication' | 'error',
     data: object,
     source?: SocketNotificationSource

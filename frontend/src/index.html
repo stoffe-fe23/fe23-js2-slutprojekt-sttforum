@@ -223,9 +223,17 @@
                 </div>
                 <div class="forum-message-text" data-template="message"></div>
                 <form class="forum-message-buttons">
+                    <div class="like-button-wrapper">
+                        <button name="submit" value="like">
+                            <img src="./images/icon-like.png" alt="Like">
+                            <span class="forum-message-likes" data-template="likes"></span>
+                        </button>
+                    </div>
+                    <div class="action-button-wrapper">
                     <button name="submit" value="reply">Reply</button>
                     <button name="submit" value="edit">Edit</button>
                     <button name="submit" value="delete">Delete</button>
+                </div>
                 </form>
             </div>
             <div class="forum-message-replies" data-template="replies"></div>

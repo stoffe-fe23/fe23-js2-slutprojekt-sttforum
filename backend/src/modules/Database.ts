@@ -257,7 +257,8 @@ class Database {
                     message: messageText,
                     deleted: false,
                     date: Date.now(),
-                    replies: []
+                    replies: [],
+                    likes: []
                 }
 
                 targetThread.posts.push(newMessage);
@@ -293,7 +294,8 @@ class Database {
                     message: messageText,
                     deleted: false,
                     date: Date.now(),
-                    replies: []
+                    replies: [],
+                    likes: []
                 }
 
                 targetMsg.replies.push(newMessage);
@@ -345,6 +347,33 @@ class Database {
         const msg = this.getMessage(messageId);
         if (msg) {
             msg.message = messageText;
+            this.storage.saveForums();
+        }
+        return msg;
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    // Toggle the "like" of a message by the specified user.
+    public toggleMessageLike(messageId: string, userId: string): ForumMessage {
+        const msg = this.getMessage(messageId);
+        if (msg) {
+            if (!msg.likes || !Array.isArray(msg.likes)) {
+                msg.likes = [];
+                msg.likes.push(userId);
+            }
+            else if (Array.isArray(msg.likes)) {
+                if (msg.likes.includes(userId)) {
+                    const idx = msg.likes.indexOf(userId);
+                    if (idx != -1) {
+                        msg.likes.splice(idx, 1);
+                    }
+                }
+                else {
+                    msg.likes.push(userId);
+                }
+            }
+
             this.storage.saveForums();
         }
         return msg;
@@ -754,7 +783,6 @@ class Database {
         return checkThreadMessages(threadId, this);
     }
 }
-
 
 
 // Create global dataStorage object for accessing and saving data to disk. 

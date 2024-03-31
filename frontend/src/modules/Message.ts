@@ -19,6 +19,7 @@ export default class Message {
     public deleted: boolean;
     public date: number;
     public replies: Message[];
+    public likes: string[];
     private app: ForumApp;
 
 
@@ -33,6 +34,7 @@ export default class Message {
             this.deleted = messageData.deleted;
             this.date = messageData.date;
             this.message = messageData.message;
+            this.likes = messageData.likes ?? [];
         }
     }
 
@@ -138,7 +140,8 @@ export default class Message {
             authorPicture: this.author.picture.length ? this.author.picture : new URL('../images/user-icon.png', import.meta.url).toString(),
             authorLink: `/user/profile/${this.author.id}`,
             message: this.message ?? "",
-            date: htmlUtilities.dateTimeToString(this.date)
+            date: htmlUtilities.dateTimeToString(this.date),
+            likes: this.likes.length ?? "0"
         };
         const attributes = { "data-messageid": this.id, "data-authorid": this.author.id };
 
@@ -149,6 +152,8 @@ export default class Message {
         const replyButton = replyBtns.querySelector(`button[value="reply"]`) as HTMLButtonElement;
         const editButton = replyBtns.querySelector(`button[value="edit"]`) as HTMLButtonElement;
         const deleteButton = replyBtns.querySelector(`button[value="delete"]`) as HTMLButtonElement;
+        const likeButton = thisMessageElem.querySelector(".like-button-wrapper button") as HTMLButtonElement;
+        const likeCounter = thisMessageElem.querySelector(".like-button-wrapper span") as HTMLElement;
 
         replyBtns.addEventListener("submit", this.onMessageButtonsSubmit.bind(this));
 
@@ -158,6 +163,16 @@ export default class Message {
             if (authorName) {
                 authorName.classList.add("admin");
             }
+        }
+
+        // If the user has liked this message already, make the like button reflect it.
+        likeCounter.innerText = this.likes.length.toString();
+        if (this.app.user && this.likes.includes(this.app.user.id)) {
+            likeButton.classList.add("liked");
+            likeButton.title = "Unlike this message";
+        }
+        else {
+            likeButton.title = "Like this message";
         }
 
         // If a message is soft-deleted, remove hide its buttons and display it differently. 
@@ -274,6 +289,52 @@ export default class Message {
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
+    // Toggle the Liked marker on this message for the current user. 
+    public async toggleLike(): Promise<boolean> {
+        try {
+            const response: StatusResponseAPI = await this.app.api.updateJson(`forum/message/like/${this.id}`);
+
+            if (response.message) {
+                return (response.message == "Liked message");
+            }
+        }
+        catch (error) {
+            this.app.showError("Error toggling like on message: " + error.message);
+        }
+        return false;
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    // Updates the like counter, and if the user has liked this message, if the missage is displayed 
+    // on the page. 
+    public updateLikesDisplay() {
+        console.log("DEBUG: Updating likes display", this);
+        const message = document.querySelector(`article[data-messageid="${this.id}"].forum-message`);
+        if (message) {
+            console.log("DEBUG: Like found message display...");
+            const likeButton = message.querySelector(".like-button-wrapper button") as HTMLButtonElement;
+            if (likeButton) {
+                console.log("DEBUG: Like found Like Button...");
+                const likeCounter = message.querySelector(".like-button-wrapper span") as HTMLElement;
+                likeCounter.innerText = this.likes.length.toString();
+
+                if (this.app.user && this.likes.includes(this.app.user.id)) {
+                    likeButton.classList.add("liked");
+                    likeButton.title = "Unlike this message";
+                    console.log("DEBUG: LIKED IT!");
+                }
+                else {
+                    likeButton.classList.remove("liked");
+                    likeButton.title = "Like this message";
+                    console.log("DEBUG: UNLIKED IT!");
+                }
+            }
+        }
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
     // Submit handler for the Reply/Edit/Delete buttons on a message
     private onMessageButtonsSubmit(event) {
         event.preventDefault();
@@ -290,6 +351,9 @@ export default class Message {
         targetIdField.value = this.id;
 
         switch (editorAction.value) {
+            case "like":
+                this.toggleLike();
+                break;
             case "reply":
                 messageTextField.value = "";
                 messageDialog.showModal();

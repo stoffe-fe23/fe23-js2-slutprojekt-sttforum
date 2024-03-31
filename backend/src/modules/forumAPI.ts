@@ -21,7 +21,8 @@ import {
     validateNewReply,
     validateEditThread,
     validateEditMessage,
-    validateSearchString
+    validateSearchString,
+    validateLikeMessage
 } from "./validation.js";
 
 // Router for the /api/forum path endpoints 
@@ -68,7 +69,7 @@ forumAPI.get('/threads/list/:forumId', isLoggedIn, validateForumId, validationEr
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////
-// Get all data about a forum with the specified ID, including any messages contained within. 
+// Get all data about a forum with the specified ID, and info about the threads it contains
 forumAPI.get('/get/:forumId', isLoggedIn, validateForumId, validationErrorHandler, (req: Request, res: Response) => {
     try {
         const forum = dataStorage.getForum(req.params.forumId);
@@ -138,6 +139,7 @@ forumAPI.get('/thread/get/:threadId', isLoggedIn, validateThreadId, validationEr
     try {
         const forumThread = dataStorage.getThread(req.params.threadId);
         if (forumThread) {
+            const userId = (req.user as ForumUser).id ?? null;
             res.json(forumThread);
         }
         else {
@@ -304,6 +306,7 @@ forumAPI.post('/message/reply', isLoggedIn, validateNewReply, validationErrorHan
 *   Edit existing data
 *********************************************************************************************/
 
+//////////////////////////////////////////////////////////////////////////////////////////////
 // Edit (the title of) the specified thread
 forumAPI.patch('/thread/edit/:threadId', isAdmin, validateEditThread, validationErrorHandler, (req: Request, res: Response) => {
     console.log("DEBUG: Edit thread: ", req.params.threadId);
@@ -320,6 +323,7 @@ forumAPI.patch('/thread/edit/:threadId', isAdmin, validateEditThread, validation
 });
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////
 // Delete the specified thread
 forumAPI.delete('/thread/delete/:threadId', isAdmin, validateThreadId, validationErrorHandler, (req: Request, res: Response) => {
     console.log("DEBUG: Delete thread", req.params.threadId);
@@ -337,6 +341,7 @@ forumAPI.delete('/thread/delete/:threadId', isAdmin, validateThreadId, validatio
 });
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////
 // Edit (the message text of) the specified message
 forumAPI.patch('/message/edit', isOwner, validateEditMessage, validationErrorHandler, (req: Request, res: Response) => {
     console.log("DEBUG: Edit message", req.body.messageId);
@@ -353,7 +358,32 @@ forumAPI.patch('/message/edit', isOwner, validateEditMessage, validationErrorHan
 });
 
 
-// Soft-Delete the specified message (only admins can hard-delete messages)
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Toggle the "like" marker of the specified message by the current user. 
+forumAPI.patch('/message/like/:messageId', isLoggedIn, validateLikeMessage, validationErrorHandler, (req: Request, res: Response) => {
+    console.log("DEBUG: Like message", req.params.messageId);
+
+    try {
+        const user = (req.user as ForumUser);
+        if (user) {
+            const likedMessage = dataStorage.toggleMessageLike(req.params.messageId, user.id);
+            sendClientUpdate({ action: "like", type: "message", data: likedMessage }, req);
+            res.json({ message: (likedMessage ? `Liked message` : `Unliked message`), data: {} });
+        }
+        else {
+            res.status(401);
+            res.json({ error: `You must be logged in to like messages.`, data: "Not Authorized" });
+        }
+    }
+    catch (error) {
+        res.status(500);
+        res.json({ error: `An error occured when liking message ${req.params.messageId}.`, data: error.message });
+    }
+});
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Soft-Delete the specified message (it is kept in the DB but marked as deleted)
 forumAPI.delete('/message/delete/:messageId', isOwner, validateMessageId, validationErrorHandler, (req: Request, res: Response) => {
     console.log("Delete message", req.params.messageId);
 
@@ -371,7 +401,9 @@ forumAPI.delete('/message/delete/:messageId', isOwner, validateMessageId, valida
     }
 });
 
-// Hard-Delete (remove) the specified message, and any replies to it.
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Hard-Delete the specified message, and any replies to it. (They are removed from the DB)
 forumAPI.delete('/message/remove/:messageId', isAdmin, validateMessageId, validationErrorHandler, (req: Request, res: Response) => {
     console.log("Delete message", req.params.messageId);
 

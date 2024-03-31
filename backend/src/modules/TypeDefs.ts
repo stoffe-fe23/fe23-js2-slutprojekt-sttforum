@@ -65,7 +65,8 @@ export type ForumMessage = {
     message: string,
     deleted: boolean,
     date: number,
-    replies: ForumMessage[]
+    replies: ForumMessage[],
+    likes?: string[]
 }
 
 export type ForumThread = {
@@ -124,7 +125,7 @@ export type ForumMessageInfo = {
 }
 
 export type SocketNotificationData = {
-    action: 'add' | 'edit' | 'delete' | 'error',
+    action: 'add' | 'edit' | 'delete' | 'like' | 'error',
     type: 'forum' | 'thread' | 'message' | 'reply' | 'user' | 'authentication' | 'error',
     data: object,
     source?: SocketNotificationSource

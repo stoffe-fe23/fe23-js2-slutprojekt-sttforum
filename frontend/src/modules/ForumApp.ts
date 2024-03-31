@@ -474,6 +474,14 @@ export default class ForumApp {
                     }
                 }
             }
+            else if (updateData.action == "like") {
+                if (updateData.type == "message") {
+                    const theMessage = await Message.create(this, "", updateData.data as ForumMessageAPI);
+                    if (theMessage) {
+                        theMessage.updateLikesDisplay();
+                    }
+                }
+            }
             // Something has been deleted. Remove it from the page if shown. 
             else if (updateData.action == "delete") {
                 if ((updateData.type == "message") || (updateData.type == "reply")) {

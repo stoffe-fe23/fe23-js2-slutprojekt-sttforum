@@ -355,7 +355,7 @@ a.author-name span.admin::after {
 
 .forum-message-buttons {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     gap: 0.5rem;
     padding: 0.2rem;
@@ -363,7 +363,29 @@ a.author-name span.admin::after {
     background-color: rgba(0, 0, 0, 0.15);
 }
 
-.forum-message-buttons button {
+.like-button-wrapper button {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    border: 0;
+    gap: 0.5rem;
+    background-color: transparent;
+}
+
+.like-button-wrapper button.liked {
+    background-color: rgba(138, 229, 138, 0.7);
+    border-radius: 12px;
+}
+
+
+.action-button-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.action-button-wrapper button {
     border: 0px;
     background-color: black;
     color: orange;
@@ -374,11 +396,13 @@ a.author-name span.admin::after {
     cursor: pointer;
 }
 
-.forum-message-buttons button:hover,
-.forum-message-buttons button:focus {
+.action-button-wrapper button:hover,
+.action-button-wrapper button:focus {
     color: yellow;
     background-color: rgb(40, 40, 40);
 }
+
+
 
 .forum-message-wrapper {
     background-color: rgba(0, 0, 0, 0.15);

@@ -214,6 +214,13 @@ export const validateEditMessage = [
 ];
 
 
+export const validateLikeMessage = [
+    param("messageId")
+        .exists().withMessage('The ID of the message to like must be set.').bail()
+        .isUUID('all').withMessage('Invalid ID of message to like specified.').bail()
+        .custom(validateMessageIdExistsNotDeleted).withMessage('The message to like could not be found.').bail()
+];
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Validate User profile fields - "picture" field is validated in fileErrorHandler()
