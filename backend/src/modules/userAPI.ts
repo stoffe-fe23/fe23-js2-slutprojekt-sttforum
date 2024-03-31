@@ -131,6 +131,7 @@ userAPI.post("/register", validateUserRegister, validationErrorHandler, (req: Re
 userAPI.post("/profile/update", isLoggedIn, userPictureUpload.single('picture'), validateUserProfile, validationErrorHandler, fileErrorHandler, (req: Request, res: Response) => {
     try {
         if (req.user && (req.user as ForumUser).id) {
+            const profileUser = (req.user as ForumUser);
             if (!req.body.password.length || (req.body.password && req.body['password-confirm'] && (req.body.password.length > 3) && (req.body.password == req.body['password-confirm']))) {
 
                 // Set one of the default images, or a user uploaded image if any. 
@@ -139,12 +140,29 @@ userAPI.post("/profile/update", isLoggedIn, userPictureUpload.single('picture'),
                     if (defaultPictureNames.includes(req.body.defaultPicture)) {
                         pictureName = req.body.defaultPicture;
                     }
-                    else if ((req.body.defaultPicture == "custom") && defaultPictureNames.includes((req.user as ForumUser).picture)) {
+                    else if ((req.body.defaultPicture == "custom") && defaultPictureNames.includes(profileUser.picture)) {
                         pictureName = "user-icon.png";
                     }
                 }
+                else {
+                    // Remove old custom image if uploading a new one. 
+                    if (!defaultPictureNames.includes(profileUser.picture) && (profileUser.picture != "user-icon.png")) {
+                        try {
+                            fs.unlink(`${req.file.destination}${profileUser.picture}`, (error) => {
+                                if (error) {
+                                    res.status(500);
+                                    res.json({ error: "Error removing old profile picture. " + error.message });
+                                }
+                            });
+                        }
+                        catch (error) {
+                            res.status(500);
+                            res.json({ error: "Error removing old profile picture. " + error.message });
+                        }
+                    }
+                }
 
-                const userObj = dataStorage.editUser((req.user as ForumUser).id, req.body.username, req.body.password, req.body.email, pictureName);
+                const userObj = dataStorage.editUser(profileUser.id, req.body.username, req.body.password, req.body.email, pictureName);
                 if (userObj) {
                     const userProfileData: ForumAuthor = {
                         id: userObj.id,
@@ -179,6 +197,20 @@ userAPI.delete('/delete/:userId', isCurrentUser, validateUserId, validationError
         const currentUser = req.user as ForumUser;
 
         console.log("DEBUG: DELETE ACCOUNT", userId);
+
+        // Remove uploaded custom profile picture
+        if (!defaultPictureNames.includes(currentUser.picture) && (currentUser.picture != "user-icon.png")) {
+            try {
+                fs.unlink(`../backend/media/userpictures/${currentUser.picture}`, (error) => {
+                    if (error) {
+                        console.log(`Error removing old profile picture: ${currentUser.picture} (${error.message}) `);
+                    }
+                });
+            }
+            catch (error) {
+                console.log(`Error removing old profile picture: ${currentUser.picture} (${error.message}) `);
+            }
+        }
 
         // Soft-delete all posts made by this user.
         dataStorage.deletePostsByUser(userId);

@@ -174,8 +174,8 @@
     width: 150px;
     height: 150px;
     object-fit: cover;
-    border-radius: 10px;
     border-radius: 50%;
+    background-color: darkgrey;
 }
 
 .user-profile-name {
@@ -224,10 +224,10 @@
     width: 200px;
     height: 200px;
     object-fit: cover;
-    border-radius: 10px;
     border-radius: 50%;
     margin-top: 1rem;
     margin-left: 1rem;
+    background-color: darkgrey;
 }
 
 .users-profile-name {

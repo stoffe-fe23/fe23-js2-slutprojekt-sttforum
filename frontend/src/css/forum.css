@@ -133,6 +133,7 @@ article.forum-message .forum-message-wrapper.deleted .forum-message-text {
     height: 60px;
     object-fit: cover;
     border-radius: 50%;
+    background-color: rgb(102, 119, 148);
 }
 
 a.author-name {
