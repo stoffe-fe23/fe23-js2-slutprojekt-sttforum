@@ -75,13 +75,15 @@ export function isOwner(req: Request, res: Response, next: NextFunction) {
     try {
         if (req.isAuthenticated()) {
             if (req.user && (req.user as ForumUser).admin) {
+                console.log("DEBUG: Delete message as Admin");
                 return next();
             }
 
-            if (['POST', 'PATCH', 'DELETE'].includes(req.method) && req.user && req.body && req.body.messageId) {
-                const msg = dataStorage.getMessage(req.body.messageId);
+            if (['POST', 'PATCH', 'DELETE'].includes(req.method) && req.user && ((req.body && req.body.messageId) || req.params && req.params.messageId)) {
+                const msg = dataStorage.getMessage(req.body.messageId ?? req.params.messageId);
                 if (msg) {
                     if (msg.author.id == (req.user as ForumUser).id) {
+                        console.log("DEBUG: Delete message as Author");
                         return next();
                     }
                 }

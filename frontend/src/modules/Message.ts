@@ -188,6 +188,7 @@ export default class Message {
             likeButton.disabled = true;
             replyBtns.classList.add("hide");
         }
+        // Hide buttons if the parent thread is locked (or otherwise editing is prohibited)
         else if (!allowEditing) {
             replyButton.disabled = true;
             editButton.disabled = true;
@@ -197,8 +198,14 @@ export default class Message {
         }
         // If current user is either the author of the message or admin, allow editing/deleting. 
         else if ((this.app.user && this.app.user.admin) || (this.app.user && (this.app.user.id == this.author.id))) {
+            const removeButton = thisMessageElem.querySelector(".forum-message-remove") as HTMLButtonElement;
+
             editButton.disabled = false;
             deleteButton.disabled = false;
+
+            if (this.app.user.admin) {
+                removeButton.classList.remove("hide");
+            }
         }
         else {
             editButton.disabled = true;
@@ -373,6 +380,11 @@ export default class Message {
             case "delete":
                 if (confirm("Are you sure you wish to delete this message?")) {
                     this.delete();
+                }
+                break;
+            case "remove":
+                if (confirm("Are you sure you wish to permanently remove this message and all replies to it?")) {
+                    this.remove();
                 }
                 break;
         }

@@ -630,6 +630,9 @@
                                 "date": 1711391322920,
                                 "replies": []
                             }
+                        ],
+                        "likes": [
+                            "5bcca996-929a-4451-a889-3a2267c6e216"
                         ]
                     }
                 ],
@@ -802,6 +805,34 @@
                         "deleted": false,
                         "date": 1711720834155,
                         "replies": []
+                    },
+                    {
+                        "id": "56d44a19-ffe3-4e67-bd01-47760f783116",
+                        "author": {
+                            "id": "5bcca996-929a-4451-a889-3a2267c6e216",
+                            "userName": "John Doe",
+                            "picture": "def-pic-3.png",
+                            "admin": false
+                        },
+                        "message": "(This message has been deleted.)",
+                        "deleted": true,
+                        "date": 1711968908611,
+                        "replies": [],
+                        "likes": []
+                    },
+                    {
+                        "id": "dba9de4a-ae80-46e3-99dd-110a31476e12",
+                        "author": {
+                            "id": "5bcca996-929a-4451-a889-3a2267c6e216",
+                            "userName": "John Doe",
+                            "picture": "def-pic-3.png",
+                            "admin": false
+                        },
+                        "message": "(This message has been deleted.)",
+                        "deleted": true,
+                        "date": 1711969292193,
+                        "replies": [],
+                        "likes": []
                     }
                 ],
                 "forum": {

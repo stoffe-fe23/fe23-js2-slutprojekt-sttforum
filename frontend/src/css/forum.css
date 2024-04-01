@@ -424,6 +424,24 @@ a.author-name span.admin::after {
     background-color: rgb(40, 40, 40);
 }
 
+.action-button-wrapper .forum-message-remove {
+    background-color: transparent;
+}
+
+.action-button-wrapper .forum-message-remove img {
+    width: 24px;
+    height: 24px;
+}
+
+.action-button-wrapper .forum-message-remove:hover,
+.action-button-wrapper .forum-message-remove:focus {
+    background-color: transparent;
+}
+
+.action-button-wrapper .forum-message-remove:hover img,
+.action-button-wrapper .forum-message-remove:focus img {
+    filter: invert(69%) sepia(17%) saturate(6994%) hue-rotate(359deg) brightness(104%) contrast(101%);
+}
 
 
 .forum-message-wrapper {
