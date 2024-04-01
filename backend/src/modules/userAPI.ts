@@ -28,6 +28,7 @@ import {
 const userAPI = Router();
 const userPictureUpload = configureFileUpload();
 
+// Number of most recent messages to show on public user profiles. 
 const POST_HISTORY_MAX = 5;
 
 

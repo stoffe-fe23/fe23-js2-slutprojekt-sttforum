@@ -82,22 +82,27 @@ export default class Forum {
         // Sorts threads in falling chronological order by last update
         this.threads.sort((a, b) => b.lastUpdate - a.lastUpdate);
 
-        for (const thread of this.threads) {
-            const values = {
-                id: thread.id,
-                title: thread.title,
-                date: htmlUtilities.dateTimeToString(thread.date),
-                active: thread.active,
-                postCount: thread.postCount,
-                lastUpdated: htmlUtilities.dateTimeToString(thread.lastUpdate),
-                lastAuthor: thread.lastAuthor,
-                link: `/thread/${thread.id}`
-            }
-            const listEntry = htmlUtilities.createHTMLFromTemplate("tpl-forum-thread-list", threadsElement, values, { "data-threadid": thread.id });
-            const threadTitleElem = listEntry.querySelector(".forum-thread-list-title") as HTMLElement;
+        if (!this.threads.length) {
+            htmlUtilities.createHTMLElement("div", "This forum contains no threads yet.", threadsElement, "forum-no-threads");
+        }
+        else {
+            for (const thread of this.threads) {
+                const values = {
+                    id: thread.id,
+                    title: thread.title,
+                    date: htmlUtilities.dateTimeToString(thread.date),
+                    active: thread.active,
+                    postCount: thread.postCount,
+                    lastUpdated: htmlUtilities.dateTimeToString(thread.lastUpdate),
+                    lastAuthor: thread.lastAuthor,
+                    link: `/thread/${thread.id}`
+                }
+                const listEntry = htmlUtilities.createHTMLFromTemplate("tpl-forum-thread-list", threadsElement, values, { "data-threadid": thread.id });
+                const threadTitleElem = listEntry.querySelector(".forum-thread-list-title") as HTMLElement;
 
-            if (threadTitleElem) {
-                threadTitleElem.classList[thread.active ? "remove" : "add"]("locked");
+                if (threadTitleElem) {
+                    threadTitleElem.classList[thread.active ? "remove" : "add"]("locked");
+                }
             }
         }
         this.app.router.updatePageLinks();

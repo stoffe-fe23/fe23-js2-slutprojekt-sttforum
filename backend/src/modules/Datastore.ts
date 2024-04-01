@@ -38,6 +38,9 @@ export default class DataStore {
     public loadForums() {
         const forumData = fsync.readFileSync(this.forumFile);
         this.forumDB = JSON.parse(forumData.toString());
+        if (!Array.isArray(this.forumDB)) {
+            this.forumDB = [];
+        }
     }
 
 
@@ -47,6 +50,9 @@ export default class DataStore {
     public loadUsers() {
         const userData = fsync.readFileSync(this.userFile);
         this.userDB = JSON.parse(userData.toString());
+        if (!Array.isArray(this.userDB)) {
+            this.userDB = [];
+        }
     }
 
 

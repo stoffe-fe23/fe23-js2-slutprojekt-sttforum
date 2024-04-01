@@ -630,6 +630,9 @@
                                 "date": 1711391322920,
                                 "replies": []
                             }
+                        ],
+                        "likes": [
+                            "5bcca996-929a-4451-a889-3a2267c6e216"
                         ]
                     }
                 ],
@@ -785,36 +788,10 @@
                 }
             },
             {
-                "id": "21700aea-4e8f-4412-b8f9-ae860c5f371e",
-                "title": "Testar visning av ny tråd",
-                "date": 1711720834155,
-                "active": true,
-                "posts": [
-                    {
-                        "id": "fe20aae9-3a14-4532-9b91-6f9292ada182",
-                        "author": {
-                            "id": "994cad7f-ba6b-4f08-981e-3e673038875a",
-                            "userName": "Jane Doe",
-                            "picture": "def-pic-1.png",
-                            "admin": false
-                        },
-                        "message": "Nu ska vi se om den här nya tråden dyker upp under Most recent activity i användarprofilen, som den skall?",
-                        "deleted": false,
-                        "date": 1711720834155,
-                        "replies": []
-                    }
-                ],
-                "forum": {
-                    "id": "ffe24876-07b2-4683-9866-3477e447462f",
-                    "name": "Testforumet",
-                    "icon": "testforum.png"
-                }
-            },
-            {
                 "id": "85c2a123-f7bf-45ec-8433-6d8f69f9f7e2",
                 "title": "Testar trådredigering...",
                 "date": 1711960016965,
-                "active": "false",
+                "active": false,
                 "posts": [
                     {
                         "id": "f6213e60-abb6-47cf-b7c8-c2e740fa603d",

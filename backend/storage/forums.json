@@ -788,60 +788,6 @@
                 }
             },
             {
-                "id": "21700aea-4e8f-4412-b8f9-ae860c5f371e",
-                "title": "Testar visning av ny tråd",
-                "date": 1711720834155,
-                "active": true,
-                "posts": [
-                    {
-                        "id": "fe20aae9-3a14-4532-9b91-6f9292ada182",
-                        "author": {
-                            "id": "994cad7f-ba6b-4f08-981e-3e673038875a",
-                            "userName": "Jane Doe",
-                            "picture": "def-pic-1.png",
-                            "admin": false
-                        },
-                        "message": "Nu ska vi se om den här nya tråden dyker upp under Most recent activity i användarprofilen, som den skall?",
-                        "deleted": false,
-                        "date": 1711720834155,
-                        "replies": []
-                    },
-                    {
-                        "id": "56d44a19-ffe3-4e67-bd01-47760f783116",
-                        "author": {
-                            "id": "5bcca996-929a-4451-a889-3a2267c6e216",
-                            "userName": "John Doe",
-                            "picture": "def-pic-3.png",
-                            "admin": false
-                        },
-                        "message": "(This message has been deleted.)",
-                        "deleted": true,
-                        "date": 1711968908611,
-                        "replies": [],
-                        "likes": []
-                    },
-                    {
-                        "id": "dba9de4a-ae80-46e3-99dd-110a31476e12",
-                        "author": {
-                            "id": "5bcca996-929a-4451-a889-3a2267c6e216",
-                            "userName": "John Doe",
-                            "picture": "def-pic-3.png",
-                            "admin": false
-                        },
-                        "message": "(This message has been deleted.)",
-                        "deleted": true,
-                        "date": 1711969292193,
-                        "replies": [],
-                        "likes": []
-                    }
-                ],
-                "forum": {
-                    "id": "ffe24876-07b2-4683-9866-3477e447462f",
-                    "name": "Testforumet",
-                    "icon": "testforum.png"
-                }
-            },
-            {
                 "id": "85c2a123-f7bf-45ec-8433-6d8f69f9f7e2",
                 "title": "Testar trådredigering...",
                 "date": 1711960016965,
@@ -881,6 +827,42 @@
                     "id": "ffe24876-07b2-4683-9866-3477e447462f",
                     "name": "Testforumet",
                     "icon": "testforum.png"
+                }
+            }
+        ]
+    },
+    {
+        "id": "08abb7d4-dd64-4eff-bd10-93ec2f902ba4",
+        "name": "Travel",
+        "icon": "forum-1711977112500.png",
+        "threads": [
+            {
+                "id": "701d5495-16bb-4eae-a23d-30df13a63961",
+                "title": "En utflykt",
+                "date": 1711977490755,
+                "active": true,
+                "posts": [
+                    {
+                        "id": "7878e8cf-ffa1-4c09-91a1-cc25f211e27b",
+                        "author": {
+                            "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                            "userName": "Stoffe",
+                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96-1711901300396.png",
+                            "admin": true
+                        },
+                        "message": "Åker till skolan imorgon. Vilken upplyftande resa.... eller?",
+                        "deleted": false,
+                        "date": 1711977490755,
+                        "replies": [],
+                        "likes": [
+                            "5bcca996-929a-4451-a889-3a2267c6e216"
+                        ]
+                    }
+                ],
+                "forum": {
+                    "id": "08abb7d4-dd64-4eff-bd10-93ec2f902ba4",
+                    "name": "Travel",
+                    "icon": "forum-1711977112500.png"
                 }
             }
         ]

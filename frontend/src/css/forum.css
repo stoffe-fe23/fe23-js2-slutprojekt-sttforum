@@ -60,8 +60,9 @@
 }
 
 .forum-icon-big {
-    max-width: 300px;
-    height: auto;
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
 }
 
 .forum-message {
@@ -517,4 +518,80 @@ a.author-name span.admin::after {
     color: black;
     border-radius: 12px;
     padding: 0.1rem 0.5rem;
+}
+
+.admin-new-forum-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.admin-new-forum-link {
+    text-align: center;
+    background-color: black;
+    color: white;
+    text-decoration: none;
+    padding: 0.3rem 0.6rem;
+    border-radius: 15px;
+    cursor: pointer;
+    border: 0;
+}
+
+.admin-new-forum-link.expanded {
+    border-radius: 12px 12px 0px 0px;
+    font-weight: 700;
+    font-size: 1.1em;
+}
+
+.admin-new-forum-link:hover {
+    color: black;
+    background-color: orange;
+    box-shadow: 0px 0px 10px orange;
+}
+
+.forum-no-threads {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 0.5rem;
+}
+
+#forum-editor-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 0.5rem;
+    background-color: black;
+    color: white;
+    width: 300px;
+    margin: 0 auto;
+    padding: 1rem;
+    border-radius: 12px;
+}
+
+#forum-editor-form label {
+    font-size: 0.8em;
+}
+
+#forum-editor-form input {
+    width: 100%;
+    border: 0;
+    border-radius: 12px;
+    padding: 0.4rem 0.8rem;
+}
+
+#forum-editor-form .forum-editor-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+#forum-editor-form button {
+    margin-top: 0.8rem;
+    border: 0px;
+    background-color: orange;
+    color: black;
+    padding: 0.5rem 1rem;
+    border-radius: 15px;
+    cursor: pointer;
 }

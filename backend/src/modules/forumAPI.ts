@@ -6,12 +6,15 @@
     API endpoint routes for managing forums, threads and posts.
 */
 import { Router, Request, Response, NextFunction } from 'express';
+import multer from "multer";
 import dataStorage from "./Database.js";
 import { isLoggedIn, isOwner, isAdmin } from "./permissions.js";
 import { ForumInfo, ForumUser, ForumContentInfo, ForumThreadInfo, SocketNotificationSource } from "./TypeDefs.js";
 import { sendClientUpdate } from "./server.js";
 import {
     validationErrorHandler,
+    validFileTypes,
+    forumIconErrorHandler,
     validateForumId,
     validateThreadId,
     validateMessageId,
@@ -28,7 +31,7 @@ import {
 // Router for the /api/forum path endpoints 
 const forumAPI = Router();
 
-// TODO: Edit/delete routes with input validation
+const forumPictureUpload = configureForumPictureUpload();
 
 /*********************************************************************************************
 *   Get data
@@ -231,9 +234,9 @@ forumAPI.post('/search/threads', isLoggedIn, validateSearchString, validationErr
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Create new forum
-forumAPI.post('/create', isAdmin, validateNewForum, validationErrorHandler, (req: Request, res: Response) => {
+forumAPI.post('/create', isAdmin, forumPictureUpload.single('icon'), validateNewForum, validationErrorHandler, forumIconErrorHandler, (req: Request, res: Response) => {
     try {
-        const newForum = dataStorage.addForum(req.body.name, req.body.icon);
+        const newForum = dataStorage.addForum(req.body.name, req.file ? req.file.filename ?? "forum-icon.png" : "forum-icon.png");
         sendClientUpdate({ action: "add", type: "forum", data: newForum }, req);
         res.status(201);
         res.json({ message: `New forum added`, data: newForum });
@@ -389,9 +392,9 @@ forumAPI.delete('/message/delete/:messageId', isOwner, validateMessageId, valida
     console.log("Delete message", req.params.messageId);
 
     try {
-        const parentThread = dataStorage.getMessageThread(req.params.messageId);
         const parentItem = dataStorage.findContainerElement(req.params.messageId);
         const deletedMessage = dataStorage.softDeleteMessage(req.params.messageId, true);
+        const parentThread = dataStorage.getMessageThread(req.params.messageId);
 
         sendClientUpdate({ action: "edit", type: "message", data: deletedMessage, source: { parent: parentItem.id, thread: parentThread.id } }, req);
         res.json({ message: `Deleted message`, data: req.params.messageId });
@@ -410,16 +413,61 @@ forumAPI.delete('/message/remove/:messageId', isAdmin, validateMessageId, valida
 
     try {
         const parentThread = dataStorage.getMessageThread(req.params.messageId);
-        const parentItem = dataStorage.findContainerElement(req.params.messageId);
-        dataStorage.deleteMessage(req.params.messageId);
-        sendClientUpdate({ action: "delete", type: "message", data: { id: req.params.messageId }, source: { parent: parentItem.id, thread: parentThread.id } }, req);
-        res.json({ message: `Removed message`, data: req.params.messageId });
+
+        // If this is the only message left in the thread, delete the thread instead. 
+        if (parentThread.posts.length < 2) {
+            const threadId = parentThread.id;
+            const parentItem = dataStorage.findContainerElement(threadId);
+            dataStorage.deleteThread(threadId);
+            sendClientUpdate({ action: "delete", type: "thread", data: { id: threadId }, source: { parent: parentItem.id, thread: threadId } }, req);
+            res.json({ message: `Deleted thread`, data: parentItem.id });
+        }
+        else {
+            const parentItem = dataStorage.findContainerElement(req.params.messageId);
+            dataStorage.deleteMessage(req.params.messageId);
+            sendClientUpdate({ action: "delete", type: "message", data: { id: req.params.messageId }, source: { parent: parentItem.id, thread: parentThread.id } }, req);
+            res.json({ message: `Removed message`, data: req.params.messageId });
+        }
     }
     catch (error) {
         res.status(500);
         res.json({ error: `An error occured when removing message ${req.params.messageId}.`, data: error.message });
     }
 });
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Configure the multer module to handle uploading profile pictures. 
+// TODO: Use a proper validation library to prevent tampering with mime data to upload anything:
+//       https://www.npmjs.com/package/validate-image-type
+function configureForumPictureUpload() {
+    // Setup for upload of user profile pictures
+    let forumPictureStorage = multer.diskStorage({
+        destination: function (req, file, returnCallback) {
+            returnCallback(null, '../backend/media/forumicons/');
+        },
+        filename: function (req, file, returnCallback) {
+            // Set name of uploaded picture to <UserId>.<file extension>, i.e. f9258ea6-89c5-46b6-8577-9df9c343dc96.png
+            let extension: string = (Object.keys(validFileTypes).includes(file.mimetype) ? validFileTypes[file.mimetype] : '');
+            returnCallback(null, `forum-${Date.now()}${extension}`);
+        }
+    });
+
+    return multer({
+        storage: forumPictureStorage,
+        fileFilter: function (req, file, returnCallback) {
+            // Only allow JPG, PNG, GIF and WEPB files to be uploaded.
+            if (!Object.keys(validFileTypes).includes(file.mimetype)) {
+                return returnCallback(new Error('The forum picture must be in JPG, PNG, GIF or WEBP format.'));
+            }
+            returnCallback(null, true);
+        },
+        limits: {
+            fileSize: 768 * 768
+        }
+    });
+}
+
 
 
 export default forumAPI;

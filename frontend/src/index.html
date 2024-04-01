@@ -66,6 +66,16 @@
             <div id="page-users">
                 <h2>Users</h2>
             </div>
+            <form id="forum-editor-form" class="hide">
+                <input type="text" id="forum-editor-name" name="name" value="" placeholder="Forum name" minlength="2" maxlength="20" required>
+                <div id="forum-editor-icon-wrapper">
+                    <label for="forum-editor-icon">Upload forum icon (512x512px, JPG, PNG, GIF or WEBP):</label>
+                    <input type="file" id="forum-editor-icon" name="icon" value="" accept="image/png, image/jpeg, image/gif, image/webp">
+                </div>
+                <div class="forum-editor-buttons">
+                    <button name="submit" value="save">Save forum</button>
+                </div>
+            </form>
         </main>
         <footer>
             This is the footer.
@@ -79,17 +89,14 @@
                 <input type="password" name="password" id="login-password" placeholder="Password" minlength="6" maxlength="40" required>
                 <div id="login-buttons"><button id="button-login">Log in</button><button id="button-cancel" formnovalidate>Cancel</button></div>
             </form>
-
             <div id="register-button-container">
                 <span>New to STT?</span>
                 <button id="register-button">Register</button>
             </div>
-
-
             <form id="user-register-form">
                 <h2>Register new user</h2>
-                <input type="text" id="user-register-name" name="username" value="" placeholder="Your username" required> <!--Har tagit bort requied för att kunna testa-->
-                <input type="email" id="user-register-email" name="email" value="" placeholder="Your e-mail address" required><!--Har tagit bort requied för att kunna testa-->
+                <input type="text" id="user-register-name" name="username" value="" placeholder="Your username" required>
+                <input type="email" id="user-register-email" name="email" value="" placeholder="Your e-mail address" required>
                 <input type="password" id="user-register-password" name="password" value="" placeholder="Choose a password" required>
                 <input type="password" id="user-register-password-confirm" name="password-confirm" value="" placeholder="Confirm password" required>
                 <div id="register-buttons">
@@ -97,7 +104,6 @@
                     <button formnovalidate id="user-register-cancel">Cancel</button>
                 </div>
             </form>
-
         </dialog>
         <!-- Dialog for replying to a message or editing a messsage -->
         <dialog id="message-editor-dialog">
@@ -144,15 +150,15 @@
             </form>
         </dialog>
     </body>
-    <!-- HTML TEMPLATES - USED BY SCRIPT TO CREATE PAGE ELEMENTS -->
-    <!-- Template for a forum button -->
+    <!-- HTML TEMPLATES - USED BY SCRIPT TO DYNAMICALLY CREATE PAGE ELEMENTS -->
+    <!-- Template for a forum picker button -->
     <template id="tpl-forum-button">
         <button class="forum-button" data-forumid="0">
             <img class="forum-icon-big" src="images/forum-icon.png" data-template="icon">
             <div data-template="name"></div>
         </button>
     </template>
-    <!-- Template for a forum -->
+    <!-- Template for a forum view (thread list) -->
     <template id="tpl-forum">
         <section class="forum" data-forumid="0">
             <div class="forum-header">
@@ -176,7 +182,7 @@
             </div>
         </section>
     </template>
-    <!-- Template for a forum displaying content of a thread -->
+    <!-- Template for displaying content of a thread -->
     <template id="tpl-thread-forum">
         <section class="forum" data-forumid="0">
             <div class="forum-header">
@@ -198,7 +204,7 @@
             <div class="forum-thread-list-postcount" data-template="postCount"></div>
         </article>
     </template>
-    <!-- Template for a forum thread -->
+    <!-- Template for a forum thread view -->
     <template id="tpl-forum-thread">
         <section class="forum-thread" data-threadid="0">
             <form class="thread-new-post-form">

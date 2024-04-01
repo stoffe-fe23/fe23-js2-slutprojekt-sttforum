@@ -44,7 +44,6 @@ export default class Thread {
         }
 
         if (threadData) {
-            console.log("DEBUG: ACTIVE IS?", threadData);
             const obj = new Thread(app, threadData);
 
             if (threadData.posts && threadData.posts.length) {

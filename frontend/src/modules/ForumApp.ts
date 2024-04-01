@@ -116,6 +116,23 @@ export default class ForumApp {
             }
         }
 
+        if (this.user && this.user.admin) {
+            const adminLinkWrapper = htmlUtilities.createHTMLElement("div", "", outBox, "admin-new-forum-wrapper");
+            const newForumButton = htmlUtilities.createHTMLElement("button", "Create new forum", adminLinkWrapper, "admin-new-forum-link");
+            newForumButton.addEventListener("click", (event) => {
+                const editorButton = event.currentTarget as HTMLButtonElement;
+                const forumEditorForm = document.querySelector("#forum-editor-form") as HTMLFormElement;
+                if (editorButton.classList.contains("expanded")) {
+                    forumEditorForm.classList.add("hide");
+                    editorButton.classList.remove("expanded");
+                }
+                else {
+                    forumEditorForm.classList.remove("hide");
+                    editorButton.classList.add("expanded");
+                }
+                forumEditorForm.reset();
+            });
+        }
     }
 
 
@@ -352,6 +369,21 @@ export default class ForumApp {
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////
+    // Add a new forum to the server. 
+    public async createForum(forumData: FormData) {
+        try {
+            const result = await this.api.postFile("forum/create", forumData);
+            if (result) {
+                this.router.navigate("/forums");
+            }
+        }
+        catch (error) {
+            this.showError(error.message);
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
     // Establish a websocket connection with server to listen for update notices. 
     private establishSocketConnection(): void {
         const url = new URL(this.apiUrl);
@@ -440,6 +472,11 @@ export default class ForumApp {
                             if (newThread.posts && newThread.posts.length) {
                                 newThread.posts[0].addToAuthorActivityDisplay(newThread);
                             }
+
+                            const noThreadsMsg = document.querySelector(".forum-no-threads") as HTMLElement;
+                            if (noThreadsMsg) {
+                                noThreadsMsg.remove();
+                            }
                         }
                     }
                 }
@@ -504,6 +541,7 @@ export default class ForumApp {
                 }
                 else if (updateData.type == "thread") {
                     const delThread = updateData.data as NotificationDataDelete;
+                    const parentId = (updateData.source as SocketNotificationSource).parent ?? "0";
                     const delThreadListing = document.querySelector(`article[data-threadid="${delThread.id}"].forum-thread-list`) as HTMLElement;
                     const delThreadView = document.querySelector(`section[data-threadid="${delThread.id}"].forum-thread`) as HTMLElement;
                     if (delThreadListing) {
@@ -511,7 +549,12 @@ export default class ForumApp {
                     }
                     if (delThreadView) {
                         delThreadView.remove();
-                        this.router.navigate("/forums");
+                        if (parentId == "0") {
+                            this.router.navigate(`/forums`);
+                        }
+                        else {
+                            this.router.navigate(`/forum/${parentId}`);
+                        }
                     }
                 }
                 else if (updateData.type == "user") {

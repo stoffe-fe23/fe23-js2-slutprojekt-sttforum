@@ -109,10 +109,8 @@ export default class Message {
     // Completely remove this message, and all replies to it. (admin-only)
     public async remove(): Promise<void> {
         const deleteResponse: StatusResponseAPI = await this.app.api.deleteJson(`forum/message/remove/${this.id}`);
-        if (deleteResponse && deleteResponse.message) {
-            if (deleteResponse.message != "Removed message") {
-                console.log("DEBUG: Incorrect response from Message Remove call");
-            }
+        if (deleteResponse) {
+            console.log("DEBUG: Remove message", deleteResponse);
         }
     }
 
@@ -144,10 +142,9 @@ export default class Message {
             likes: this.likes.length ?? "0"
         };
         const attributes = { "data-messageid": this.id, "data-authorid": this.author.id };
-
         const thisMessageElem = htmlUtilities.createHTMLFromTemplate("tpl-forum-message", targetContainer, values, attributes, true);
-        const repliesElement = thisMessageElem.querySelector(`.forum-message-replies`) as HTMLElement;
 
+        const repliesElement = thisMessageElem.querySelector(`.forum-message-replies`) as HTMLElement;
         const replyBtns = thisMessageElem.querySelector(".forum-message-buttons") as HTMLFormElement;
         const replyButton = replyBtns.querySelector(`button[value="reply"]`) as HTMLButtonElement;
         const editButton = replyBtns.querySelector(`button[value="edit"]`) as HTMLButtonElement;

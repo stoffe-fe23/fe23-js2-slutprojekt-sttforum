@@ -26,7 +26,134 @@ console.log("PAGE LOADED!", htmlUtilities.dateTimeToString(Date.now()));
 forumApp.load().then(() => {
     console.log("DEBUG: ForumApp loaded!");
 }).catch((error) => {
-    alert(error.message);
+    alert("Forum init error: " + error.message);
+});
+
+
+/*** ROUTES *********************************************************************/
+
+//////////////////////////////////////////////////////////////////////////////////
+// Start page - show info about the forum etc? 
+forumApp.router.on("/", () => {
+    pageHome.classList.add("show");
+    pageForum.classList.remove("show");
+    pageUsers.classList.remove("show");
+    console.log("DEBUG: Show start page!");
+});
+
+
+//////////////////////////////////////////////////////////////////////////////////
+// Show the forum list page
+forumApp.router.on("/forums", () => {
+    pageForum.classList.add("show");
+    pageHome.classList.remove("show");
+    pageUsers.classList.remove("show");
+    forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
+        console.log("DEBUG: Show forum buttons!");
+        if (isLoggedIn) {
+            forumApp.showForumPicker(pageForum);
+        }
+        else {
+            htmlUtilities.createHTMLElement("div", `You must be <a href="/login" data-navigo>logged in</a> to view the forums.`, pageForum, 'error-not-logged-in', null, true);
+        }
+    });
+});
+
+
+//////////////////////////////////////////////////////////////////////////////////
+// Show the list of threads in a forum.
+forumApp.router.on('/forum/:forumId', (route) => {
+    pageForum.classList.add("show");
+    pageHome.classList.remove("show");
+    pageUsers.classList.remove("show");
+    forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
+        console.log("DEBUG: Show Forum threads!");
+        if (isLoggedIn) {
+            if (route && route.data && route.data.forumId) {
+                forumApp.showForum(route.data.forumId, pageForum);
+            }
+        }
+    });
+});
+
+
+//////////////////////////////////////////////////////////////////////////////////
+// Show the posts in a discussion thread. 
+forumApp.router.on("/thread/:threadId", (route) => {
+    pageForum.classList.add("show");
+    pageHome.classList.remove("show");
+    pageUsers.classList.remove("show");
+    forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
+        if (isLoggedIn) {
+            if (route && route.data && route.data.threadId) {
+                console.log("DEBUG: Show threads displaying: ", route.data.threadId);
+                forumApp.showThread(route.data.threadId, pageForum);
+            }
+        }
+        else {
+            console.log("DEBUG: Show threads skipped, no login..");
+        }
+    });
+});
+
+
+//////////////////////////////////////////////////////////////////////////////////
+// Show a list of all the registered users
+forumApp.router.on("/users", () => {
+    pageHome.classList.remove("show");
+    pageForum.classList.remove("show");
+    pageUsers.classList.add("show");
+
+    forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
+        console.log("DEBUG: Show user list!");
+
+        if (isLoggedIn) {
+            forumApp.showUserList(pageUsers);
+        }
+        else {
+            console.log("DEBUG: User not logged on, not allowed to view user list.");
+        }
+
+    });
+});
+
+
+//////////////////////////////////////////////////////////////////////////////////
+// Show the public profile for the user with the specified ID
+forumApp.router.on("/user/profile/:userid", (routeInfo) => {
+    pageHome.classList.remove("show");
+    pageForum.classList.remove("show");
+    pageUsers.classList.add("show");
+
+    forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
+        console.log("DEBUG: Show public user profile!");
+        try {
+            if (isLoggedIn) {
+                if (routeInfo && routeInfo.data) {
+                    forumApp.showUserProfile(routeInfo.data.userid, pageUsers);
+                }
+                else {
+                    console.log("DEBUG: No User ID specified, cannot show profile.")
+                }
+            }
+            else {
+                console.log("DEBUG: User not logged on, not permitted to view user profiles.")
+            }
+        }
+        catch (error) {
+            forumApp.showError(error.message);
+        }
+    });
+});
+
+
+//////////////////////////////////////////////////////////////////////////////////
+// Route to directly display the user login dialog box.
+// Used for links in messages, clicking the User button in upper left does the same
+// but does not use this route. 
+forumApp.router.on("/login", () => {
+    console.log("DEBUG: Show login screen!");
+    showLoginDialog();
 });
 
 
@@ -185,10 +312,9 @@ forumApp.load().then(() => {
             formData.get("username") as string,
             formData.get("password") as string,
             formData.get("password-confirm") as string,
-            formData.get("email") as string).then(() => {
-                console.log("Login");
+            formData.get("email") as string)
+            .then(() => {
                 alert("User account created!");
-                // forumApp.router.navigate('/login');
                 showLoginDialog();
 
             }).catch((error) => {
@@ -275,135 +401,28 @@ forumApp.load().then(() => {
 // Close button in error message
 (document.querySelector("#error button") as HTMLButtonElement).addEventListener("click", (event) => {
     (document.querySelector("#error") as HTMLElement).classList.remove("show");
-})
-
-
-/*** ROUTES *********************************************************************/
-
-//////////////////////////////////////////////////////////////////////////////////
-// Start page - show info about the forum etc? 
-forumApp.router.on("/", () => {
-    pageHome.classList.add("show");
-    pageForum.classList.remove("show");
-    pageUsers.classList.remove("show");
-    console.log("DEBUG: Show start page!");
 });
 
 
-//////////////////////////////////////////////////////////////////////////////////
-// Show the forum list page
-forumApp.router.on("/forums", () => {
-    pageForum.classList.add("show");
-    pageHome.classList.remove("show");
-    pageUsers.classList.remove("show");
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Handler for the admin form to create a new forum. 
+(document.querySelector("#forum-editor-form") as HTMLFormElement).addEventListener("submit", (event) => {
+    event.preventDefault();
+
     forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
-        console.log("DEBUG: Show forum buttons!");
-        if (isLoggedIn) {
-            forumApp.showForumPicker(pageForum);
-        }
-        else {
-            htmlUtilities.createHTMLElement("div", `You must be <a href="/login" data-navigo>logged in</a> to view the forums.`, pageForum, 'error-not-logged-in', null, true);
-        }
-    });
-});
-
-
-//////////////////////////////////////////////////////////////////////////////////
-// Show the list of threads in a forum.
-forumApp.router.on('/forum/:forumId', (route) => {
-    pageForum.classList.add("show");
-    pageHome.classList.remove("show");
-    pageUsers.classList.remove("show");
-    forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
-        console.log("DEBUG: Show Forum threads!");
-        if (isLoggedIn) {
-            if (route && route.data && route.data.forumId) {
-                forumApp.showForum(route.data.forumId, pageForum);
-            }
-        }
-    });
-});
-
-
-//////////////////////////////////////////////////////////////////////////////////
-// Show the posts in a discussion thread. 
-forumApp.router.on("/thread/:threadId", (route) => {
-    pageForum.classList.add("show");
-    pageHome.classList.remove("show");
-    pageUsers.classList.remove("show");
-    forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
-        if (isLoggedIn) {
-            if (route && route.data && route.data.threadId) {
-                console.log("DEBUG: Show threads displaying: ", route.data.threadId);
-                forumApp.showThread(route.data.threadId, pageForum);
+        if (isLoggedIn && forumApp.user && forumApp.user.admin) {
+            if ((event.submitter as HTMLButtonElement).value == "save") {
+                const formData = new FormData(event.currentTarget as HTMLFormElement);
+                forumApp.createForum(formData).catch(forumApp.showError);
+                (event.currentTarget as HTMLFormElement).classList.add("hide");
             }
         }
         else {
-            console.log("DEBUG: Show threads skipped, no login..");
+            forumApp.showError("You must have administrator permissions to add a new forum.");
         }
     });
 });
-
-
-//////////////////////////////////////////////////////////////////////////////////
-// Show a list of all the registered users
-forumApp.router.on("/users", () => {
-    pageHome.classList.remove("show");
-    pageForum.classList.remove("show");
-    pageUsers.classList.add("show");
-
-    forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
-        console.log("DEBUG: Show user list!");
-
-        if (isLoggedIn) {
-            forumApp.showUserList(pageUsers);
-        }
-        else {
-            console.log("DEBUG: User not logged on, not allowed to view user list.");
-        }
-
-    });
-});
-
-
-//////////////////////////////////////////////////////////////////////////////////
-// Show the public profile for the user with the specified ID
-forumApp.router.on("/user/profile/:userid", (routeInfo) => {
-    pageHome.classList.remove("show");
-    pageForum.classList.remove("show");
-    pageUsers.classList.add("show");
-
-    forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
-        console.log("DEBUG: Show public user profile!");
-        try {
-            if (isLoggedIn) {
-                if (routeInfo && routeInfo.data) {
-                    forumApp.showUserProfile(routeInfo.data.userid, pageUsers);
-                }
-                else {
-                    console.log("DEBUG: No User ID specified, cannot show profile.")
-                }
-            }
-            else {
-                console.log("DEBUG: User not logged on, not permitted to view user profiles.")
-            }
-        }
-        catch (error) {
-            forumApp.showError(error.message);
-        }
-    });
-});
-
-
-//////////////////////////////////////////////////////////////////////////////////
-// Route to directly display the user login dialog box.
-// Used for links in messages, clicking the User button in upper left does the same
-// but does not use this route. 
-forumApp.router.on("/login", () => {
-    console.log("DEBUG: Show login screen!");
-    showLoginDialog();
-});
-
 
 
 /*** FUNCTIONS ******************************************************************/
@@ -424,6 +443,7 @@ function showLoginDialog() {
         }
     });
 }
+
 
 
 forumApp.router.resolve();

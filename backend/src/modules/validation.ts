@@ -43,7 +43,7 @@ export function validationErrorHandler(req: Request, res: Response, next: NextFu
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-// Called if multer's file type filter fails. Display validation error. 
+// Called if multer's file type filter for profile picture uploads fails. Display validation error. 
 export function fileErrorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
     console.log("DEBUG: File Validation Error");
     res.status(400);
@@ -53,6 +53,22 @@ export function fileErrorHandler(err: Error, req: Request, res: Response, next: 
             value: "file",
             msg: err.message,
             path: "picture",
+            location: "body"
+        }]
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+// Called if multer's file type filter for forum ucons fails. Display validation error. 
+export function forumIconErrorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
+    console.log("DEBUG: File Validation Error");
+    res.status(400);
+    res.json({
+        error: 'Validation error', data: [{
+            type: "field",
+            value: "file",
+            msg: err.message,
+            path: "icon",
             location: "body"
         }]
     });
@@ -114,10 +130,10 @@ function validateMessageIdExists(value: string): boolean {
 // Validate New Forum input
 // TODO: Change icon to a file upload from the form instead.... 
 export const validateNewForum = [
-    body("icon")
-        .exists().withMessage('The forum icon must be set.').bail()
-        .trim().notEmpty().withMessage('An icon for this forum must be specified..').bail()
-        .isString().withMessage('The forum icon name must be a string.').bail(),
+    /*    body("icon")
+            .exists().withMessage('The forum icon must be set.').bail()
+            .trim().notEmpty().withMessage('An icon for this forum must be specified..').bail()
+            .isString().withMessage('The forum icon name must be a string.').bail(), */
     body("name")
         .exists().withMessage('The name of the new forum must be set.').bail()
         .trim().notEmpty().withMessage('A name of the new forum must be set.').bail()
