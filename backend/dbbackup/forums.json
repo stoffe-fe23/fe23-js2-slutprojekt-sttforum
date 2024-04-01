@@ -814,7 +814,7 @@
                 "id": "85c2a123-f7bf-45ec-8433-6d8f69f9f7e2",
                 "title": "Testar trådredigering...",
                 "date": 1711960016965,
-                "active": false,
+                "active": "false",
                 "posts": [
                     {
                         "id": "f6213e60-abb6-47cf-b7c8-c2e740fa603d",

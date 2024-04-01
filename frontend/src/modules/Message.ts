@@ -132,7 +132,7 @@ export default class Message {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
     // Generate HTML to display this message
-    public display(targetContainer: HTMLElement | null = null, replyDepth: number = 0): HTMLElement {
+    public display(targetContainer: HTMLElement | null = null, allowEditing: boolean = true, replyDepth: number = 0): HTMLElement {
         const values: MessageDisplayInfo = {
             id: this.id,
             authorId: this.author.id,
@@ -185,6 +185,14 @@ export default class Message {
             replyButton.disabled = true;
             editButton.disabled = true;
             deleteButton.disabled = true;
+            likeButton.disabled = true;
+            replyBtns.classList.add("hide");
+        }
+        else if (!allowEditing) {
+            replyButton.disabled = true;
+            editButton.disabled = true;
+            deleteButton.disabled = true;
+            likeButton.disabled = true;
             replyBtns.classList.add("hide");
         }
         // If current user is either the author of the message or admin, allow editing/deleting. 
@@ -204,7 +212,7 @@ export default class Message {
 
         replyDepth++;
         for (const message of this.replies) {
-            message.display(repliesElement, replyDepth);
+            message.display(repliesElement, allowEditing, replyDepth);
         }
         return thisMessageElem;
     }

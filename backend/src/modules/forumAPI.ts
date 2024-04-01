@@ -311,7 +311,7 @@ forumAPI.post('/message/reply', isLoggedIn, validateNewReply, validationErrorHan
 forumAPI.patch('/thread/edit/:threadId', isAdmin, validateEditThread, validationErrorHandler, (req: Request, res: Response) => {
     console.log("DEBUG: Edit thread: ", req.params.threadId);
     try {
-        const editedThread = dataStorage.editThread(req.params.threadId, req.body.title);
+        const editedThread = dataStorage.editThread(req.params.threadId, req.body.title, !(req.body.active == "false"));
         sendClientUpdate({ action: "edit", type: "thread", data: editedThread }, req);
         res.json({ message: `Edited thread`, data: req.params.threadId });
     }
@@ -331,10 +331,11 @@ forumAPI.delete('/thread/delete/:threadId', isAdmin, validateThreadId, validatio
     try {
         const parentItem = dataStorage.findContainerElement(req.params.threadId);
         dataStorage.deleteThread(req.params.threadId);
-        sendClientUpdate({ action: "delete", type: "thread", data: { id: req.params.threadId } }, req);
-        res.json({ message: `Deleted thread`, data: req.params.threadId, source: { parent: parentItem.id, thread: req.params.threadId } });
+        sendClientUpdate({ action: "delete", type: "thread", data: { id: req.params.threadId }, source: { parent: parentItem.id, thread: req.params.threadId } }, req);
+        res.json({ message: `Deleted thread`, data: parentItem.id });
     }
     catch (error) {
+        console.log("DEBUG: DELETE THREAD ERROR: ", error);
         res.status(500);
         res.json({ error: `An error occured when deleting thread ${req.params.threadId}.`, data: error.message });
     }

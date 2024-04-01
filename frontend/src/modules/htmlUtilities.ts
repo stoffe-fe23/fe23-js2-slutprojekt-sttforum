@@ -33,7 +33,14 @@ export function createHTMLFromTemplate(templateId: string, container: HTMLElemen
                         case "A": (targetElement as HTMLAnchorElement).href = values[key] as string; break;
                         case "TEXTAREA":
                         case "SELECT":
-                        case "INPUT": (targetElement as HTMLInputElement).value = values[key] as string; break;
+                        case "INPUT":
+                            if ((targetElement as HTMLInputElement).type == "checkbox") {
+                                (targetElement as HTMLInputElement).checked = values[key] as boolean;
+                            }
+                            else {
+                                (targetElement as HTMLInputElement).value = values[key] as string;
+                            }
+                            break;
                         default: targetElement[allowHTML ? "innerHTML" : "innerText"] = values[key] as string; break;
                     }
                 }

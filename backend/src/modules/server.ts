@@ -26,7 +26,7 @@ function sendClientUpdate(data: SocketNotificationData, req: Request): void {
             srv.clients.forEach((client) => {
                 if (client.readyState === WebSocket.OPEN) {
                     client.send(sendData);
-                    console.log("CLIENT UPDATE: ", (client as any).userId ?? "No user id", sendData);
+                    console.log("DEBUG: CLIENT UPDATE SENT TO: ", (client as any).userId ?? "No user id");
                 }
             });
         }

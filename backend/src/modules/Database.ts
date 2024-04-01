@@ -314,10 +314,11 @@ class Database {
 
     ////////////////////////////////////////////////////////////////////////////////////
     // Edit the title of an existing thread.
-    public editThread(threadId: string, title: string): ForumThread | null {
+    public editThread(threadId: string, title: string, active: boolean): ForumThread | null {
         const thread = this.getThread(threadId);
         if (thread) {
             thread.title = title;
+            thread.active = active;
             this.storage.saveForums();
         }
         return thread;
@@ -681,13 +682,14 @@ class Database {
                     return parent;
                 }
                 else if (message.replies && message.replies.length) {
-                    const result = this.parentReplySearch(searchId, message.replies, message);
+                    const result = parentReplySearch(searchId, message.replies, message);
                     if (result) {
                         return parent;
                     }
                 }
             }
         }
+
         return parentMessageSearch(searchId, this);
     }
 

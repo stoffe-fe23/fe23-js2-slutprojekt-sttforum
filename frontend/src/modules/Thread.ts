@@ -8,7 +8,7 @@
 import Message from "./Message.ts";
 import ForumApp from "./ForumApp.ts";
 import * as htmlUtilities from "./htmlUtilities.ts";
-import { ThreadDisplayInfo, ForumThreadAPI, ForumDisplayInfo, ForumThreadStats, ForumMessageAPI } from "./TypeDefs.ts";
+import { ThreadDisplayInfo, ForumThreadAPI, ForumDisplayInfo, ForumThreadStats, StatusResponseAPI } from "./TypeDefs.ts";
 
 
 
@@ -30,7 +30,7 @@ export default class Thread {
             this.id = threadData.id;
             this.title = threadData.title;
             this.date = threadData.date;
-            this.active = threadData.active;
+            this.active = (threadData.active ? true : false);
             this.forumInfo = threadData.forum ?? null;
         }
     }
@@ -44,6 +44,7 @@ export default class Thread {
         }
 
         if (threadData) {
+            console.log("DEBUG: ACTIVE IS?", threadData);
             const obj = new Thread(app, threadData);
 
             if (threadData.posts && threadData.posts.length) {
@@ -89,19 +90,86 @@ export default class Thread {
 
         const threadElement = htmlUtilities.createHTMLFromTemplate("tpl-forum-thread", targetContainer, values, attributes);
         const messagesElement = threadElement.querySelector(`.forum-thread-messages`) as HTMLElement;
-
         const newPostForm = threadElement.querySelector(`.thread-new-post-form`) as HTMLFormElement;
-        newPostForm.addEventListener("submit", this.onNewPostFormSubmit.bind(this));
+
+        // Prevent new posts if the thread is locked and show indicator. 
+        if (this.active) {
+            newPostForm.addEventListener("submit", this.onNewPostFormSubmit.bind(this));
+            newPostForm.classList.remove("hide");
+            threadElement.classList.remove("locked");
+        }
+        else {
+            newPostForm.classList.add("hide");
+            threadElement.classList.add("locked");
+        }
+
+        // Show button to edit thread if current user is an admin
+        if (this.app.user && this.app.user.admin) {
+            const editButton = threadElement.querySelector(".forum-thread-edit") as HTMLButtonElement;
+            if (editButton) {
+                editButton.classList.remove("hide");
+                editButton.addEventListener("click", this.onEditThreadClick.bind(this));
+            }
+        }
 
         // TODO: Also include date on replies to the posts in the sort order! 
         this.posts.sort((a, b) => b.date - a.date);
 
+        // Show posts in this thread
         for (const message of this.posts) {
-            message.display(messagesElement);
+            message.display(messagesElement, this.active);
         }
         this.app.router.updatePageLinks();
 
         return threadElement;
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////    
+    // Edit thread button clicked. Create form to edit thread title or delete the tread. 
+    private onEditThreadClick(event) {
+        const thread = document.querySelector(`section[data-threadid="${this.id}"].forum-thread`) as HTMLElement;
+        if (thread) {
+            console.log("DEBUG: ACTIVE IS", this.active);
+            const editButton = thread.querySelector(".forum-thread-edit") as HTMLButtonElement;
+            const threadTitle = thread.querySelector(".forum-thread-wrapper h3") as HTMLElement;
+            const threadEditor = htmlUtilities.createHTMLFromTemplate("tpl-thread-edit", null, { title: this.title, active: this.active }, { "data-threadid": this.id });
+            threadTitle.after(threadEditor);
+            editButton.classList.add("hide");
+            threadEditor.addEventListener("submit", this.onEditThreadSubmit.bind(this));
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////    
+    // Edit thread form submitted. Change the thread title or delete the thread. 
+    private onEditThreadSubmit(event) {
+        const editButton = document.querySelector(`section[data-threadid="${this.id}"].forum-thread .forum-thread-edit`) as HTMLButtonElement;
+        const formData = new FormData(event.currentTarget);
+        const newTitle = (formData.get("title") as string).trim();
+        const newActive = (formData.get("active") as string) == "true" ? true : false;
+
+        switch (event.submitter.value) {
+            case "save":
+                if ((newTitle != this.title) || (newActive != this.active)) {
+                    this.title = newTitle;
+                    this.active = newActive;
+                    this.save();
+                    console.log("DEBUG: Thread title edited: ", this.title);
+                }
+                break;
+            case "delete":
+                if (confirm("Are you sure you wish to delete this tread? All its messages will be permanently removed.")) {
+                    this.delete();
+                    console.log("DEBUG: Thread deleted!");
+                }
+                break;
+        }
+
+        if (editButton) {
+            editButton.classList.remove("hide");
+        }
+        event.currentTarget.remove();
     }
 
 
@@ -131,7 +199,6 @@ export default class Thread {
         // Thread page, displaying its messages
         const updateThread = document.querySelector(`section[data-threadid="${this.id}"].forum-thread`);
         if (updateThread) {
-            console.log("Thread - found Update Element!");
             const threadHTML = this.display();
             updateThread.replaceWith(threadHTML);
         }
@@ -139,7 +206,6 @@ export default class Thread {
         // Thread list of a forum
         const updateThreadList = document.querySelector(`article[data-threadid="${this.id}"].forum-thread-list`);
         if (updateThreadList) {
-            console.log("DEBUG: Thread List - found Update Element!");
             const threadHTML = this.getThreadListEntry();
             updateThreadList.replaceWith(threadHTML);
         }
@@ -147,9 +213,41 @@ export default class Thread {
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
+    // Delete this thread (and all its messages) from the forum.
+    public async delete(): Promise<void> {
+        try {
+            const response: StatusResponseAPI = await this.app.api.deleteJson(`forum/thread/delete/${this.id}`);
+            if (response.message && (response.message == "Deleted thread")) {
+                alert("Thread has been deleted.");
+                if (response.data) {
+                    this.app.router.navigate(`/forum/${response.data}`);
+                }
+            }
+        }
+        catch (error) {
+            this.app.showError(`Error deleting thread: ${error.message}`);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    // Save info about this thread to the server
+    public async save(): Promise<void> {
+        try {
+            const response: StatusResponseAPI = await this.app.api.updateJson(`forum/thread/edit/${this.id}`, { title: this.title, active: this.active });
+            if (response.message && (response.message == "Edited thread")) {
+                console.log("DEBUG: Thread title edited: " + this.title);
+            }
+        }
+        catch (error) {
+            this.app.showError(`Error deleting thread: ${error.message}`);
+        }
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
     // Add an entry for this thread to the forum thread list of the specified forum, if it is displayed
     // on the page. 
-    public addToThreadListDisplay(forumId: string) {
+    public addToThreadListDisplay(forumId: string): void {
         const parentForum = document.querySelector(`section[data-forumid="${forumId}"].forum`) as HTMLElement;
         if (parentForum) {
             const threadsBox = parentForum.querySelector(".forum-threads") as HTMLElement;
@@ -174,7 +272,7 @@ export default class Thread {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////    
     // Create a new message in this thread by the currently logged in user and save it to the server. 
-    public async newMessage(messageText: string) {
+    public async newMessage(messageText: string): Promise<void> {
         if (this.app.isLoggedIn()) {
             const message = await Message.new(this.app, this.id, messageText);
             if (message) {

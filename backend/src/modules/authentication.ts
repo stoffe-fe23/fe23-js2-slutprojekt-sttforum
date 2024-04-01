@@ -39,6 +39,8 @@ declare module "express-session" {
 }
 
 // Set up user session with 1 day cookie expiration.
+// Seems to work with "sameSite false" and "secure false" for now, even though the browser complains. 
+// "Samesite none" and "secure true" requires HTTPS with a (not self-signed) certificate to work...
 export const sessionSetup = session({
     secret: process.env.SESSION_SECRET,
     store: new FileStore(fileStoreOptions),
@@ -48,7 +50,7 @@ export const sessionSetup = session({
         sameSite: false, // "none"
         maxAge: 1000 * 60 * 60 * 24,
         httpOnly: false,
-        secure: false,
+        secure: false, // true
     }
 });
 

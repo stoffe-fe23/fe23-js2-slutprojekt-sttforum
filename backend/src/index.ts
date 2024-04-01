@@ -23,7 +23,7 @@ import { ForumUser, SocketNotificationData } from "./modules/TypeDefs.js";
 app.use(cors({
     origin: (origin, callback) => { callback(null, origin ?? 'http://localhost:1234'); }, // 'https://localhost:3000'
     methods: 'GET,PUT,PATCH,POST,DELETE,OPTIONS,HEAD',
-    allowedHeaders: 'Content-Type,X-Requested-With',
+    allowedHeaders: 'Content-Type,X-Requested-With,Accept',
     credentials: true,
 }));
 

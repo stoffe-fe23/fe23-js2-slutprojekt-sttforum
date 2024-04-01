@@ -93,7 +93,12 @@ export default class Forum {
                 lastAuthor: thread.lastAuthor,
                 link: `/thread/${thread.id}`
             }
-            htmlUtilities.createHTMLFromTemplate("tpl-forum-thread-list", threadsElement, values, { "data-threadid": thread.id });
+            const listEntry = htmlUtilities.createHTMLFromTemplate("tpl-forum-thread-list", threadsElement, values, { "data-threadid": thread.id });
+            const threadTitleElem = listEntry.querySelector(".forum-thread-list-title") as HTMLElement;
+
+            if (threadTitleElem) {
+                threadTitleElem.classList[thread.active ? "remove" : "add"]("locked");
+            }
         }
         this.app.router.updatePageLinks();
         return forumElement;

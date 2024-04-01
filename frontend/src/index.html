@@ -27,7 +27,7 @@
             <div id="mainmenu">
                 <h1>STT Forum</h1>
                 <form id="searchform">
-                    <input type="text" id="search-input" name="searchFor" placeholder="Search the forums..." min-length="2" autocomplete="off" required />
+                    <input type="text" id="search-input" name="searchFor" placeholder="Search the forums..." minlength="2" maxlength="200" autocomplete="off" required />
                     <select id="search-type" name="searchType">
                         <option value="threads">Thread topics</option>
                         <option value="messages">Message text</option>
@@ -75,8 +75,8 @@
         <dialog id="user-login">
             <form id="login-form">
                 <h2>Log in</h2>
-                <input type="text" name="username" id="login-username" placeholder="User name" min-length="2" max-length="20" autocomplete="off" required>
-                <input type="password" name="password" id="login-password" placeholder="Password" min-length="6" max-length="40" required>
+                <input type="text" name="username" id="login-username" placeholder="User name" minlength="2" maxlength="20" autocomplete="off" required>
+                <input type="password" name="password" id="login-password" placeholder="Password" minlength="6" maxlength="40" required>
                 <div id="login-buttons"><button id="button-login">Log in</button><button id="button-cancel" formnovalidate>Cancel</button></div>
             </form>
 
@@ -104,7 +104,7 @@
             <form id="message-editor-form">
                 <input type="hidden" id="message-editor-targetid" name="targetId">
                 <input type="hidden" id="message-editor-action" name="action">
-                <textarea id="message-editor-text" placeholder="Write your message here" name="message" min-length="2" max-length="4000" required></textarea>
+                <textarea id="message-editor-text" placeholder="Write your message here" name="message" minlength="2" maxlength="4000" required></textarea>
                 <div class="message-editor-buttons">
                     <button name="submit" value="save">Save</button>
                     <button name="submit" value="cancel" formnovalidate>Cancel</button>
@@ -116,10 +116,10 @@
             <form id="user-profile-form">
                 <img src="images/user-icon.png" id="user-profile-picture-view" alt="Profile picture">
                 <h2>User profile</h2>
-                <input type="text" id="user-profile-name" class="user-profile-input" name="username" value="" min-length="2" max-length="20" placeholder="Your username" required>
-                <input type="email" id="user-profile-email" class="user-profile-input" name="email" value="" max-length="128" placeholder="Your e-mail address" required>
-                <input type="password" id="user-profile-password" class="user-profile-input" name="password" value="" min-length="4" max-length="40" placeholder="Change password">
-                <input type="password" id="user-profile-password-confirm" class="user-profile-input" name="password-confirm" value="" min-length="4" max-length="40" placeholder="Confirm password">
+                <input type="text" id="user-profile-name" class="user-profile-input" name="username" value="" minlength="2" maxlength="20" placeholder="Your username" required>
+                <input type="email" id="user-profile-email" class="user-profile-input" name="email" value="" maxlength="128" placeholder="Your e-mail address" required>
+                <input type="password" id="user-profile-password" class="user-profile-input" name="password" value="" minlength="4" maxlength="40" placeholder="Change password">
+                <input type="password" id="user-profile-password-confirm" class="user-profile-input" name="password-confirm" value="" minlength="4" maxlength="40" placeholder="Confirm password">
                 <div id="user-profile-pic-wrapper">
                     <h4>Profile picture</h4>
                     <div id="def-pic-container">
@@ -144,7 +144,7 @@
             </form>
         </dialog>
     </body>
-    <!-- HTML TEMPLATES - not in page flow -->
+    <!-- HTML TEMPLATES - USED BY SCRIPT TO CREATE PAGE ELEMENTS -->
     <!-- Template for a forum button -->
     <template id="tpl-forum-button">
         <button class="forum-button" data-forumid="0">
@@ -161,8 +161,8 @@
             </div>
             <div class="forum-breadcrumb"></div>
             <form class="forum-new-thread-form">
-                <input type="text" name="title" class="forum-new-thread-title" placeholder="Your new thread title here" min-length="2" max-length="40" required>
-                <textarea name="message" class="forum-new-thread-message" placeholder="Message text" min-length="2" max-length="4000" required></textarea>
+                <input type="text" name="title" class="forum-new-thread-title" placeholder="Your new thread title here" minlength="2" maxlength="40" required>
+                <textarea name="message" class="forum-new-thread-message" placeholder="Message text" minlength="2" maxlength="4000" required></textarea>
                 <button class="forum-new-thread-submit">Create new thread</button>
             </form>
             <div class="forum-thread-list-hdr">
@@ -202,11 +202,12 @@
     <template id="tpl-forum-thread">
         <section class="forum-thread" data-threadid="0">
             <form class="thread-new-post-form">
-                <textarea name="message" class="thread-new-post-message" placeholder="Message to add to the thread..." min-length="2" max-length="4000" required></textarea>
+                <textarea name="message" class="thread-new-post-message" placeholder="Message to add to the thread..." minlength="2" maxlength="4000" required></textarea>
                 <button class="thread-new-post-submit">New message</button>
             </form>
             <div class="forum-thread-wrapper">
                 <h3 data-template="title">Thread subject</h3>
+                <button class="forum-thread-edit hide" title="Edit thread"><img src="./images/icon-edit.png" alt="Edit thread"></button>
                 <div class="forum-thread-date" data-template="date"></div>
                 <div class="forum-thread-messages" data-template="posts"></div>
             </div>
@@ -230,10 +231,10 @@
                         </button>
                     </div>
                     <div class="action-button-wrapper">
-                    <button name="submit" value="reply">Reply</button>
-                    <button name="submit" value="edit">Edit</button>
-                    <button name="submit" value="delete">Delete</button>
-                </div>
+                        <button name="submit" value="reply">Reply</button>
+                        <button name="submit" value="edit">Edit</button>
+                        <button name="submit" value="delete">Delete</button>
+                    </div>
                 </form>
             </div>
             <div class="forum-message-replies" data-template="replies"></div>
@@ -290,5 +291,18 @@
             <div class="search-result-date" data-template="threadDate"></div>
             <div class="search-result-author" data-template="threadLastBy"></div>
         </article>
+    </template>
+    <!-- Template for form editing a thread -->
+    <template id="tpl-thread-edit">
+        <form id="thread-edit-form" data-threadid="0">
+            <input type="text" name="title" class="thread-edit-title" placeholder="Thread title here" minlength="2" maxlength="40" data-template="title" required>
+            <div class="thread-edit-active-wrapper">
+                <input type="checkbox" name="active" value="true" id="thread-edit-active" data-template="active">
+                <label for="thread-edit-active">Open</label>
+            </div>
+            <button class="thread-edit-submit" value="save">Save</button>
+            <button class="thread-edit-cancel" value="cancel" formnovalidate>Cancel</button>
+            <button class="thread-edit-delete" value="delete" formnovalidate>Delete</button>
+        </form>
     </template>
 </html>

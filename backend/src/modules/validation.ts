@@ -152,13 +152,22 @@ export const validateNewMessage = [
     body("threadId")
         .exists().withMessage('The ID of the target thread must be set.').bail()
         .isUUID('all').withMessage('Invalid target thread ID specified.').bail()
-        .custom(validateThreadIdExists).withMessage('The thread to reply to does not exist.').bail(),
+        .custom(validateThreadIdExistsAndActive).withMessage('The thread to reply to is locked or does not exist.').bail(),
     body("message")
         .exists().withMessage('The message text must be set.').bail()
         .trim().notEmpty().withMessage('The message must have text content.').bail()
         .isString().withMessage('The message text must be a string.').bail()
         .isLength({ min: 2, max: 4000 }).withMessage('The message text must be between 2 to 4000 characters in length.').bail()
 ];
+
+function validateThreadIdExistsAndActive(value: string): boolean {
+    const thread = dataStorage.getThread(value);
+    if (thread && thread.active) {
+        return true;
+    }
+    return false;
+}
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -167,7 +176,7 @@ export const validateNewReply = [
     body("messageId")
         .exists().withMessage('The ID of the target message must be set.').bail()
         .isUUID('all').withMessage('Invalid message ID specified.').bail()
-        .custom(validateMessageIdExistsNotDeleted).withMessage('The specified message does not exist.').bail(),
+        .custom(validateMessageIdExistsNotDeleted).withMessage('The specified message does not exist or the thread is locked.').bail(),
     body("message")
         .exists().withMessage('The reply must have a message text.').bail()
         .trim().notEmpty().withMessage('The reply message must have text content.').bail()
@@ -178,7 +187,11 @@ export const validateNewReply = [
 function validateMessageIdExistsNotDeleted(value: string): boolean {
     const checkMessage = dataStorage.getMessage(value);
     if (checkMessage) {
-        return !checkMessage.deleted;
+        const thread = dataStorage.getMessageThread(checkMessage.id);
+        if (thread) {
+            return !checkMessage.deleted && thread.active;
+        }
+
     }
     return false;
 }
@@ -191,6 +204,10 @@ export const validateEditThread = [
         .exists().withMessage('The ID of the target thread must be set.').bail()
         .isUUID('all').withMessage('Invalid target thread ID specified.').bail()
         .custom(validateThreadIdExists).withMessage('The thread to edit to does not exist.').bail(),
+    body("active")
+        .exists().withMessage('The thread active status must be set.').bail()
+        .trim().notEmpty().withMessage('The thread active flag must be set.').bail()
+        .isBoolean().withMessage('The thread active flag must be either true or false.').bail(),
     body("title")
         .exists().withMessage('The thread title must be set.').bail()
         .trim().notEmpty().withMessage('The thread title must have text content.').bail()
@@ -205,7 +222,7 @@ export const validateEditMessage = [
     body("messageId")
         .exists().withMessage('The ID of the message to edit must be set.').bail()
         .isUUID('all').withMessage('Invalid message ID specified.').bail()
-        .custom(validateMessageIdExistsNotDeleted).withMessage('The message to edit could not be found.').bail(),
+        .custom(validateMessageIdExistsNotDeleted).withMessage('The message to edit could not be found, or the thread is locked.').bail(),
     body("message")
         .exists().withMessage('The message text must be set.').bail()
         .trim().notEmpty().withMessage('The message text must have text content.').bail()
@@ -218,7 +235,7 @@ export const validateLikeMessage = [
     param("messageId")
         .exists().withMessage('The ID of the message to like must be set.').bail()
         .isUUID('all').withMessage('Invalid ID of message to like specified.').bail()
-        .custom(validateMessageIdExistsNotDeleted).withMessage('The message to like could not be found.').bail()
+        .custom(validateMessageIdExistsNotDeleted).withMessage('The message to like could not be found, or the thread is locked.').bail()
 ];
 
 

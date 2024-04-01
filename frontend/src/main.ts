@@ -210,8 +210,8 @@ forumApp.load().then(() => {
 (document.querySelector("#message-editor-form") as HTMLFormElement).addEventListener("submit", async (event) => {
     event.preventDefault();
 
+    const messageDialog = document.querySelector("#message-editor-dialog") as HTMLDialogElement;
     try {
-        const messageDialog = document.querySelector("#message-editor-dialog") as HTMLDialogElement;
         const formData = new FormData(event.currentTarget as HTMLFormElement, event.submitter);
         const action = formData.get("action");
         const targetId = formData.get("targetId") as string;
@@ -232,6 +232,8 @@ forumApp.load().then(() => {
     }
     catch (error) {
         console.error("DEBUG: Error submitting from message editor", error.message);
+        forumApp.showError(`Message error: ${error.message}`);
+        messageDialog.close();
     }
 });
 
