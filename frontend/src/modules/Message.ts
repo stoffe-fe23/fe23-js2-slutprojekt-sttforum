@@ -11,7 +11,7 @@ import * as htmlUtilities from './htmlUtilities.ts';
 import ForumApp from "./ForumApp.ts";
 import { UserAuthor, MessageDisplayInfo, ForumMessageAPI, StatusResponseAPI, APIQueryData } from "./TypeDefs.ts";
 
-const MAX_REPLY_CHAIN_DEPTH = 5;
+const MAX_REPLY_CHAIN_DEPTH = 4;
 
 export default class Message {
     public id: string;

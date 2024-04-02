@@ -684,23 +684,84 @@
                                 "message": "Någerlunda i alla fall...",
                                 "deleted": false,
                                 "date": 1711525583622,
-                                "replies": []
+                                "replies": [
+                                    {
+                                        "id": "e8c69243-da3a-4c31-8a2c-1d453c502d39",
+                                        "author": {
+                                            "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                                            "userName": "Stoffe",
+                                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96-1711901300396.png",
+                                            "admin": true
+                                        },
+                                        "message": "Ännu ett svar...",
+                                        "deleted": false,
+                                        "date": 1712059866618,
+                                        "replies": [
+                                            {
+                                                "id": "e9205df5-ac39-489c-8084-3a7ae5d958c2",
+                                                "author": {
+                                                    "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                                                    "userName": "Stoffe",
+                                                    "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96-1711901300396.png",
+                                                    "admin": true
+                                                },
+                                                "message": "Ett betydligt djupare svar...",
+                                                "deleted": false,
+                                                "date": 1712059879236,
+                                                "replies": [
+                                                    {
+                                                        "id": "80e33048-bd33-4f30-bc13-604a7593aedf",
+                                                        "author": {
+                                                            "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                                                            "userName": "Stoffe",
+                                                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96-1711901300396.png",
+                                                            "admin": true
+                                                        },
+                                                        "message": "På riktigt djupt vatten nu...",
+                                                        "deleted": false,
+                                                        "date": 1712059906557,
+                                                        "replies": [
+                                                            {
+                                                                "id": "58f295e6-2a14-4e1a-9721-234c2bbd288b",
+                                                                "author": {
+                                                                    "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                                                                    "userName": "Stoffe",
+                                                                    "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96-1711901300396.png",
+                                                                    "admin": true
+                                                                },
+                                                                "message": "Cutoff här, eller?",
+                                                                "deleted": false,
+                                                                "date": 1712059937791,
+                                                                "replies": [
+                                                                    {
+                                                                        "id": "4b2f3095-c435-41e4-ae71-f9704bf0b6d6",
+                                                                        "author": {
+                                                                            "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                                                                            "userName": "Stoffe",
+                                                                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96-1711901300396.png",
+                                                                            "admin": true
+                                                                        },
+                                                                        "message": "Hmm, eller det funkar inte?",
+                                                                        "deleted": false,
+                                                                        "date": 1712059957512,
+                                                                        "replies": [],
+                                                                        "likes": []
+                                                                    }
+                                                                ],
+                                                                "likes": []
+                                                            }
+                                                        ],
+                                                        "likes": []
+                                                    }
+                                                ],
+                                                "likes": []
+                                            }
+                                        ],
+                                        "likes": []
+                                    }
+                                ]
                             }
                         ]
-                    },
-                    {
-                        "id": "6e8c3f27-3b60-47d3-af0f-6d4ecb23bd1c",
-                        "author": {
-                            "id": "c9a041d0-f39a-4d5f-94d1-d2920721ca22",
-                            "userName": "tobbe",
-                            "picture": "c9a041d0-f39a-4d5f-94d1-d2920721ca22.jpg",
-                            "admin": false
-                        },
-                        "message": "bara testar",
-                        "deleted": false,
-                        "date": 1712046210995,
-                        "replies": [],
-                        "likes": []
                     }
                 ],
                 "forum": {
@@ -882,39 +943,10 @@
                         "message": "Åker till skolan imorgon. Vilken upplyftande resa.... eller?",
                         "deleted": false,
                         "date": 1711977490755,
-                        "replies": [
-                            {
-                                "id": "6efd865d-5307-41fb-9ac1-7bdcb62bafff",
-                                "author": {
-                                    "id": "c9a041d0-f39a-4d5f-94d1-d2920721ca22",
-                                    "userName": "tobbe",
-                                    "picture": "c9a041d0-f39a-4d5f-94d1-d2920721ca22.jpg",
-                                    "admin": false
-                                },
-                                "message": "det blir nog bra",
-                                "deleted": false,
-                                "date": 1712046422375,
-                                "replies": [],
-                                "likes": []
-                            }
-                        ],
+                        "replies": [],
                         "likes": [
                             "5bcca996-929a-4451-a889-3a2267c6e216"
                         ]
-                    },
-                    {
-                        "id": "2aec13d9-83b6-4d38-b9c4-870b9bbdba01",
-                        "author": {
-                            "id": "c9a041d0-f39a-4d5f-94d1-d2920721ca22",
-                            "userName": "tobbe",
-                            "picture": "c9a041d0-f39a-4d5f-94d1-d2920721ca22.jpg",
-                            "admin": false
-                        },
-                        "message": "skriver lite här också",
-                        "deleted": false,
-                        "date": 1712046435945,
-                        "replies": [],
-                        "likes": []
                     }
                 ],
                 "forum": {

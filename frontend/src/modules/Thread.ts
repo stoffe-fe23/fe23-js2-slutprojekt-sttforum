@@ -111,11 +111,12 @@ export default class Thread {
             }
         }
 
-        // TODO: Also include date on replies to the posts in the sort order! 
+        // Also use the dates on most recent replies to the posts in the sort order! 
         this.posts.sort((a, b) => b.getMostRecentActivityDate() - a.getMostRecentActivityDate());
 
         // Show posts in this thread
         if (displayMessage) {
+            displayMessage.threadId = this.id;
             displayMessage.display(messagesElement, this.active);
         }
         else {
