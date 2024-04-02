@@ -454,7 +454,7 @@ label[for="user-profile-picture"] {
     font-size: 0.85rem;
 }
 
-#register-button {
+#new-to-STT-button {
     background: none;
     border: none;
     color: rgb(69, 125, 247);
@@ -475,5 +475,17 @@ label[for="user-profile-picture"] {
     border: none;
     padding: 0.3rem 0.5rem;
     border-radius: 10px;
+    cursor: pointer;
+}
+
+#already-have-acc-container{
+    margin-top: 0.7rem;
+}
+
+#already-have-acc-container button{
+    background: none;
+    color: rgb(69, 125, 247);
+    border: none;
+    font-size: 1rem;
     cursor: pointer;
 }

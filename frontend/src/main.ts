@@ -54,7 +54,8 @@ forumApp.router.on("/forums", () => {
             forumApp.showForumPicker(pageForum);
         }
         else {
-            htmlUtilities.createHTMLElement("div", `You must be <a href="/login" data-navigo>logged in</a> to view the forums.`, pageForum, 'error-not-logged-in', null, true);
+            forumApp.showError(`You must be <a href="/login" data-navigo>logged in</a> to view the forums.`)
+            // htmlUtilities.createHTMLElement("div", `You must be <a href="/login" data-navigo>logged in</a> to view the forums.`, pageForum, 'error-not-logged-in', null, true);
         }
     });
 });
@@ -91,6 +92,7 @@ forumApp.router.on("/thread/:threadId", (route) => {
             }
         }
         else {
+            forumApp.showError("You must be logged in to view this")
             console.log("DEBUG: Show threads skipped, no login..");
         }
     });
@@ -131,6 +133,7 @@ forumApp.router.on("/users", () => {
             forumApp.showUserList(pageUsers);
         }
         else {
+            forumApp.showError("You must be logged in to view user profiles")
             console.log("DEBUG: User not logged on, not allowed to view user list.");
         }
 
@@ -153,10 +156,12 @@ forumApp.router.on("/user/profile/:userid", (routeInfo) => {
                     forumApp.showUserProfile(routeInfo.data.userid, pageUsers);
                 }
                 else {
+                    forumApp.showError("The User does not exist!")
                     console.log("DEBUG: No User ID specified, cannot show profile.")
                 }
             }
             else {
+                forumApp.showError("You must be logged in to view user profiles")
                 console.log("DEBUG: User not logged on, not permitted to view user profiles.")
             }
         }
@@ -198,6 +203,7 @@ forumApp.router.on("/login", () => {
             }
         });
     }
+    (event.currentTarget as HTMLFormElement).reset();
     loginDialog.close();
 });
 
@@ -241,19 +247,20 @@ forumApp.router.on("/login", () => {
         else {
             // User not logged in, show the login dialog box. 
             showLoginDialog();
+            toggleLoginScreen(true);
         }
     });
 });
 
-///// Ton \\\\\
-(document.querySelector("#register-button") as HTMLButtonElement).addEventListener("click", () => {
-    const registerForm = document.querySelector("#user-register-form") as HTMLFormElement;
-    const loginForm = document.querySelector("#login-form") as HTMLFormElement;
-    const regBtnContainer = document.querySelector("#register-button-container") as HTMLElement;
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Toggle between log in and register form on the dialog box
+(document.querySelector("#new-to-STT-button") as HTMLButtonElement).addEventListener("click", ()=> {
+    toggleLoginScreen(false);
+});
 
-    registerForm.classList.remove("hide");
-    loginForm.classList.add("hide");
-    regBtnContainer.classList.add("hide");
+(document.querySelector("#already-have-acc-login-button") as HTMLButtonElement).addEventListener("click", () => {
+    toggleLoginScreen(true);
+       
 });
 
 
@@ -339,6 +346,8 @@ forumApp.router.on("/login", () => {
         console.log("Hej Ton");
         console.log((event.submitter as HTMLButtonElement).id);
     }
+
+    (event.currentTarget as HTMLFormElement).reset();
     loginDialog.close();
 });
 
@@ -382,7 +391,7 @@ forumApp.router.on("/login", () => {
 // Search form submit
 (document.querySelector("#searchform") as HTMLFormElement).addEventListener("submit", async (event) => {
     event.preventDefault();
-
+    
     pageForum.classList.add("show");
     pageHome.classList.remove("show");
     pageUsers.classList.remove("show");
@@ -455,18 +464,24 @@ function showLoginDialog() {
             (document.querySelector("#register-button-container") as HTMLElement).classList.remove("hide");
 
             loginDialog.showModal();
-            ///// Ton \\\\\
-            const loginForm = document.querySelector("#login-form") as HTMLFormElement;
-            const registerForm = document.querySelector("#user-register-form") as HTMLFormElement;
-            const regBtnContainer = document.querySelector("#register-button-container") as HTMLElement;
-
-            loginForm.classList.remove("hide");
-            registerForm.classList.add("hide");
-            regBtnContainer.classList.remove("hide");
+   
         }
     });
 }
 
+//////////////////////////////////////////////////////////////////////////////////
+// Add and remove class between log in form and register form. 
+function toggleLoginScreen(showLogin: boolean):void{
+        const registerForm = document.querySelector("#user-register-form") as HTMLFormElement;
+        const loginForm = document.querySelector("#login-form") as HTMLFormElement;
+        const regBtnContainer = document.querySelector("#register-button-container") as HTMLElement;
+        const alreadyHaveAccContainer = document.querySelector("#already-have-acc-container") as HTMLElement;
+
+        registerForm.classList[showLogin ? "add" : "remove"]("hide");
+        loginForm.classList[!showLogin ? "add" : "remove"]("hide");
+        regBtnContainer.classList[!showLogin ? "add" : "remove"]("hide");
+        alreadyHaveAccContainer.classList[showLogin ? "add" : "remove"]("hide");
+}
 
 
 forumApp.router.resolve();

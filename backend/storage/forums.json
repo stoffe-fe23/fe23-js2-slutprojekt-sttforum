@@ -687,6 +687,20 @@
                                 "replies": []
                             }
                         ]
+                    },
+                    {
+                        "id": "6e8c3f27-3b60-47d3-af0f-6d4ecb23bd1c",
+                        "author": {
+                            "id": "c9a041d0-f39a-4d5f-94d1-d2920721ca22",
+                            "userName": "tobbe",
+                            "picture": "c9a041d0-f39a-4d5f-94d1-d2920721ca22.jpg",
+                            "admin": false
+                        },
+                        "message": "bara testar",
+                        "deleted": false,
+                        "date": 1712046210995,
+                        "replies": [],
+                        "likes": []
                     }
                 ],
                 "forum": {
@@ -868,10 +882,39 @@
                         "message": "Åker till skolan imorgon. Vilken upplyftande resa.... eller?",
                         "deleted": false,
                         "date": 1711977490755,
-                        "replies": [],
+                        "replies": [
+                            {
+                                "id": "6efd865d-5307-41fb-9ac1-7bdcb62bafff",
+                                "author": {
+                                    "id": "c9a041d0-f39a-4d5f-94d1-d2920721ca22",
+                                    "userName": "tobbe",
+                                    "picture": "c9a041d0-f39a-4d5f-94d1-d2920721ca22.jpg",
+                                    "admin": false
+                                },
+                                "message": "det blir nog bra",
+                                "deleted": false,
+                                "date": 1712046422375,
+                                "replies": [],
+                                "likes": []
+                            }
+                        ],
                         "likes": [
                             "5bcca996-929a-4451-a889-3a2267c6e216"
                         ]
+                    },
+                    {
+                        "id": "2aec13d9-83b6-4d38-b9c4-870b9bbdba01",
+                        "author": {
+                            "id": "c9a041d0-f39a-4d5f-94d1-d2920721ca22",
+                            "userName": "tobbe",
+                            "picture": "c9a041d0-f39a-4d5f-94d1-d2920721ca22.jpg",
+                            "admin": false
+                        },
+                        "message": "skriver lite här också",
+                        "deleted": false,
+                        "date": 1712046435945,
+                        "replies": [],
+                        "likes": []
                     }
                 ],
                 "forum": {

@@ -61,10 +61,10 @@
                 <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Perferendis quisquam alias dolore soluta id inventore, consequuntur assumenda quasi voluptas nobis?</p>
             </div>
             <div id="page-forum">
-                <h2>Forums</h2>
+                <h2></h2>
             </div>
             <div id="page-users">
-                <h2>Users</h2>
+                <h2></h2>
             </div>
             <form id="forum-editor-form" class="hide">
                 <input type="text" id="forum-editor-name" name="name" value="" placeholder="Forum name" minlength="2" maxlength="20" required>
@@ -91,8 +91,9 @@
             </form>
             <div id="register-button-container">
                 <span>New to STT?</span>
-                <button id="register-button">Register</button>
+                <button id="new-to-STT-button">Register</button>
             </div>
+    
             <form id="user-register-form">
                 <h2>Register new user</h2>
                 <input type="text" id="user-register-name" name="username" value="" placeholder="Your username" required>
@@ -104,6 +105,11 @@
                     <button formnovalidate id="user-register-cancel">Cancel</button>
                 </div>
             </form>
+
+            <div id="already-have-acc-container">
+                <span>Already have an account?</span>
+                <button id="already-have-acc-login-button">Log in</button>
+            </div>
         </dialog>
         <!-- Dialog for replying to a message or editing a messsage -->
         <dialog id="message-editor-dialog">

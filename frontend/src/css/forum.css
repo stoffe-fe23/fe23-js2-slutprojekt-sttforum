@@ -245,6 +245,7 @@ a.author-name span.admin::after {
     padding: 0.5rem;
     overflow: hidden;
     word-wrap: break-word;
+    width: 200px;
 }
 
 .forum-thread-list-title.locked::after {
@@ -262,7 +263,7 @@ a.author-name span.admin::after {
 .forum-thread-list-lastby {
     grid-area: thread-lastauthor;
     padding: 0.5rem;
-    width: 200px;
+    width: 120px;
     overflow: hidden;
     word-wrap: break-word;
 }
