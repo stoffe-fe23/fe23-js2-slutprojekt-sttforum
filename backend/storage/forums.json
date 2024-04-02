@@ -853,7 +853,22 @@
                         "message": "Åker till skolan imorgon. Vilken upplyftande resa.... eller?",
                         "deleted": false,
                         "date": 1711977490755,
-                        "replies": [],
+                        "replies": [
+                            {
+                                "id": "0d8ce5be-0bea-4d2b-9f9d-fc86a0f383ba",
+                                "author": {
+                                    "id": "9dc31ecd-206b-4344-9cb1-ccf8d9aafaf7",
+                                    "userName": "Ton",
+                                    "picture": "def-pic-3.png",
+                                    "admin": false
+                                },
+                                "message": "Hoppas att det inte regnar :)",
+                                "deleted": false,
+                                "date": 1712046065233,
+                                "replies": [],
+                                "likes": []
+                            }
+                        ],
                         "likes": [
                             "5bcca996-929a-4451-a889-3a2267c6e216"
                         ]

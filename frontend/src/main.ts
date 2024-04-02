@@ -221,14 +221,6 @@ forumApp.router.on("/login", () => {
         else {
             // User not logged in, show the login dialog box. 
             showLoginDialog();
-            ///// Ton \\\\\
-            const loginForm = document.querySelector("#login-form") as HTMLFormElement;
-            const registerForm = document.querySelector("#user-register-form") as HTMLFormElement;
-            const regBtnContainer = document.querySelector("#register-button-container") as HTMLElement;
-
-            loginForm.classList.remove("hide");
-            registerForm.classList.add("hide");
-            regBtnContainer.classList.remove("hide");
         }
     });
 });
@@ -442,6 +434,14 @@ function showLoginDialog() {
             (document.querySelector("#register-button-container") as HTMLElement).classList.remove("hide");
 
             loginDialog.showModal();
+                  ///// Ton \\\\\
+                  const loginForm = document.querySelector("#login-form") as HTMLFormElement;
+                  const registerForm = document.querySelector("#user-register-form") as HTMLFormElement;
+                  const regBtnContainer = document.querySelector("#register-button-container") as HTMLElement;
+      
+                  loginForm.classList.remove("hide");
+                  registerForm.classList.add("hide");
+                  regBtnContainer.classList.remove("hide");
         }
     });
 }
