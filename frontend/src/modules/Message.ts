@@ -11,6 +11,7 @@ import * as htmlUtilities from './htmlUtilities.ts';
 import ForumApp from "./ForumApp.ts";
 import { UserAuthor, MessageDisplayInfo, ForumMessageAPI, StatusResponseAPI, APIQueryData } from "./TypeDefs.ts";
 
+const MAX_REPLY_CHAIN_DEPTH = 5;
 
 export default class Message {
     public id: string;
@@ -20,6 +21,7 @@ export default class Message {
     public date: number;
     public replies: Message[];
     public likes: string[];
+    public threadId: string;
     private app: ForumApp;
 
 
@@ -35,6 +37,7 @@ export default class Message {
             this.date = messageData.date;
             this.message = messageData.message;
             this.likes = messageData.likes ?? [];
+            this.threadId = "";
         }
     }
 
@@ -214,9 +217,14 @@ export default class Message {
         // TODO: Stop drawing replies at a certain depth of the reply chain, or display differently,
         // to prevent the thread view from becoming too squished. 
 
-        replyDepth++;
-        for (const message of this.replies) {
-            message.display(repliesElement, allowEditing, replyDepth);
+        if (replyDepth++ < MAX_REPLY_CHAIN_DEPTH) {
+            for (const message of this.replies) {
+                message.display(repliesElement, allowEditing, replyDepth);
+            }
+        }
+        else if (this.replies.length > 0) {
+            const wrapper = htmlUtilities.createHTMLElement("div", "", repliesElement, "replies-expand-wrapper");
+            htmlUtilities.createHTMLElement("a", `View ${this.replies.length} more replies to this message.`, wrapper, "replies-expand-link", { href: `/message/${this.threadId}/${this.id}` });
         }
         return thisMessageElem;
     }
