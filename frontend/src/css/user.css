@@ -477,3 +477,15 @@ label[for="user-profile-picture"] {
     border-radius: 10px;
     cursor: pointer;
 }
+
+#already-have-acc-container{
+    margin-top: 0.7rem;
+}
+
+#already-have-acc-container button{
+    background: none;
+    color: rgb(69, 125, 247);
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+}

@@ -230,10 +230,27 @@ forumApp.router.on("/login", () => {
     const registerForm = document.querySelector("#user-register-form") as HTMLFormElement;
     const loginForm = document.querySelector("#login-form") as HTMLFormElement;
     const regBtnContainer = document.querySelector("#register-button-container") as HTMLElement;
+    const alreadyHaveAccContainer = document.querySelector("#already-have-acc-container") as HTMLElement;
 
     registerForm.classList.remove("hide");
     loginForm.classList.add("hide");
     regBtnContainer.classList.add("hide");
+    alreadyHaveAccContainer.classList.remove("hide");
+});
+
+(document.querySelector("#already-have-acc-login-btn") as HTMLButtonElement).addEventListener("click", () => {
+    const loginForm = document.querySelector("#login-form") as HTMLFormElement;
+    const registerForm = document.querySelector("#user-register-form") as HTMLFormElement;
+    const regBtnContainer = document.querySelector("#register-button-container") as HTMLElement;
+    const alreadyHaveAccContainer = document.querySelector("#already-have-acc-container") as HTMLElement;
+
+
+    loginForm.classList.remove("hide");
+    registerForm.classList.add("hide");
+    regBtnContainer.classList.remove("hide");
+    alreadyHaveAccContainer.classList.add("hide");
+    
+    
 });
 
 
@@ -436,10 +453,13 @@ function showLoginDialog() {
                   const loginForm = document.querySelector("#login-form") as HTMLFormElement;
                   const registerForm = document.querySelector("#user-register-form") as HTMLFormElement;
                   const regBtnContainer = document.querySelector("#register-button-container") as HTMLElement;
+                  const alreadyHaveAccContainer = document.querySelector("#already-have-acc-container") as HTMLElement;
       
-                  loginForm.classList.remove("hide");
+                  alreadyHaveAccContainer.classList.add("hide");
                   registerForm.classList.add("hide");
+
                   regBtnContainer.classList.remove("hide");
+                  loginForm.classList.remove("hide");
         }
     });
 }
