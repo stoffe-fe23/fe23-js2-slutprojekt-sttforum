@@ -410,6 +410,7 @@ forumApp.router.on("/login", () => {
                 const formData = new FormData(event.currentTarget as HTMLFormElement);
                 forumApp.createForum(formData).catch(forumApp.showError);
                 (event.currentTarget as HTMLFormElement).classList.add("hide");
+                forumApp.router.navigate("/forums");
             }
         }
         else {
@@ -434,14 +435,14 @@ function showLoginDialog() {
             (document.querySelector("#register-button-container") as HTMLElement).classList.remove("hide");
 
             loginDialog.showModal();
-                  ///// Ton \\\\\
-                  const loginForm = document.querySelector("#login-form") as HTMLFormElement;
-                  const registerForm = document.querySelector("#user-register-form") as HTMLFormElement;
-                  const regBtnContainer = document.querySelector("#register-button-container") as HTMLElement;
-      
-                  loginForm.classList.remove("hide");
-                  registerForm.classList.add("hide");
-                  regBtnContainer.classList.remove("hide");
+            ///// Ton \\\\\
+            const loginForm = document.querySelector("#login-form") as HTMLFormElement;
+            const registerForm = document.querySelector("#user-register-form") as HTMLFormElement;
+            const regBtnContainer = document.querySelector("#register-button-container") as HTMLElement;
+
+            loginForm.classList.remove("hide");
+            registerForm.classList.add("hide");
+            regBtnContainer.classList.remove("hide");
         }
     });
 }

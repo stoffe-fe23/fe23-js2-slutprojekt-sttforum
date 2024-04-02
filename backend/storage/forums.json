@@ -881,5 +881,11 @@
                 }
             }
         ]
+    },
+    {
+        "id": "edfb0014-3138-4c6a-b93d-b9eae2a0db4a",
+        "name": "Gaming",
+        "icon": "forum-1712048429831.png",
+        "threads": []
     }
 ]
