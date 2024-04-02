@@ -178,6 +178,7 @@ forumApp.router.on("/login", () => {
             }
         });
     }
+    (event.currentTarget as HTMLFormElement).reset();
     loginDialog.close();
 });
 
@@ -320,6 +321,8 @@ forumApp.router.on("/login", () => {
         console.log("Hej Ton");
         console.log((event.submitter as HTMLButtonElement).id);
     }
+
+    (event.currentTarget as HTMLFormElement).reset();
     loginDialog.close();
 });
 
@@ -363,7 +366,7 @@ forumApp.router.on("/login", () => {
 // Search form submit
 (document.querySelector("#searchform") as HTMLFormElement).addEventListener("submit", async (event) => {
     event.preventDefault();
-
+    
     pageForum.classList.add("show");
     pageHome.classList.remove("show");
     pageUsers.classList.remove("show");
