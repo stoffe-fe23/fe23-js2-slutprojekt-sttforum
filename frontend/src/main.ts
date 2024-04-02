@@ -226,12 +226,13 @@ forumApp.router.on("/login", () => {
     });
 });
 
-(document.querySelector("#register-button") as HTMLButtonElement).addEventListener("click", ()=> {
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Toggle between log in and register form on the dialog box
+(document.querySelector("#new-to-STT-button") as HTMLButtonElement).addEventListener("click", ()=> {
     toggleLoginScreen(false);
 });
 
-// Ton \\
-(document.querySelector("#already-have-acc-login-btn") as HTMLButtonElement).addEventListener("click", () => {
+(document.querySelector("#already-have-acc-login-button") as HTMLButtonElement).addEventListener("click", () => {
     toggleLoginScreen(true);
        
 });
@@ -440,9 +441,9 @@ function showLoginDialog() {
     });
 }
 
+//////////////////////////////////////////////////////////////////////////////////
+// Add and remove class between log in form and register form. 
 function toggleLoginScreen(showLogin: boolean):void{
-    ///// Ton \\\\\
-        
         const registerForm = document.querySelector("#user-register-form") as HTMLFormElement;
         const loginForm = document.querySelector("#login-form") as HTMLFormElement;
         const regBtnContainer = document.querySelector("#register-button-container") as HTMLElement;
