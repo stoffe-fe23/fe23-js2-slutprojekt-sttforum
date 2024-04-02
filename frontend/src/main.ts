@@ -54,7 +54,8 @@ forumApp.router.on("/forums", () => {
             forumApp.showForumPicker(pageForum);
         }
         else {
-            htmlUtilities.createHTMLElement("div", `You must be <a href="/login" data-navigo>logged in</a> to view the forums.`, pageForum, 'error-not-logged-in', null, true);
+            forumApp.showError(`You must be <a href="/login" data-navigo>logged in</a> to view the forums.`)
+            // htmlUtilities.createHTMLElement("div", `You must be <a href="/login" data-navigo>logged in</a> to view the forums.`, pageForum, 'error-not-logged-in', null, true);
         }
     });
 });
@@ -91,6 +92,7 @@ forumApp.router.on("/thread/:threadId", (route) => {
             }
         }
         else {
+            forumApp.showError("You must be logged in to view this")
             console.log("DEBUG: Show threads skipped, no login..");
         }
     });
@@ -111,6 +113,7 @@ forumApp.router.on("/users", () => {
             forumApp.showUserList(pageUsers);
         }
         else {
+            forumApp.showError("You must be logged in to view user profiles")
             console.log("DEBUG: User not logged on, not allowed to view user list.");
         }
 
@@ -133,10 +136,12 @@ forumApp.router.on("/user/profile/:userid", (routeInfo) => {
                     forumApp.showUserProfile(routeInfo.data.userid, pageUsers);
                 }
                 else {
+                    forumApp.showError("The User does not exist!")
                     console.log("DEBUG: No User ID specified, cannot show profile.")
                 }
             }
             else {
+                forumApp.showError("You must be logged in to view user profiles")
                 console.log("DEBUG: User not logged on, not permitted to view user profiles.")
             }
         }
