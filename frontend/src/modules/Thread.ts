@@ -80,7 +80,7 @@ export default class Thread {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////    
     // Generate HTML to display this discussion thread and its message content.
-    public display(targetContainer: HTMLElement | null = null): HTMLElement {
+    public display(targetContainer: HTMLElement | null = null, displayMessage: Message | null = null): HTMLElement {
         const values: ThreadDisplayInfo = {
             title: this.title,
             date: htmlUtilities.dateTimeToString(this.date),
@@ -115,9 +115,15 @@ export default class Thread {
         this.posts.sort((a, b) => b.getMostRecentActivityDate() - a.getMostRecentActivityDate());
 
         // Show posts in this thread
-        for (const message of this.posts) {
-            message.display(messagesElement, this.active);
+        if (displayMessage) {
+            displayMessage.display(messagesElement, this.active);
         }
+        else {
+            for (const message of this.posts) {
+                message.display(messagesElement, this.active);
+            }
+        }
+
         this.app.router.updatePageLinks();
 
         return threadElement;

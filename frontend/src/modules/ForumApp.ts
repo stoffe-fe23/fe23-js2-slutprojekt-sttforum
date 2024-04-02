@@ -178,6 +178,39 @@ export default class ForumApp {
                 foundThread.display(outBox);
             }
         }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Display all the posts/replies in the specified thread
+    public async showMessage(threadId: string, messageId: string, outBox: HTMLElement): Promise<void> {
+
+        const parentThread = await Thread.create(this, threadId);
+        if (parentThread) {
+            outBox.innerHTML = "";
+
+            // Display the thread within its parent forum wrapper. 
+            if (parentThread.forumInfo) {
+                parentThread.forumInfo.icon = parentThread.forumInfo.icon.length ? this.mediaUrl + 'forumicons/' + parentThread.forumInfo.icon : new URL('../images/forum-icon.png', import.meta.url).toString()
+
+                const forumElement = htmlUtilities.createHTMLFromTemplate("tpl-thread-forum", outBox, parentThread.forumInfo, { "data-forumid": parentThread.forumInfo.id });
+                const threadsElement = forumElement.querySelector(`.forum-thread`) as HTMLElement;
+                const displayMessage = await Message.create(this, messageId);
+
+                if (displayMessage) {
+                    displayMessage.threadId = threadId;
+                    parentThread.display(threadsElement, displayMessage);
+                }
+
+                const breadcrumb = forumElement.querySelector(".forum-breadcrumb") as HTMLElement;
+                if (breadcrumb) {
+                    htmlUtilities.createHTMLElement("a", "Forums", breadcrumb, "breadcrumb-link", { href: `/forums`, "data-navigo": "true" });
+                    htmlUtilities.createHTMLElement("a", parentThread.forumInfo.name, breadcrumb, "breadcrumb-link", { href: `/forum/${parentThread.forumInfo.id}`, "data-navigo": "true" });
+                    htmlUtilities.createHTMLElement("a", parentThread.title, breadcrumb, "breadcrumb-link", { href: `/thread/${parentThread.id}`, "data-navigo": "true" });
+                    htmlUtilities.createHTMLElement("a", "Message", breadcrumb, "breadcrumb-link", { href: `/message/${parentThread.id}/${messageId}`, "data-navigo": "true" });
+                    this.router.updatePageLinks();
+                }
+            }
+        }
 
     }
 
@@ -402,7 +435,7 @@ export default class ForumApp {
             });
 
             // Socket connection is closed, attempt to reconnect. 
-            // TODO: Timeout after X number of retries... 
+            // TODO: Timeout after X number of retries? 
             this.socketClient.addEventListener("close", (event) => {
                 console.log("SOCKET CLOSE: ", event);
                 setTimeout(this.reEstablishSocketConnection.bind(this), 4000);

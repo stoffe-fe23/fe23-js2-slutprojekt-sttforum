@@ -96,6 +96,26 @@ forumApp.router.on("/thread/:threadId", (route) => {
     });
 });
 
+//////////////////////////////////////////////////////////////////////////////////
+// Show a specified message and its replies. 
+forumApp.router.on("/message/:threadId/:messageId", (route) => {
+    pageForum.classList.add("show");
+    pageHome.classList.remove("show");
+    pageUsers.classList.remove("show");
+    console.log("DEBUG: Show message and replies...");
+    forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
+        if (isLoggedIn) {
+            if (route && route.data && route.data.threadId && route.data.messageId) {
+                console.log("DEBUG: Show message displaying: ", route.data.threadId, route.data.messageId);
+                forumApp.showMessage(route.data.threadId, route.data.messageId, pageForum);
+            }
+        }
+        else {
+            console.log("DEBUG: Show message skipped, no login..");
+        }
+    });
+});
+
 
 //////////////////////////////////////////////////////////////////////////////////
 // Show a list of all the registered users
