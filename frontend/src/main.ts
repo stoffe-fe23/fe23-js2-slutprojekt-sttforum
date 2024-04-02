@@ -338,21 +338,23 @@ forumApp.router.on("/login", () => {
 
     const messageDialog = document.querySelector("#message-editor-dialog") as HTMLDialogElement;
     try {
-        const formData = new FormData(event.currentTarget as HTMLFormElement, event.submitter);
-        const action = formData.get("action");
-        const targetId = formData.get("targetId") as string;
-        const parentMessage = await Message.create(forumApp, targetId);
+        if ((event.submitter as HTMLButtonElement).value == "save") {
+            const formData = new FormData(event.currentTarget as HTMLFormElement, event.submitter);
+            const action = formData.get("action");
+            const targetId = formData.get("targetId") as string;
+            const parentMessage = await Message.create(forumApp, targetId);
 
-        console.log("DEBUG: Message Editor submit: ", action, targetId);
+            console.log("DEBUG: Message Editor submit: ", action, targetId);
 
-        if (parentMessage) {
-            switch (action) {
-                case "reply": await parentMessage.newReply(formData.get("message") as string); break;
-                case "edit": await parentMessage.editMessage(formData.get("message") as string); break;
+            if (parentMessage) {
+                switch (action) {
+                    case "reply": await parentMessage.newReply(formData.get("message") as string); break;
+                    case "edit": await parentMessage.editMessage(formData.get("message") as string); break;
+                }
             }
-        }
-        else {
-            console.log("Error! Could not load message to reply to.");
+            else {
+                console.log("Error! Could not load message to reply to.");
+            }
         }
         messageDialog.close();
     }
