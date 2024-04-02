@@ -112,7 +112,7 @@ export default class Thread {
         }
 
         // TODO: Also include date on replies to the posts in the sort order! 
-        this.posts.sort((a, b) => b.date - a.date);
+        this.posts.sort((a, b) => b.getMostRecentActivityDate() - a.getMostRecentActivityDate());
 
         // Show posts in this thread
         for (const message of this.posts) {
