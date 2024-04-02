@@ -392,6 +392,12 @@ forumApp.router.on("/login", () => {
             console.error("DEBUG: Error during forum search.", error.message);
         }
     });
+
+});
+
+//Ton\\
+(document.querySelector("#search-input") as HTMLInputElement).addEventListener("focus", (event) => {
+    (event.currentTarget as HTMLInputElement).select();
 });
 
 
