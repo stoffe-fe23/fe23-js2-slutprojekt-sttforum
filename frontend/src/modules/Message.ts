@@ -321,28 +321,44 @@ export default class Message {
     // Updates the like counter, and if the user has liked this message, if the missage is displayed 
     // on the page. 
     public updateLikesDisplay() {
-        console.log("DEBUG: Updating likes display", this);
         const message = document.querySelector(`article[data-messageid="${this.id}"].forum-message`);
         if (message) {
-            console.log("DEBUG: Like found message display...");
             const likeButton = message.querySelector(".like-button-wrapper button") as HTMLButtonElement;
             if (likeButton) {
-                console.log("DEBUG: Like found Like Button...");
                 const likeCounter = message.querySelector(".like-button-wrapper span") as HTMLElement;
                 likeCounter.innerText = this.likes.length.toString();
 
                 if (this.app.user && this.likes.includes(this.app.user.id)) {
                     likeButton.classList.add("liked");
                     likeButton.title = "Unlike this message";
-                    console.log("DEBUG: LIKED IT!");
                 }
                 else {
                     likeButton.classList.remove("liked");
                     likeButton.title = "Like this message";
-                    console.log("DEBUG: UNLIKED IT!");
                 }
             }
         }
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    // Get the date of most recent activity on this message and any in its reply chain. 
+    public getMostRecentActivityDate(): number {
+        let mostRecentDate = this.date;
+
+        function findMostRecentReply(messages: Message[]) {
+            for (const msg of messages) {
+                if (msg.date > mostRecentDate) {
+                    mostRecentDate = msg.date;
+                }
+                if (msg.replies.length) {
+                    findMostRecentReply(msg.replies);
+                }
+            }
+        }
+
+        findMostRecentReply(this.replies);
+        return mostRecentDate;
     }
 
 
