@@ -896,6 +896,20 @@
                                 "date": 1712046422375,
                                 "replies": [],
                                 "likes": []
+                            },
+                            {
+                                "id": "2fdeae60-37a1-4eb3-aaa3-a1d966cf904d",
+                                "author": {
+                                    "id": "9dc31ecd-206b-4344-9cb1-ccf8d9aafaf7",
+                                    "userName": "Ton",
+                                    "picture": "def-pic-3.png",
+                                    "admin": true
+                                },
+                                "message": "(This message has been deleted.)",
+                                "deleted": true,
+                                "date": 1712060429746,
+                                "replies": [],
+                                "likes": []
                             }
                         ],
                         "likes": [

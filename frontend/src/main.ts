@@ -54,8 +54,7 @@ forumApp.router.on("/forums", () => {
             forumApp.showForumPicker(pageForum);
         }
         else {
-            forumApp.showError(`You must be <a href="/login" data-navigo>logged in</a> to view the forums.`)
-            // htmlUtilities.createHTMLElement("div", `You must be <a href="/login" data-navigo>logged in</a> to view the forums.`, pageForum, 'error-not-logged-in', null, true);
+            htmlUtilities.createHTMLElement("div", `You must be <a href="/login" data-navigo>logged in</a> to view the forums.`, pageForum, 'error-not-logged-in', null, true);
         }
     });
 });
@@ -92,28 +91,7 @@ forumApp.router.on("/thread/:threadId", (route) => {
             }
         }
         else {
-            forumApp.showError("You must be logged in to view this")
             console.log("DEBUG: Show threads skipped, no login..");
-        }
-    });
-});
-
-//////////////////////////////////////////////////////////////////////////////////
-// Show a specified message and its replies. 
-forumApp.router.on("/message/:threadId/:messageId", (route) => {
-    pageForum.classList.add("show");
-    pageHome.classList.remove("show");
-    pageUsers.classList.remove("show");
-    console.log("DEBUG: Show message and replies...");
-    forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
-        if (isLoggedIn) {
-            if (route && route.data && route.data.threadId && route.data.messageId) {
-                console.log("DEBUG: Show message displaying: ", route.data.threadId, route.data.messageId);
-                forumApp.showMessage(route.data.threadId, route.data.messageId, pageForum);
-            }
-        }
-        else {
-            console.log("DEBUG: Show message skipped, no login..");
         }
     });
 });
@@ -133,7 +111,6 @@ forumApp.router.on("/users", () => {
             forumApp.showUserList(pageUsers);
         }
         else {
-            forumApp.showError("You must be logged in to view user profiles")
             console.log("DEBUG: User not logged on, not allowed to view user list.");
         }
 
@@ -156,12 +133,10 @@ forumApp.router.on("/user/profile/:userid", (routeInfo) => {
                     forumApp.showUserProfile(routeInfo.data.userid, pageUsers);
                 }
                 else {
-                    forumApp.showError("The User does not exist!")
                     console.log("DEBUG: No User ID specified, cannot show profile.")
                 }
             }
             else {
-                forumApp.showError("You must be logged in to view user profiles")
                 console.log("DEBUG: User not logged on, not permitted to view user profiles.")
             }
         }
@@ -420,7 +395,8 @@ forumApp.router.on("/login", () => {
 
 });
 
-//Ton\\
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Mark input field when click or tab 
 (document.querySelector("#search-input") as HTMLInputElement).addEventListener("focus", (event) => {
     (event.currentTarget as HTMLInputElement).select();
 });

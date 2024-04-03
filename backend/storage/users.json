@@ -60,6 +60,6 @@
         "picture": "def-pic-3.png",
         "password": "59e17fe431fe9c19efa810f9142e3615974b0aa2cc658bbc9e414714966cd0221d860b19a0ab032081d55f73d11449225d23bc51ec4b533bbb5047b89d93cce9",
         "token": "94411fb89f77bddb6374f122a343c70a31b5d9d7fcbbed6f98fe46181864468d",
-        "admin": false
+        "admin": true
     }
 ]
