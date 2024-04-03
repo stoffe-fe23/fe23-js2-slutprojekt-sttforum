@@ -216,9 +216,8 @@ export default class Message {
             deleteButton.classList.add("hide");
         }
 
-        // TODO: Stop drawing replies at a certain depth of the reply chain, or display differently,
-        // to prevent the thread view from becoming too squished. 
-
+        // Stop drawing replies at a certain depth of the reply chain and add link to view the rest
+        // to prevent the thread view from becoming too squished on long reply chains. 
         if (replyDepth++ < MAX_REPLY_CHAIN_DEPTH) {
             for (const message of this.replies) {
                 message.display(repliesElement, allowEditing, replyDepth);

@@ -39,23 +39,28 @@ export default class Thread {
     // Factory function for creating a new Thread object from thread data fetched from the server, 
     // or a set of provided thread data in the format received from the server. 
     static async create(app: ForumApp, threadId: string, threadData: ForumThreadAPI | null = null,): Promise<Thread | null> {
-        if (!threadData && threadId.length) {
-            threadData = await app.api.getJson(`forum/thread/get/${threadId}`);
-        }
+        try {
+            if (!threadData && threadId.length) {
+                threadData = await app.api.getJson(`forum/thread/get/${threadId}`);
+            }
 
-        if (threadData) {
-            const obj = new Thread(app, threadData);
+            if (threadData) {
+                const obj = new Thread(app, threadData);
 
-            if (threadData.posts && threadData.posts.length) {
-                for (const post of threadData.posts) {
-                    post.threadId = obj.id;
-                    const newMessage = await Message.create(app, "", post);
-                    if (newMessage) {
-                        obj.posts.push(newMessage);
+                if (threadData.posts && threadData.posts.length) {
+                    for (const post of threadData.posts) {
+                        post.threadId = obj.id;
+                        const newMessage = await Message.create(app, "", post);
+                        if (newMessage) {
+                            obj.posts.push(newMessage);
+                        }
                     }
                 }
+                return obj;
             }
-            return obj;
+        }
+        catch (error) {
+            app.showError(`Error loading thread: ${error.message}`);
         }
 
         return null;
@@ -65,15 +70,20 @@ export default class Thread {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Factory method creating a new thread on the server and returning the resulting new Thread object.
     static async new(app: ForumApp, targetId: string, threadTitle: string, messageText: string): Promise<Thread | null> {
-        if (threadTitle.length && messageText.length) {
-            const threadData = {
-                title: threadTitle,
-                message: messageText,
-                forumId: targetId
-            };
+        try {
+            if (threadTitle.length && messageText.length) {
+                const threadData = {
+                    title: threadTitle,
+                    message: messageText,
+                    forumId: targetId
+                };
 
-            const newThreadData: ForumThreadAPI = await app.api.postJson(`forum/thread/create`, threadData);
-            return new Thread(app, newThreadData);
+                const newThreadData: ForumThreadAPI = await app.api.postJson(`forum/thread/create`, threadData);
+                return new Thread(app, newThreadData);
+            }
+        }
+        catch (error) {
+            app.showError(`Error creating thread: ${error.message}`);
         }
         return null;
     }

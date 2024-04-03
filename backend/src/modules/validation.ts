@@ -278,6 +278,36 @@ export const validateUserProfile = [
         .isLength({ min: 0, max: 40 }).withMessage('The repeat password must be between 4 to 40 characters in length.').bail(),
 ];
 
+export const validateUserProfileAdmin = [
+    param("userId")
+        .exists().withMessage('The user ID of an existing user must be specified.').bail()
+        .isUUID('all').withMessage('Invalid User ID specified.').bail()
+        .custom(validateUserIdExists).withMessage('The specified user does not exist.').bail(),
+    body("userName")
+        .exists().withMessage('The user name must be set.').bail()
+        .trim().notEmpty().withMessage('The user name cannot be empty.').bail()
+        .isString().withMessage('The user name must be a string.').bail()
+        .isLength({ min: 2, max: 20 }).withMessage('The user name must be between 2 to 20 characters in length.').bail(),
+    body("email")
+        .exists().withMessage('The email address must be set.').bail()
+        .trim().notEmpty().withMessage('The email address cannot be empty.').bail()
+        .isEmail().withMessage('The email address is not valid.').bail(),
+    body("password")
+        .optional({ checkFalsy: true })
+        .isString().withMessage('The password must be a string.').bail()
+        .isLength({ min: 0, max: 40 }).withMessage('The password must be between 4 to 40 characters in length.').bail()
+        .custom(validateNewPassword).withMessage('The password must be entered the same twice, and be at least 4 characters long.').bail(),
+    body("password-confirm")
+        .optional({ checkFalsy: true })
+        .exists().withMessage('The repeat password must be set.').bail()
+        .isString().withMessage('The repeat password must be a string.').bail()
+        .isLength({ min: 0, max: 40 }).withMessage('The repeat password must be between 4 to 40 characters in length.').bail(),
+    body("admin")
+        .optional({ checkFalsy: true })
+        .trim().notEmpty().withMessage('Admin role flag must be set.').bail()
+        .isBoolean().withMessage('The admin role flag be either true or false.').bail()
+];
+
 
 function validateNewPassword(value: string, { req }): boolean {
     // No new password entered, allow it through. 

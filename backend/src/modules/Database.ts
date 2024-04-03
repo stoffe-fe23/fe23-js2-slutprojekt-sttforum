@@ -144,13 +144,15 @@ class Database {
 
     ////////////////////////////////////////////////////////////////////////////////////
     // Edit the info of an existing user account
-    public editUser(userId: string, userName: string = "", password: string = "", email: string = "", picture: string = ""): UserData {
+    public editUser(userId: string, userName: string = "", password: string = "", email: string = "", picture: string = "", admin: boolean | null = null): UserData {
         const userObj = this.getUser(userId);
         if (userObj) {
             userObj.name = userName.length ? userName : userObj.name;
             userObj.email = email.length ? email : userObj.email;
             userObj.password = password.length ? generatePasswordHash(password, userObj.token) : userObj.password;
             userObj.picture = picture.length ? picture : userObj.picture;
+            userObj.admin = (admin !== null ? admin : userObj.admin);
+
             this.storage.saveUsers();
 
             const userData: UserData = {

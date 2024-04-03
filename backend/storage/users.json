@@ -30,19 +30,19 @@
         "id": "69333cc1-43bc-48d0-8a81-f119d1dd5366",
         "name": "Kalle Anka",
         "email": "ka@example.com",
-        "picture": "def-pic-2.png",
+        "picture": "user-icon.png",
         "password": "f7bdfab9488034db3aed95c8183abcb2da3111bb0c90944af88d8bbdf0f98403126610dc87c8a7a0f6a407c86c8d3dba222fff513736a91713a40a6699a385b3",
         "token": "22378c33a08209846bfcc21fb64d8ba4d24a3876a953232e24f8d6398094e792",
         "admin": false
     },
     {
         "id": "04866ffe-c4e9-46b1-a151-6bfffc77aeda",
-        "name": "Testaren",
-        "email": "test@test.com",
-        "picture": "user-icon.png",
-        "password": "2f5ba11864a1ef586473f9b0f5c8f4e5a0b145e6e505485250252d07f85535feb46c39c94b2a54df77e5bb52e2336f3f58d891065ea1f84fb3abbc22d5a9297e",
+        "name": "Tess Testare",
+        "email": "testare@test.com",
+        "picture": "def-pic-2.png",
+        "password": "ab10901322a5d5f13931732f8d7bfda257e079cc4e7a8fc4e47bf8cf00db70db37c797cc7057c1373817fbff4bfc0a4af6fe7d80f8a33af45994eba5dae42b39",
         "token": "6bacca88b7a68f239b625d5ae7d03f67988e476383e30eda367fec615ed309f3",
-        "admin": false
+        "admin": "true"
     },
     {
         "id": "c9a041d0-f39a-4d5f-94d1-d2920721ca22",

@@ -74,7 +74,8 @@ passport.deserializeUser((userId: string, done) => {
         done(null, user);
     }
     else {
-        done(new Error("User not found!"));
+        // done(new Error("User not found!"));
+        done(null, null);
     }
 });
 

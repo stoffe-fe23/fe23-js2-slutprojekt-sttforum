@@ -52,6 +52,7 @@
 .forumlist-forums {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
 .forum-icon {
@@ -255,7 +256,6 @@ a.author-name span.admin::after {
     padding: 0.5rem;
     overflow: hidden;
     word-wrap: break-word;
-    width: 200px;
 }
 
 .forum-thread-list-title.locked::after {

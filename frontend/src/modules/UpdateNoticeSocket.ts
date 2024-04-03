@@ -50,7 +50,6 @@ export default class UpdateNoticeSocket {
                 }
             });
 
-
             // Socket connection is closed, attempt to reconnect. 
             this.socketClient.addEventListener("close", (event) => {
                 console.log("SOCKET CONNECTION CLOSED");
@@ -246,6 +245,11 @@ export default class UpdateNoticeSocket {
         else if (updateData.type == "user") {
             const delUser = updateData.data as NotificationDataDelete;
             this.deleteUserDisplayUpdate(delUser.id);
+            if (this.app.user && this.app.user.id && (delUser.id == this.app.user.id)) {
+                this.app.displayCurrentUser();
+                this.app.user = null;
+                this.app.router.navigate("/");
+            }
         }
     }
 
@@ -307,6 +311,7 @@ export default class UpdateNoticeSocket {
             userIcon.alt = `${userData.userName} profile picture`;
             userName.innerText = userData.userName;
         }
+
         // Public user profile
         const userProfile = document.querySelector(`section[data-userid="${userData.id}"].section-user`);
         if (userProfile) {
@@ -334,7 +339,7 @@ export default class UpdateNoticeSocket {
             }
             const userCard = htmlUtilities.createHTMLFromTemplate("tpl-user-list-user", null, values, { "data-userid": userData.id });
 
-            // Find where to insert the new card. List should already be sorted alphabetically, so
+            // Find where to insert the new user card. List should already be sorted alphabetically, so
             // just find the first user it should be inserted before. 
             for (const card of userList.children) {
                 const currName = (card.querySelector(".user-profile-name") as HTMLElement).innerText;

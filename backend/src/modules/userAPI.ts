@@ -16,6 +16,7 @@ import {
     validationErrorHandler,
     validFileTypes,
     validateUserProfile,
+    validateUserProfileAdmin,
     fileErrorHandler,
     validateUserRegister,
     validateUserId,
@@ -59,6 +60,28 @@ userAPI.get('/profile/:userId', isLoggedIn, validateProfileUserId, validationErr
             userProfile.recentPosts = userProfile.recentPosts.slice(0, Math.min(userProfile.recentPosts.length, POST_HISTORY_MAX));
 
             res.json({ message: `User profile`, data: userProfile });
+        }
+        else {
+            res.status(404);
+            res.json({ error: `User not found.`, data: req.params.userId });
+        }
+    }
+});
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Get the full profile of the specified user.
+userAPI.get('/admin/profile/:userId', isAdmin, validateProfileUserId, validationErrorHandler, (req: Request, res: Response) => {
+    if (req.params && req.params.userId) {
+        const user = dataStorage.getUser(req.params.userId);
+        if (user) {
+            const userData: UserData = {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                picture: user.picture,
+                admin: user.admin
+            }
+            res.json({ message: `Full user profile`, data: userData });
         }
         else {
             res.status(404);
@@ -189,61 +212,105 @@ userAPI.post("/profile/update", isLoggedIn, userPictureUpload.single('picture'),
     }
 });
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// POST target of admin form to update a user profile.   
+userAPI.post("/admin/profile/update/:userId", isAdmin, validateUserProfileAdmin, validationErrorHandler, (req: Request, res: Response) => {
+    try {
+        const profileUser = dataStorage.getUser(req.params.userId);
+        if (profileUser) {
+            if (!req.body.password.length || (req.body.password && req.body['password-confirm'] && (req.body.password.length > 3) && (req.body.password == req.body['password-confirm']))) {
+                let pictureName = "";
+                if (req.body.resetPicture && (req.body.resetPicture == "user-icon.png")) {
+                    pictureName = "user-icon.png";
+                }
+
+                const userObj = dataStorage.editUser(profileUser.id, req.body.userName, req.body.password, req.body.email, pictureName, req.body.admin ?? false);
+                if (userObj) {
+                    const userProfileData: ForumAuthor = {
+                        id: userObj.id,
+                        userName: userObj.name,
+                        picture: userObj.picture,
+                        admin: userObj.admin
+                    }
+                    dataStorage.updateAuthorInfo(userObj.id);
+                    sendClientUpdate({ action: "edit", type: "user", data: userProfileData }, req);
+                }
+                res.status(200);
+                res.json({ message: `User profile updated.`, data: userObj });
+            }
+        }
+        else {
+            res.status(404);
+            res.json({ error: "User not found." });
+        }
+    }
+    catch (error) {
+        res.status(500);
+        res.json({ error: "Error trying to save user profile. " + error.message });
+    }
+});
+
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Delete the specified user from the system.
 userAPI.delete('/delete/:userId', isCurrentUser, validateUserId, validationErrorHandler, (req: Request, res: Response) => {
     if (req.params && req.params.userId) {
         let responseSent: boolean = false;
         const userId = req.params.userId;
-        const currentUser = req.user as ForumUser;
+        const currentUser = dataStorage.getUser(userId);
 
-        console.log("DEBUG: DELETE ACCOUNT", userId);
+        if (currentUser) {
+            console.log("DEBUG: DELETE ACCOUNT", userId);
 
-        // Remove uploaded custom profile picture
-        if (!defaultPictureNames.includes(currentUser.picture) && (currentUser.picture != "user-icon.png")) {
-            try {
-                fs.unlink(`../backend/media/userpictures/${currentUser.picture}`, (error) => {
+            // Remove uploaded custom profile picture
+            if (!defaultPictureNames.includes(currentUser.picture) && (currentUser.picture != "user-icon.png")) {
+                try {
+                    fs.unlink(`../backend/media/userpictures/${currentUser.picture}`, (error) => {
+                        if (error) {
+                            console.log(`Error removing old profile picture: ${currentUser.picture} (${error.message}) `);
+                        }
+                    });
+                }
+                catch (error) {
+                    console.log(`Error removing old profile picture: ${currentUser.picture} (${error.message}) `);
+                }
+            }
+
+            // Soft-delete all posts made by this user.
+            dataStorage.deletePostsByUser(userId);
+
+            // Log off the user if they are currently logged on (i.e. it is not an admin deleting the user). 
+            if (req.user && ((req.user as ForumUser).id == userId)) {
+                req.logout((error) => {
+                    closeClientSocket(userId);
                     if (error) {
-                        console.log(`Error removing old profile picture: ${currentUser.picture} (${error.message}) `);
+                        responseSent = true;
+                        res.status(500);
+                        res.json({ error: `Error logging out deleted user.`, data: userId });
                     }
                 });
             }
-            catch (error) {
-                console.log(`Error removing old profile picture: ${currentUser.picture} (${error.message}) `);
-            }
-        }
 
-        // Soft-delete all posts made by this user.
-        dataStorage.deletePostsByUser(userId);
-
-        // Log off the user if they are currently logged on (i.e. it is not an admin deleting the user). 
-        if (currentUser && (currentUser.id == userId)) {
-            req.logout((error) => {
-                closeClientSocket(userId);
-                if (error) {
+            // Remove the user from the DB
+            if (dataStorage.deleteUser(userId)) {
+                sendClientUpdate({ action: "delete", type: "user", data: { id: userId } }, req);
+                if (!responseSent) {
                     responseSent = true;
-                    res.status(500);
-                    res.json({ error: `Error logging out deleted user.`, data: userId });
+                    res.json({ message: `User deleted`, data: userId });
                 }
-            });
-        }
-
-        // Remove the user from the DB
-        if (dataStorage.deleteUser(userId)) {
-            sendClientUpdate({ action: "delete", type: "user", data: { id: userId } }, req);
-            if (!responseSent) {
-                responseSent = true;
-                res.json({ message: `User deleted`, data: userId });
+            }
+            else {
+                if (!responseSent) {
+                    responseSent = true;
+                    res.status(404);
+                    res.json({ error: `User not found.`, data: userId });
+                }
             }
         }
         else {
-            if (!responseSent) {
-                responseSent = true;
-                res.status(404);
-                res.json({ error: `User not found.`, data: userId });
-            }
+            res.status(404);
+            res.json({ error: `User not found.`, data: userId });
         }
-
     }
 });
 
