@@ -57,9 +57,18 @@
         "id": "9dc31ecd-206b-4344-9cb1-ccf8d9aafaf7",
         "name": "Ton",
         "email": "tonskater@hotmail.com",
-        "picture": "def-pic-3.png",
-        "password": "59e17fe431fe9c19efa810f9142e3615974b0aa2cc658bbc9e414714966cd0221d860b19a0ab032081d55f73d11449225d23bc51ec4b533bbb5047b89d93cce9",
+        "picture": "def-pic-1.png",
+        "password": "b8bfe18b4b585a366697d22c842e4a44fa6b437064b38d85dd60ea604edc33db0c4149ab019125ce691ab3ed07209533c30f3804cf9666ef84d4441a0ce4b948",
         "token": "94411fb89f77bddb6374f122a343c70a31b5d9d7fcbbed6f98fe46181864468d",
         "admin": true
+    },
+    {
+        "id": "2dc97fbd-92bc-474e-8146-d3851624d111",
+        "name": "Ton2",
+        "email": "tonskater@hotmail.com",
+        "picture": "user-icon.png",
+        "password": "37378d26d5d5812476540f36de4e66a799c45d302c9052495ad2553488a14dd8e546da225e98f85a14de33f0486f2b25e917f9ecc1c46eb3a500f6d02451e76b",
+        "token": "9f94138c2a1a50293472f9a8445f0733089e9c85e3550cdd2fd06a7ab78a885e",
+        "admin": false
     }
 ]
