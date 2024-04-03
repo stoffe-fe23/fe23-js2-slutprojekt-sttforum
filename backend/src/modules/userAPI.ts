@@ -281,13 +281,16 @@ userAPI.delete('/delete/:userId', isCurrentUser, validateUserId, validationError
 
             // Log off the user if they are currently logged on (i.e. it is not an admin deleting the user). 
             if (req.user && ((req.user as ForumUser).id == userId)) {
-                req.logout((error) => {
-                    closeClientSocket(userId);
-                    if (error) {
-                        responseSent = true;
-                        res.status(500);
-                        res.json({ error: `Error logging out deleted user.`, data: userId });
-                    }
+                req.session.destroy((sessionError) => {
+                    req.logout((error) => {
+                        closeClientSocket(userId);
+
+                        if (error || sessionError) {
+                            responseSent = true;
+                            res.status(500);
+                            res.json({ error: `Error logging out deleted user.`, data: userId });
+                        }
+                    });
                 });
             }
 

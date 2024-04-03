@@ -120,7 +120,6 @@ export default class UserList {
             const form = event.currentTarget as HTMLFormElement;
             const button = event.submitter as HTMLButtonElement;
             if (form) {
-                console.log("SUBMIT!", form);
                 const userId = form.dataset.userid;
                 if (userId && userId.length && (userId != "0")) {
                     if (button.value == "save") {

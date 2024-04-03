@@ -35,7 +35,7 @@ export default class UpdateNoticeSocket {
 
     ////////////////////////////////////////////////////////////////////////////////////////////
     // Establish a websocket connection with server to listen for update notices. 
-    private establishSocketConnection(): void {
+    public establishSocketConnection(): void {
         const url = new URL(this.apiUrl);
         if (!this.socketClient || (this.socketClient.readyState == WebSocket.CLOSED)) {
             // Create socket connection to server
@@ -246,8 +246,8 @@ export default class UpdateNoticeSocket {
             const delUser = updateData.data as NotificationDataDelete;
             this.deleteUserDisplayUpdate(delUser.id);
             if (this.app.user && this.app.user.id && (delUser.id == this.app.user.id)) {
-                this.app.displayCurrentUser();
                 this.app.user = null;
+                this.app.displayCurrentUser();
                 this.app.router.navigate("/");
             }
         }
