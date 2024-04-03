@@ -93,12 +93,23 @@ main {
 footer {
     grid-area: footer;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
     margin: 3rem 0 0 0;
     background-color: black;
     color: white;
     padding: 1rem;
+    padding-left:20vw;
+    padding-right:20vw;
+
+}
+
+.footer-image-div{
+    width: 20px;
+}
+
+.footer-image{
+    width: 100%;
 }
 
 #page-home,
