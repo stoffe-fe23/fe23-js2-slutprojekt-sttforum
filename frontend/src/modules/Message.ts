@@ -37,7 +37,7 @@ export default class Message {
             this.date = messageData.date;
             this.message = messageData.message;
             this.likes = messageData.likes ?? [];
-            this.threadId = "";
+            this.threadId = messageData.threadId ?? "0";
         }
     }
 
@@ -53,6 +53,7 @@ export default class Message {
             const obj = new Message(app, messageData);
 
             for (const reply of messageData.replies) {
+                reply.threadId = messageData.threadId;
                 const newMessage = await Message.create(app, "", reply);
                 if (newMessage) {
                     obj.replies.push(newMessage);
@@ -66,7 +67,7 @@ export default class Message {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
     // Factory method creating a new message on the server and returning the new message object.
-    static async new(app: ForumApp, targetId: string, messageText: string, messageType: 'message' | 'reply' = 'message'): Promise<Message | null> {
+    static async new(app: ForumApp, targetId: string, messageText: string, messageType: 'message' | 'reply' = 'message', threadId: string = ""): Promise<Message | null> {
         if (app.isLoggedIn() && messageText.length) {
             const apiPath = (messageType == 'reply' ? `forum/message/reply` : `forum/message/create`);
             const postData = (messageType == 'reply' ? { message: messageText, messageId: targetId } : { message: messageText, threadId: targetId }) as APIQueryData;
@@ -86,6 +87,7 @@ export default class Message {
     public async newReply(messageText: string): Promise<Message | null> {
         const message = await Message.new(this.app, this.id, messageText, 'reply');
         if (message) {
+            message.threadId = this.threadId;
             this.replies.push(message);
         }
         else {
@@ -224,7 +226,7 @@ export default class Message {
         }
         else if (this.replies.length > 0) {
             const wrapper = htmlUtilities.createHTMLElement("div", "", repliesElement, "replies-expand-wrapper");
-            htmlUtilities.createHTMLElement("a", `View ${this.replies.length} more replies to this message.`, wrapper, "replies-expand-link", { href: `/message/${this.threadId}/${this.id}` });
+            htmlUtilities.createHTMLElement("a", `View ${this.replies.length} more replies to this message.`, wrapper, "replies-expand-link", { href: `/message/${this.threadId}/${this.id}`, "data-navigo": "true" });
         }
         return thisMessageElem;
     }

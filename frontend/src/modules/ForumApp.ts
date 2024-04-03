@@ -48,7 +48,7 @@ export default class ForumApp {
         this.mediaUrl = `${mediaUrl.protocol}//${mediaUrl.hostname}:${mediaUrl.port}/media/`;
 
         // Listen for notices from server that something has changed and update the page accordingly.
-        // Init, actual connection is established in the loadCurrentUser() method of ForumApp. 
+        // Init, actual connection is established in the loadCurrentUser() method. 
         this.serverUpdates = new UpdateNoticeSocket(this, apiUrl);
     }
 

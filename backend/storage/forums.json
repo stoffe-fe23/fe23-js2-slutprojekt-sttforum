@@ -751,7 +751,8 @@
                                                                 "likes": []
                                                             }
                                                         ],
-                                                        "likes": []
+                                                        "likes": [],
+                                                        "threadId": "f8d98069-ae35-404f-b6af-dbe8599f12f4"
                                                     },
                                                     {
                                                         "id": "f630d826-f2d4-4404-9b78-2afa2d6c2cba",
@@ -780,7 +781,8 @@
                                                                 "likes": []
                                                             }
                                                         ],
-                                                        "likes": []
+                                                        "likes": [],
+                                                        "threadId": "f8d98069-ae35-404f-b6af-dbe8599f12f4"
                                                     }
                                                 ],
                                                 "likes": []
@@ -791,6 +793,20 @@
                                 ]
                             }
                         ]
+                    },
+                    {
+                        "id": "ef871e8e-a1b9-434d-b43b-76915e921b0c",
+                        "author": {
+                            "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                            "userName": "Stoffe",
+                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96-1711901300396.png",
+                            "admin": true
+                        },
+                        "message": "Nu verkar det som sub-sektioner av svarskedjor fungerar som det skall. Eller?",
+                        "deleted": false,
+                        "date": 1712128300447,
+                        "replies": [],
+                        "likes": []
                     }
                 ],
                 "forum": {

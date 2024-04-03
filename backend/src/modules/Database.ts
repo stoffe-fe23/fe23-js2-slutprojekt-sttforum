@@ -497,6 +497,7 @@ class Database {
                 for (const thread of forum.threads) {
                     foundMsg = messageSearch(messageId, thread.posts);
                     if (foundMsg) {
+                        foundMsg.threadId = thread.id;
                         return foundMsg;
                     }
                 }

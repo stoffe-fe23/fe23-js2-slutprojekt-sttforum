@@ -121,6 +121,16 @@ article.forum-message .forum-message-wrapper.deleted .forum-message-text {
     width: 100%;
 }
 
+
+.forum-thread-messages.posts-subset::before {
+    display: inline-block;
+    background-color: darkgreen;
+    padding: 0.1rem 0.8rem;
+    margin: 0.2rem;
+    color: white;
+    content: "Viewing message reply chain in thread";
+}
+
 .forum-thread h3 {
     margin: 0;
     font-size: 2em;
@@ -595,4 +605,22 @@ a.author-name span.admin::after {
     padding: 0.5rem 1rem;
     border-radius: 15px;
     cursor: pointer;
+}
+
+.replies-expand-wrapper {
+    padding: 0.5rem;
+}
+
+.replies-expand-wrapper a {
+    background-color: black;
+    color: white;
+    padding: 0.2rem 0.8rem;
+    text-decoration: none;
+    font-size: 0.9em;
+    border-radius: 12px;
+}
+
+.replies-expand-wrapper a::before {
+    content: " → ";
+    font-size: 1rem;
 }

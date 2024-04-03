@@ -41,7 +41,8 @@ export type ForumMessageAPI = {
     deleted: boolean,
     date: number,
     replies: ForumMessageAPI[],
-    likes: string[]
+    likes: string[],
+    threadId?: string
 }
 
 // Server response with full info about a thread and its messages. 

@@ -66,7 +66,8 @@ export type ForumMessage = {
     deleted: boolean,
     date: number,
     replies: ForumMessage[],
-    likes?: string[]
+    likes?: string[],
+    threadId?: string
 }
 
 export type ForumThread = {

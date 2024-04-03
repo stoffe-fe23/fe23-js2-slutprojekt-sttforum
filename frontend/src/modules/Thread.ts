@@ -37,7 +37,7 @@ export default class Thread {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Factory function for creating a new Thread object from thread data fetched from the server, 
-    // or a set of complete thread data in the format received from the server. 
+    // or a set of provided thread data in the format received from the server. 
     static async create(app: ForumApp, threadId: string, threadData: ForumThreadAPI | null = null,): Promise<Thread | null> {
         if (!threadData && threadId.length) {
             threadData = await app.api.getJson(`forum/thread/get/${threadId}`);
@@ -48,6 +48,7 @@ export default class Thread {
 
             if (threadData.posts && threadData.posts.length) {
                 for (const post of threadData.posts) {
+                    post.threadId = obj.id;
                     const newMessage = await Message.create(app, "", post);
                     if (newMessage) {
                         obj.posts.push(newMessage);
@@ -116,8 +117,8 @@ export default class Thread {
 
         // Show posts in this thread
         if (displayMessage) {
-            displayMessage.threadId = this.id;
             displayMessage.display(messagesElement, this.active);
+            messagesElement.classList.add("posts-subset");
         }
         else {
             for (const message of this.posts) {

@@ -273,6 +273,7 @@ forumAPI.post('/message/create', isLoggedIn, validateNewMessage, validationError
     try {
         const authorId = (req.user as ForumUser).id;
         const newMessage = dataStorage.addMessage(req.body.threadId, authorId, req.body.message);
+        newMessage.threadId = req.body.threadId;
 
         sendClientUpdate({ action: "add", type: "message", data: newMessage, source: { parent: req.body.threadId, thread: req.body.threadId } }, req);
         res.status(201);
@@ -292,6 +293,7 @@ forumAPI.post('/message/reply', isLoggedIn, validateNewReply, validationErrorHan
         const authorId = (req.user as ForumUser).id;
         const newReply = dataStorage.addReply(req.body.messageId, authorId, req.body.message);
         const parentThread = dataStorage.getMessageThread(newReply.id);
+        newReply.threadId = parentThread.id;
 
         sendClientUpdate({ action: "add", type: "reply", data: newReply, source: { parent: req.body.messageId, thread: parentThread.id } }, req);
         res.status(201);
