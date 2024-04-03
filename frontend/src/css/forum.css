@@ -462,6 +462,7 @@ a.author-name span.admin::after {
 
 .forum-message-text {
     padding: 0.7rem;
+    white-space: pre-wrap;
 }
 
 .forum-thread-wrapper h3 {

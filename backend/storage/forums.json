@@ -922,7 +922,7 @@
                             "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96-1711901300396.png",
                             "admin": true
                         },
-                        "message": "Men vad är det <a href=\"http://www.wikipedia.se/\">nu för fel</a> då?",
+                        "message": "Men vad är det <a href=\"http://www.wikipedia.se/\">nu för fel</a> då?\n\nHmm?",
                         "deleted": false,
                         "date": 1711354382366,
                         "replies": [
