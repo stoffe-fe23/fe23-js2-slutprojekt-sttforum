@@ -914,19 +914,6 @@
                         "replies": []
                     },
                     {
-                        "id": "b5450911-edf7-4eb1-98e0-0c44fe904db4",
-                        "author": {
-                            "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
-                            "userName": "Stoffe",
-                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96-1711901300396.png",
-                            "admin": true
-                        },
-                        "message": "Story of my life?",
-                        "deleted": false,
-                        "date": 1711354263720,
-                        "replies": []
-                    },
-                    {
                         "id": "de872990-cfb6-4683-a6b2-b7fae40a6d73",
                         "author": {
                             "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
@@ -949,9 +936,45 @@
                                 "message": "Alltid är det något...",
                                 "deleted": false,
                                 "date": 1711628931073,
-                                "replies": []
+                                "replies": [
+                                    {
+                                        "id": "00c63557-42da-43af-8911-a83b9fc5fb39",
+                                        "author": {
+                                            "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                                            "userName": "Stoffe",
+                                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96-1711901300396.png",
+                                            "admin": true
+                                        },
+                                        "message": "Så är det definitivt.",
+                                        "deleted": false,
+                                        "date": 1712146041467,
+                                        "replies": [],
+                                        "likes": [],
+                                        "threadId": "649858ad-498e-4cd1-8a14-c1881d1f31a4"
+                                    }
+                                ],
+                                "threadId": "649858ad-498e-4cd1-8a14-c1881d1f31a4",
+                                "likes": [
+                                    "f9258ea6-89c5-46b6-8577-9df9c343dc96"
+                                ]
+                            },
+                            {
+                                "id": "2e11034d-ce98-4d37-9b6f-6291ce36441e",
+                                "author": {
+                                    "id": "69333cc1-43bc-48d0-8a81-f119d1dd5366",
+                                    "userName": "Kalle Anka",
+                                    "picture": "def-pic-2.png",
+                                    "admin": false
+                                },
+                                "message": "Allmänt krångel verkar det som...",
+                                "deleted": false,
+                                "date": 1712146111590,
+                                "replies": [],
+                                "likes": [],
+                                "threadId": "649858ad-498e-4cd1-8a14-c1881d1f31a4"
                             }
-                        ]
+                        ],
+                        "threadId": "649858ad-498e-4cd1-8a14-c1881d1f31a4"
                     },
                     {
                         "id": "8ac16342-6290-45e3-8d4e-ed8b43bd124e",

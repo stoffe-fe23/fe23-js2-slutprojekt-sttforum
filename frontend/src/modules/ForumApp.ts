@@ -75,7 +75,7 @@ export default class ForumApp {
             this.user = new User(this, apiResponse.data as UserData);
             this.userLoginInit = true;
             this.displayCurrentUser();
-            this.serverUpdates.reEstablishSocketConnection();
+            this.serverUpdates.establishSocketConnection();
             console.log("DEBUG: User is logged in: ", this.user.userName);
         }
         else if (apiResponse.message == "No User") {
@@ -261,18 +261,22 @@ export default class ForumApp {
     // TODO: Need exception handling here
     // 401 - login invalid (user,pass is wrong, user does not exist etc)
     public async userLogin(loginName: string, loginPass: string): Promise<void> {
-        const postData = {
-            username: loginName,
-            password: loginPass
-        };
+        try {
+            const postData = {
+                username: loginName,
+                password: loginPass
+            };
 
-        const response: StatusResponseAPI = await this.api.postJson("user/login", postData);
-        if (response && response.message && (response.message == "Login successful")) {
-            await this.loadCurrentUser();
-            //            this.reEstablishSocketConnection();
+            const response: StatusResponseAPI = await this.api.postJson("user/login", postData);
+            if (response && response.message && (response.message == "Login successful")) {
+                await this.loadCurrentUser();
+            }
+            else {
+                console.log("Login failed! ", response);
+            }
         }
-        else {
-            console.log("Login failed! ", response);
+        catch (error) {
+            this.showError(`Login error: ${error.message}`);
         }
     }
 
