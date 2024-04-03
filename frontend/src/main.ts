@@ -3,7 +3,8 @@
     Grupp : STTForum
 
     main.ts
-    Main script for the page. Initialize the forum and handle sub-pages. 
+    Main script for the page. Initialize the forum and handle routes/sub-pages and event
+    handlers for static page elements.
 */
 import ForumApp from "./modules/ForumApp";
 import Message from "./modules/Message.js";
@@ -13,16 +14,18 @@ import { ApiError } from "./modules/RestApi.ts";
 
 const forumApp = new ForumApp('http://localhost:3000/api'); // https://localhost:3000/api
 
+// Repeatedly accessed main page elements.
 const pageHome = document.querySelector("#page-home") as HTMLElement;
 const pageForum = document.querySelector("#page-forum") as HTMLElement;
 const pageUsers = document.querySelector("#page-users") as HTMLElement;
 const loginDialog = document.querySelector("#user-login") as HTMLDialogElement;
 
-export const defaultPictureNames = ['def-pic-1.png', 'def-pic-2.png', 'def-pic-3.png'];
+// Names of default user profile pictures.
+const defaultPictureNames = ['def-pic-1.png', 'def-pic-2.png', 'def-pic-3.png'];
 
-console.log("PAGE LOADED!", htmlUtilities.dateTimeToString(Date.now()));
+console.log("DEBUG: PAGE LOADED!", htmlUtilities.dateTimeToString(Date.now()));
 
-// Initialize the forums and load current user (if already logged in)
+// Initialize the forums and load current user (if there is an active session)
 forumApp.load().then(() => {
     console.log("DEBUG: ForumApp loaded!");
 }).catch((error) => {
@@ -156,6 +159,8 @@ forumApp.router.on("/login", () => {
     showLoginDialog();
 });
 
+forumApp.router.resolve();
+
 
 /*** EVENT HANDLERS *************************************************************/
 
@@ -227,15 +232,16 @@ forumApp.router.on("/login", () => {
     });
 });
 
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Toggle between log in and register form on the dialog box
-(document.querySelector("#new-to-STT-button") as HTMLButtonElement).addEventListener("click", ()=> {
+(document.querySelector("#new-to-STT-button") as HTMLButtonElement).addEventListener("click", () => {
     toggleLoginScreen(false);
 });
 
 (document.querySelector("#already-have-acc-login-button") as HTMLButtonElement).addEventListener("click", () => {
     toggleLoginScreen(true);
-       
+
 });
 
 
@@ -312,14 +318,8 @@ forumApp.router.on("/login", () => {
                 showLoginDialog();
 
             }).catch((error) => {
-                console.error("Login error", error.message);
-
+                forumApp.showError(`Register new user error: ${error.message}`);
             });
-    }
-    ///// Ton \\\\\
-    else if ((event.submitter as HTMLButtonElement).id == "user-register-cancel") {
-        console.log("Hej Ton");
-        console.log((event.submitter as HTMLButtonElement).id);
     }
 
     (event.currentTarget as HTMLFormElement).reset();
@@ -340,8 +340,6 @@ forumApp.router.on("/login", () => {
             const targetId = formData.get("targetId") as string;
             const parentMessage = await Message.create(forumApp, targetId);
 
-            console.log("DEBUG: Message Editor submit: ", action, targetId);
-
             if (parentMessage) {
                 switch (action) {
                     case "reply": await parentMessage.newReply(formData.get("message") as string); break;
@@ -349,16 +347,14 @@ forumApp.router.on("/login", () => {
                 }
             }
             else {
-                console.log("Error! Could not load message to reply to.");
+                forumApp.showError("Error! Could not load message to reply to.");
             }
         }
-        messageDialog.close();
     }
     catch (error) {
-        console.error("DEBUG: Error submitting from message editor", error.message);
         forumApp.showError(`Message error: ${error.message}`);
-        messageDialog.close();
     }
+    messageDialog.close();
 });
 
 
@@ -366,7 +362,7 @@ forumApp.router.on("/login", () => {
 // Search form submit
 (document.querySelector("#searchform") as HTMLFormElement).addEventListener("submit", async (event) => {
     event.preventDefault();
-    
+
     pageForum.classList.add("show");
     pageHome.classList.remove("show");
     pageUsers.classList.remove("show");
@@ -378,18 +374,17 @@ forumApp.router.on("/login", () => {
                 const action = formData.get("searchType") as string;
                 const searchFor = formData.get("searchFor") as string;
 
-                console.log("DEBUG: Forum Search: ", action, searchFor);
                 switch (action) {
                     case "messages": forumApp.searchMessages(searchFor, pageForum); break;
                     case "threads": forumApp.searchThreads(searchFor, pageForum); break;
                 }
             }
             else {
-                console.log("DEBUG: Not logged in, cannot search the forums.");
+                forumApp.showError("You must be logged in to search the forums.");
             }
         }
         catch (error) {
-            console.error("DEBUG: Error during forum search.", error.message);
+            forumApp.showError(`Search error: ${error.message}`);
         }
     });
 
@@ -446,25 +441,21 @@ function showLoginDialog() {
             (document.querySelector("#register-button-container") as HTMLElement).classList.remove("hide");
 
             loginDialog.showModal();
-   
+
         }
     });
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 // Add and remove class between log in form and register form. 
-function toggleLoginScreen(showLogin: boolean):void{
-        const registerForm = document.querySelector("#user-register-form") as HTMLFormElement;
-        const loginForm = document.querySelector("#login-form") as HTMLFormElement;
-        const regBtnContainer = document.querySelector("#register-button-container") as HTMLElement;
-        const alreadyHaveAccContainer = document.querySelector("#already-have-acc-container") as HTMLElement;
+function toggleLoginScreen(showLogin: boolean): void {
+    const registerForm = document.querySelector("#user-register-form") as HTMLFormElement;
+    const loginForm = document.querySelector("#login-form") as HTMLFormElement;
+    const regBtnContainer = document.querySelector("#register-button-container") as HTMLElement;
+    const alreadyHaveAccContainer = document.querySelector("#already-have-acc-container") as HTMLElement;
 
-        registerForm.classList[showLogin ? "add" : "remove"]("hide");
-        loginForm.classList[!showLogin ? "add" : "remove"]("hide");
-        regBtnContainer.classList[!showLogin ? "add" : "remove"]("hide");
-        alreadyHaveAccContainer.classList[showLogin ? "add" : "remove"]("hide");
+    registerForm.classList[showLogin ? "add" : "remove"]("hide");
+    loginForm.classList[!showLogin ? "add" : "remove"]("hide");
+    regBtnContainer.classList[!showLogin ? "add" : "remove"]("hide");
+    alreadyHaveAccContainer.classList[showLogin ? "add" : "remove"]("hide");
 }
-
-
-forumApp.router.resolve();
-
