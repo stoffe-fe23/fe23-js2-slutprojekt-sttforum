@@ -93,13 +93,13 @@
                 <span>New to STT?</span>
                 <button id="new-to-STT-button">Register</button>
             </div>
-    
+
             <form id="user-register-form">
                 <h2>Register new user</h2>
                 <input type="text" id="user-register-name" name="username" value="" placeholder="Your username" required>
                 <input type="email" id="user-register-email" name="email" value="" placeholder="Your e-mail address" required>
-                <input type="password" id="user-register-password" name="password" value="" placeholder="Choose a password" required>
-                <input type="password" id="user-register-password-confirm" name="password-confirm" value="" placeholder="Confirm password" required>
+                <input type="password" id="user-register-password" name="password" value="" minlength="6" maxlength="40" placeholder="Choose a password" required>
+                <input type="password" id="user-register-password-confirm" name="password-confirm" minlength="6" maxlength="40" value="" placeholder="Confirm password" required>
                 <div id="register-buttons">
                     <button id="user-register-submit">Register</button>
                     <button formnovalidate id="user-register-cancel">Cancel</button>
