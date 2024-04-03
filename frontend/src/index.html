@@ -286,6 +286,25 @@
             <div class="users-profile-post-text" data-template="message"></div>
         </article>
     </template>
+    <template id="tpl-user-admin-edit">
+        <div id="user-profile-editor">
+            <h3>Admin - Edit user</h3>
+            <form id="users-profile-edit" class="users-profile-edit" data-userid="0">
+                <input type="text" data-template="name" class="users-profile-edit-name" name="userName" value="" minlength="2" maxlength="20" placeholder="Username" required>
+                <input type="email" data-template="email" class="users-profile-edit-email" name="email" value="" maxlength="128" placeholder="E-mail address" required>
+                <div class="users-profile-edit-wrapper">
+                    <input type="password" class="users-profile-edit-pwd" name="password" value="" minlength="4" maxlength="40" placeholder="Change password">
+                    <input type="password" class="users-profile-edit-pwd-confirm" name="password-confirm" value="" minlength="4" maxlength="40" placeholder="Confirm new password">
+                </div>
+                <div class="users-profile-edit-wrapper"><input type="checkbox" data-template="resetPicture" id="users-profile-edit-picture" name="resetPicture" value="user-icon.png"><label for="users-profile-edit-picture">Reset profile picture</label></div>
+                <div class="users-profile-edit-wrapper"><input type="checkbox" data-template="admin" id="users-profile-edit-admin" name="admin" value="true"><label for="users-profile-edit-admin">Is administrator</label></div>
+                <div class="users-profile-edit-buttons">
+                    <button name="submit" value="save">Save</button>
+                    <button name="submit" value="delete" formnovalidate>Delete user</button>
+                </div>
+            </form>
+        </div>
+    </template>
     <!-- Templates for presenting search results -->
     <template id="tpl-search-result">
         <article class="search-result">

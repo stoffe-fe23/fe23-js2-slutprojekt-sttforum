@@ -30,17 +30,26 @@ export default class User {
     }
 
     public async updateUserProfile(profileData: FormData): Promise<void> {
-        const result = await this.app.api.postFile("user/profile/update", profileData);
-        this.app.userLoginInit = false;
-        this.app.displayCurrentUser();
-        console.log("Profile update");
-        // TODO: Redraw forums to update icon/name on users posts? 
+        try {
+            const result = await this.app.api.postFile("user/profile/update", profileData);
+            this.app.userLoginInit = false;
+            this.app.displayCurrentUser();
+            console.log("Profile update");
+        }
+        catch (error) {
+            this.app.showError(`Error updating user profile: ${error.message}`)
+        }
     }
 
     public async deleteUser(): Promise<void> {
-        const res = await this.app.api.deleteJson(`user/delete/${this.id}`);
-        this.app.user = null;
-        this.app.displayCurrentUser();
+        try {
+            const res = await this.app.api.deleteJson(`user/delete/${this.id}`);
+            this.app.user = null;
+            this.app.displayCurrentUser();
+        }
+        catch (error) {
+            this.app.showError(`Error deleting user: ${error.message}`)
+        }
     }
 
     // TODO: Methods for viewing and editing the user profile

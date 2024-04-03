@@ -31,28 +31,39 @@ export default class Forum {
     /////////////////////////////////////////////////////////////////////////////////////////////
     // Factory function to load forum data from the server and return it as a new Forum object. 
     static async create(app: ForumApp, forumId: string): Promise<Forum | null> {
-        const forumData: ForumContentInfo = await app.api.getJson(`forum/get/${forumId}`);
-        const icon = forumData.icon.length ? app.mediaUrl + 'forumicons/' + forumData.icon : new URL('../images/forum-icon.png', import.meta.url).toString();
-        const obj = new Forum(app, forumData.id, forumData.name, icon);
-        obj.threads = [];
+        try {
+            const forumData: ForumContentInfo = await app.api.getJson(`forum/get/${forumId}`);
+            const icon = forumData.icon.length ? app.mediaUrl + 'forumicons/' + forumData.icon : new URL('../images/forum-icon.png', import.meta.url).toString();
+            const obj = new Forum(app, forumData.id, forumData.name, icon);
+            obj.threads = [];
 
-        if (forumData.threads && forumData.threads.length) {
-            for (const thread of forumData.threads) {
-                obj.threads.push(thread);
+            if (forumData.threads && forumData.threads.length) {
+                for (const thread of forumData.threads) {
+                    obj.threads.push(thread);
+                }
             }
+            return obj;
         }
-        return obj;
+        catch (error) {
+            app.showError(`Error loading forum: ${error.message}`);
+        }
+        return null;
     }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Factory method creating a new forum on the server and returning the resulting new Forum object.
     static async new(app: ForumApp, forumName: string, forumIcon: string): Promise<Forum | null> {
-        if (forumName.length && forumIcon.length) {
-            const newForumData: ForumAPI = await app.api.postJson(`forum/create`, { name: forumName, icon: forumIcon });
-            if (newForumData) {
-                return new Forum(app, newForumData.id, newForumData.name, newForumData.icon);
+        try {
+            if (forumName.length && forumIcon.length) {
+                const newForumData: ForumAPI = await app.api.postJson(`forum/create`, { name: forumName, icon: forumIcon });
+                if (newForumData) {
+                    return new Forum(app, newForumData.id, newForumData.name, newForumData.icon);
+                }
             }
+        }
+        catch (error) {
+            app.showError(`Error creating forum: ${error.message}`);
         }
         return null;
     }
@@ -151,7 +162,7 @@ export default class Forum {
                 return newThread;
             }
             else {
-                throw new Error(`An error occurred when creating a new thread. (${this.id})`);
+                this.app.showError(`An error creating new thread: ${this.id}`);
             }
         }
     }

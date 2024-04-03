@@ -54,7 +54,7 @@ export function createHTMLFromTemplate(templateId: string, container: HTMLElemen
                 }
                 const childAttributes = newElement.querySelectorAll(`[${key}]`);
                 childAttributes.forEach((attr) => {
-                    attr.setAttribute(key, childAttributes[key]);
+                    attr.setAttribute(key, attributes[key]);
                 });
             }
         }

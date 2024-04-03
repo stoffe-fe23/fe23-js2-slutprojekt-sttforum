@@ -114,6 +114,7 @@ export type ForumDisplayInfo = {
 // Return data of most requests in RestApi class.
 export type StatusResponseAPI = {
     message: string,
+    error?: string,
     data?: object
 }
 

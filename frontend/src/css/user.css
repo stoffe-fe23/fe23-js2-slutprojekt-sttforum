@@ -478,14 +478,65 @@ label[for="user-profile-picture"] {
     cursor: pointer;
 }
 
-#already-have-acc-container{
+#already-have-acc-container {
     margin-top: 0.7rem;
 }
 
-#already-have-acc-container button{
+#already-have-acc-container button {
     background: none;
     color: rgb(69, 125, 247);
     border: none;
     font-size: 1rem;
     cursor: pointer;
+}
+
+#user-profile-editor {
+    max-width: 700px;
+    margin: 0 auto;
+    background-color: lightgray;
+    margin-top: 0.5rem;
+}
+
+#users-profile-edit {
+    padding: 1rem;
+}
+
+.users-profile-edit-wrapper {
+    margin-top: 0.5rem;
+}
+
+.users-profile-edit-buttons {
+    margin-top: 1rem;
+}
+
+#users-profile-edit button {
+    background-color: black;
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 12px;
+    border: 0px;
+    cursor: pointer;
+}
+
+#users-profile-edit button:first-of-type {
+    font-weight: 700;
+}
+
+#users-profile-edit button:hover,
+#users-profile-edit button:focus {
+    background-color: orange;
+    color: black;
+}
+
+#user-profile-editor h3 {
+    margin: 0;
+    text-align: center;
+    background-color: black;
+    color: white;
+    padding: 0.2rem;
+}
+
+#users-profile-edit input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
 }
