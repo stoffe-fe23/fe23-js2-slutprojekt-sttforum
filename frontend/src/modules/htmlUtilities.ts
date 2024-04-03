@@ -41,7 +41,14 @@ export function createHTMLFromTemplate(templateId: string, container: HTMLElemen
                                 (targetElement as HTMLInputElement).value = values[key] as string;
                             }
                             break;
-                        default: targetElement[allowHTML ? "innerHTML" : "innerText"] = values[key] as string; break;
+                        default:
+                            if (allowHTML) {
+                                (targetElement as HTMLElement).innerHTML = values[key] as string;
+                            }
+                            else {
+                                (targetElement as HTMLElement).innerText = values[key] as string;
+                            }
+                            break;
                     }
                 }
             });
@@ -229,4 +236,66 @@ export function getTruncatedString(truncText: string, maxLength: number): string
         truncText = truncText.slice(0, cutOffLength) + "…";
     }
     return truncText;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Set the content of an element to a string that may only contain whitelisted HTML elements
+// contentString = string with the content to assign to the element
+// contentElement = the HTML element to assign the content to
+// allowedTags = array with the names of tags that are allowed to be used in the content (i.e. ['strong', 'em'])
+// allowedAttributes = array with the names of attributes that may be used on allowed tags in the content
+export function setContentWithTagFilter(contentString: string, contentElement: HTMLElement, allowedTags: string[] | null = null, allowedAttributes: string[] | null = null): HTMLElement {
+    const tempElement = document.createElement("template");
+    tempElement.innerHTML = contentString;
+
+    if ((contentElement === undefined) || (contentElement === null)) {
+        contentElement = document.createElement("div");
+    }
+
+    if ((allowedTags === undefined) || (allowedTags === null) || (allowedTags.length < 1)) {
+        allowedTags = ['b', 'i', 'a', 'blockquote'];
+    }
+    if ((allowedAttributes === undefined) || (allowedAttributes === null) || (allowedAttributes.length < 1)) {
+        allowedAttributes = ['href'];
+    }
+
+    allowedTags = allowedTags.map((elem) => elem.toUpperCase());
+    allowedAttributes = allowedAttributes.map((elem) => elem.toLowerCase());
+
+    copyContentWithFilteredTags(tempElement.content, contentElement, allowedTags, allowedAttributes);
+    return contentElement;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Helper function for setContentWithFilteredTags(), step through the baseElement and copy allowed child elements
+// to the target element and add the rest as text. 
+function copyContentWithFilteredTags(baseElement: HTMLElement | DocumentFragment, copyElement: HTMLElement, allowedTags: string[], allowedAttributes: string[]): void {
+    if (baseElement.childNodes.length > 0) {
+        baseElement.childNodes.forEach((checkChild) => {
+            if (checkChild.nodeType == Node.ELEMENT_NODE) {
+                let currElement: HTMLElement;
+                if (allowedTags.includes((checkChild as HTMLElement).tagName)) {
+                    currElement = document.createElement((checkChild as HTMLElement).tagName);
+                    for (const attrib of (checkChild as HTMLElement).attributes) {
+                        if (allowedAttributes.includes(attrib.name)) {
+                            currElement.setAttribute(attrib.name, attrib.value);
+                        }
+                    }
+                    copyElement.appendChild(currElement);
+                }
+                else {
+                    currElement = copyElement;
+                }
+                copyContentWithFilteredTags((checkChild as HTMLElement), currElement, allowedTags, allowedAttributes);
+            }
+            else if (checkChild.nodeType == Node.TEXT_NODE) {
+                if (checkChild.textContent) {
+                    const currElement = document.createTextNode(checkChild.textContent);
+                    copyElement.appendChild(currElement);
+                }
+            }
+        });
+    }
 }

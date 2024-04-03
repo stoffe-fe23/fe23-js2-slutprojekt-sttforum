@@ -80,6 +80,10 @@ export default class UserList {
                             "message": htmlUtilities.getTruncatedString(post.message, 200)
                         }
                         const postrow = htmlUtilities.createHTMLFromTemplate("tpl-user-posts", postContainer, postvalues, { "data-messageid": post.id, "data-threadid": post.threadId });
+                        // Allow whitelisted HTML tags in message text.
+                        const messageTextElem = postrow.querySelector(".users-profile-post-text") as HTMLElement;
+                        messageTextElem.innerHTML = "";
+                        htmlUtilities.setContentWithTagFilter(postvalues.message, messageTextElem, ['b', 'i', 'a', 'blockquote'], ['href']);
                     }
                 }
                 else {

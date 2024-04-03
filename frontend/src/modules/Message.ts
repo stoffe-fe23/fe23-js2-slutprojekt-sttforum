@@ -147,7 +147,12 @@ export default class Message {
             likes: this.likes.length ?? "0"
         };
         const attributes = { "data-messageid": this.id, "data-authorid": this.author.id };
-        const thisMessageElem = htmlUtilities.createHTMLFromTemplate("tpl-forum-message", targetContainer, values, attributes, true);
+        const thisMessageElem = htmlUtilities.createHTMLFromTemplate("tpl-forum-message", targetContainer, values, attributes);
+
+        // Allow whitelisted HTML tags in message text.
+        const messageTextElem = thisMessageElem.querySelector(".forum-message-text") as HTMLElement;
+        messageTextElem.innerHTML = "";
+        htmlUtilities.setContentWithTagFilter(values.message, messageTextElem, ['b', 'i', 'a', 'blockquote'], ['href']);
 
         const repliesElement = thisMessageElem.querySelector(`.forum-message-replies`) as HTMLElement;
         const replyBtns = thisMessageElem.querySelector(".forum-message-buttons") as HTMLFormElement;

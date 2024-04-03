@@ -922,7 +922,7 @@
                             "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96-1711901300396.png",
                             "admin": true
                         },
-                        "message": "Men vad är det nu för fel....",
+                        "message": "Men vad är det <a href=\"http://www.wikipedia.se/\">nu för fel</a> då?",
                         "deleted": false,
                         "date": 1711354382366,
                         "replies": [
@@ -934,7 +934,7 @@
                                     "picture": "def-pic-3.png",
                                     "admin": false
                                 },
-                                "message": "Alltid är det något...",
+                                "message": "Alltid är det <b>något...</b>",
                                 "deleted": false,
                                 "date": 1711628931073,
                                 "replies": [
@@ -946,7 +946,7 @@
                                             "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96-1711901300396.png",
                                             "admin": true
                                         },
-                                        "message": "Så är det definitivt.",
+                                        "message": "Så är det <i>definitivt</i>.",
                                         "deleted": false,
                                         "date": 1712146041467,
                                         "replies": [],
@@ -1010,11 +1010,12 @@
                                     "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96-1711901300396.png",
                                     "admin": true
                                 },
-                                "message": "Kollar så sorteringen fungerar rätt nu...",
+                                "message": "<blockquote>Kollar så sorteringen fungerar rätt nu...</blockquote>",
                                 "deleted": false,
                                 "date": 1712048171592,
                                 "replies": [],
-                                "likes": []
+                                "likes": [],
+                                "threadId": "649858ad-498e-4cd1-8a14-c1881d1f31a4"
                             }
                         ]
                     },

@@ -355,7 +355,11 @@ export default class ForumApp {
                         messageDate: htmlUtilities.dateTimeToString(result.message.date),
                         messageText: htmlUtilities.getTruncatedString(result.message.message, 200)
                     }
-                    htmlUtilities.createHTMLFromTemplate("tpl-search-result", resultsWrapper, values);
+                    const resultRow = htmlUtilities.createHTMLFromTemplate("tpl-search-result", resultsWrapper, values);
+                    // Allow whitelisted HTML tags in message text.
+                    const messageTextElem = resultRow.querySelector(".search-result-text") as HTMLElement;
+                    messageTextElem.innerHTML = "";
+                    htmlUtilities.setContentWithTagFilter(values.messageText, messageTextElem, ['b', 'i', 'a', 'blockquote'], ['href']);
                 }
             }
             else {
