@@ -566,10 +566,11 @@
                                                             "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96-1711901300396.png",
                                                             "admin": true
                                                         },
-                                                        "message": "Och med ett raderat meddelande mitt i allt ihopa?",
+                                                        "message": "Och med ett raderat meddelande mitt i allt ihopa???",
                                                         "deleted": false,
                                                         "date": 1711376929034,
-                                                        "replies": []
+                                                        "replies": [],
+                                                        "threadId": "d0884988-9381-4584-81f6-fefe6652ea75"
                                                     }
                                                 ]
                                             }
@@ -1089,26 +1090,56 @@
         "icon": "forum-1711977112500.png",
         "threads": [
             {
-                "id": "701d5495-16bb-4eae-a23d-30df13a63961",
-                "title": "En utflykt",
-                "date": 1711977490755,
+                "id": "9c6be3ec-7d2c-471b-b8e4-761140a65c01",
+                "title": "Thailand semester.",
+                "date": 1712144701214,
                 "active": true,
                 "posts": [
                     {
-                        "id": "7878e8cf-ffa1-4c09-91a1-cc25f211e27b",
+                        "id": "cc260539-c4a7-44a7-aa0c-f921c1cc88f0",
                         "author": {
-                            "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
-                            "userName": "Stoffe",
-                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96-1711901300396.png",
+                            "id": "9dc31ecd-206b-4344-9cb1-ccf8d9aafaf7",
+                            "userName": "Ton",
+                            "picture": "def-pic-1.png",
                             "admin": true
                         },
-                        "message": "Åker till skolan imorgon. Vilken upplyftande resa.... eller?",
+                        "message": "När är det bäst att åka till Thailand?",
                         "deleted": false,
-                        "date": 1711977490755,
+                        "date": 1712144701214,
+                        "replies": [
+                            {
+                                "id": "6003df7b-3874-44d9-b2b5-a27d8d010be3",
+                                "author": {
+                                    "id": "2dc97fbd-92bc-474e-8146-d3851624d111",
+                                    "userName": "Ton2",
+                                    "picture": "user-icon.png",
+                                    "admin": false
+                                },
+                                "message": "När man har pengar.",
+                                "deleted": false,
+                                "date": 1712145347408,
+                                "replies": [],
+                                "likes": [],
+                                "threadId": "9c6be3ec-7d2c-471b-b8e4-761140a65c01"
+                            }
+                        ],
+                        "likes": [],
+                        "threadId": "9c6be3ec-7d2c-471b-b8e4-761140a65c01"
+                    },
+                    {
+                        "id": "8d65a22e-1275-47bb-afb3-dbb1959d157c",
+                        "author": {
+                            "id": "2dc97fbd-92bc-474e-8146-d3851624d111",
+                            "userName": "Ton2",
+                            "picture": "user-icon.png",
+                            "admin": false
+                        },
+                        "message": "Är thailändare snälla?",
+                        "deleted": false,
+                        "date": 1712145489869,
                         "replies": [],
-                        "likes": [
-                            "5bcca996-929a-4451-a889-3a2267c6e216"
-                        ]
+                        "likes": [],
+                        "threadId": "9c6be3ec-7d2c-471b-b8e4-761140a65c01"
                     }
                 ],
                 "forum": {
