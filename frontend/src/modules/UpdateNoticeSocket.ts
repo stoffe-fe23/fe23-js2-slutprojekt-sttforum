@@ -40,7 +40,7 @@ export default class UpdateNoticeSocket {
         if (!this.socketClient || (this.socketClient.readyState == WebSocket.CLOSED)) {
             // Create socket connection to server
             this.socketClient = new WebSocket(`ws://${url.hostname}:${url.port}/api/updates`);
-            console.log("SOCKET CONNECTION ESTABLISHED: ", `ws://${url.hostname}:${url.port}/api/updates`);
+            console.log("Server websocket connection established.");
 
             // Listen for incoming messages on the socket
             this.socketClient.addEventListener("message", (event) => {
