@@ -6,7 +6,7 @@ Final assignment - course Javascript 2 (FE23 Grit Academy)
 * Kristoffer Bengtsson
 * Tobias Hurtig
 
-## Project description
+## Project description:
 Simple discussion forum with a node.js backend. Random feature list:
 * User account required to participate in forums.
 * User can view a list of all forum users, and view the public profile of another user. 
@@ -33,9 +33,15 @@ Simple discussion forum with a node.js backend. Random feature list:
 * Uses websocket connection to allow client to live update changes to forums and users notified by the server. 
 * Using local file storage for forum and user databases and session data. 
 
+### Extra features (VG requirement):
+* Search form
+* Message Like function
+* Admin functionality
+
 
 ## How to test
-To run and test the forum locally follow these steps.
+To run and test the forum locally follow these steps after cloning the repository. 
+
 ### Backend server
 To set up and run the server, navigate into the "backend" directory in the terminal, then type:
 ```
@@ -43,8 +49,8 @@ npm install
 npm start
 node ./dist/index.js (or: npm run dev)
 ```
-### Frontend server
-To run the client server, navigate into the "frontend" directory in the terminal and type:
+### Frontend/client server
+To run the server serving the client frontend, navigate into the "frontend" directory in the terminal and type:
 ```
 npm install
 npm run dev
