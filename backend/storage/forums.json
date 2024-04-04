@@ -547,7 +547,7 @@
                 "id": "ef256e64-2ae3-4345-af8a-86b5911dcfeb",
                 "title": "Testar igen.",
                 "date": 1712231790405,
-                "active": true,
+                "active": false,
                 "posts": [
                     {
                         "id": "620e812b-67aa-4a67-82f2-4f6fafb33bec",
@@ -686,7 +686,8 @@
                                                                 "deleted": false,
                                                                 "date": 1712248089315,
                                                                 "replies": [],
-                                                                "likes": []
+                                                                "likes": [],
+                                                                "threadId": "9c6be3ec-7d2c-471b-b8e4-761140a65c01"
                                                             }
                                                         ],
                                                         "likes": [],
