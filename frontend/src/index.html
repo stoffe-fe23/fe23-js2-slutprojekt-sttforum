@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<!--
+    <!--
     Slutprojekt Javascript 2 (FE23 Grit Academy)
     Grupp : STTForum
 
@@ -8,358 +8,366 @@
     Main HTML page for the site and templates for interface components. 
 -->
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="stylesheet" href="./css/search.css">
-    <link rel="stylesheet" href="./css/forum.css">
-    <link rel="stylesheet" href="./css/user.css">
-    <script src="./main.ts" type="module"></script>
-    <title>STT Forum</title>
-    <base href="/">
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="./css/style.css">
+        <link rel="stylesheet" href="./css/search.css">
+        <link rel="stylesheet" href="./css/forum.css">
+        <link rel="stylesheet" href="./css/user.css">
+        <script src="./main.ts" type="module"></script>
+        <title>STT Forum</title>
+        <base href="/">
+    </head>
 
-<body>
-    <header>
-        <div id="current-user">
-            <img id="user-image" src="./images/user-icon.png" alt="Profile picture">
-            <div id="user-name">Log in</div>
-        </div>
-        <div id="mainmenu">
-            <h1>STT Forum</h1>
-            <form id="searchform">
-                <input type="text" id="search-input" name="searchFor" placeholder="Search the forums..." minlength="2" maxlength="200" autocomplete="off" required />
-                <select id="search-type" name="searchType">
-                    <option value="threads">Thread topics</option>
-                    <option value="messages">Message text</option>
-                </select>
-                <button id="search-button" title="Search">
-                    <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
-                        <ellipse cx="6.16" cy="6.19" fill="#000000" fill-opacity="0" id="svg_1" rx="5.04" ry="5.04" stroke="#000000" stroke-width="2" transform="matrix(1 0 0 1 0 0)" />
-                        <line fill="none" fill-opacity="0" id="svg_2" stroke="#000000" stroke-width="2" x1="10.01" x2="16.93" y1="10.03" y2="16.95" />
-                    </svg>
-                </button>
-            </form>
-            <nav>
-                <ul>
-                    <li><a href="/" data-navigo>Home</a></li>
-                    <li><a href="/forums" data-navigo>Forums</a></li>
-                    <li><a href="/users" data-navigo>Users</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-    <main>
-        <!-- Main container for page content inserted by the scripts -->
-        <div id="error">
-            <img src="./images/error-icon.png">
-            <div id="error-message"></div>
-            <div class="error-button"><button>X</button></div>
-        </div>
-        <div id="page-home">
-            <figure id="home-image">
-                <img src="../src/images/background.png" alt="mixed collage of images" />
-            </figure>
-            <div id="home-text">
-                <h2>STT Forum</h2>
-
-                <p>Welcome to our forum, where freedom of expression is not just encouraged, it's celebrated! 😎 Here,
-                    we're all about fostering a cool and positive environment where you can share your thoughts, ideas,
-                    and interests with like-minded individuals.</p>
-                <p> So kick back, relax, and let the fun begin! Whether you're here to discuss your favorite hobbies,
-                    share a cool new discovery, or simply connect with fellow members, you've come to the right place.
-                    Let's embrace the freedom to be ourselves and make this forum an awesome place to hang out! 🎉</p>
+    <body>
+        <header>
+            <div id="current-user">
+                <img id="user-image" src="./images/user-icon.png" alt="Profile picture">
+                <div id="user-name">Log in</div>
             </div>
-
-        </div>
-        <div id="page-forum">
-            <h2></h2>
-        </div>
-        <div id="page-users">
-            <h2></h2>
-        </div>
-        <form id="forum-editor-form" class="hide">
-            <input type="text" id="forum-editor-name" name="name" value="" placeholder="Forum name" minlength="2" maxlength="20" required>
-            <div id="forum-editor-icon-wrapper">
-                <label for="forum-editor-icon">Upload forum icon (512x512px, JPG, PNG, GIF or WEBP):</label>
-                <input type="file" id="forum-editor-icon" name="icon" value="" accept="image/png, image/jpeg, image/gif, image/webp">
-            </div>
-            <div class="forum-editor-buttons">
-                <button name="submit" value="save">Save forum</button>
-            </div>
-        </form>
-    </main>
-    <footer>
-        <div class="footer-image-div"><a href="http://www.facebook.com" target="_blank">
-                <img class="footer-image" src="https://upload.wikimedia.org/wikipedia/commons/c/cd/Facebook_logo_%28square%29.png" alt="facebook logo" /></a></div>
-
-        <div class="footer-image-div"><a href="http://www.x.com" target="_blank">
-                <img class="footer-image" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/X_logo_2023_%28white%29.png/900px-X_logo_2023_%28white%29.png" alt="X logo" /></a></div>
-
-        <div class="footer-image-div-insta"><a href="http://www.instagram.com" target="_blank">
-                <img class="footer-image" src="https://static.vecteezy.com/system/resources/previews/018/930/413/non_2x/instagram-logo-instagram-icon-transparent-free-png.png" alt="X logo" /></a></div>
-
-
-
-    </footer>
-    <!-- POPUP DIALOG BOXES - not in page flow -->
-    <!-- User Login / Register new user dialog -->
-    <dialog id="user-login">
-        <form id="login-form">
-            <h2>Log in</h2>
-            <input type="text" name="username" id="login-username" placeholder="User name" minlength="2" maxlength="20" autocomplete="off" required>
-            <input type="password" name="password" id="login-password" placeholder="Password" minlength="6" maxlength="40" required>
-            <div id="login-buttons"><button id="button-login">Log in</button><button id="button-cancel" formnovalidate>Cancel</button></div>
-        </form>
-        <div id="register-button-container">
-            <span>New to STT?</span>
-            <button id="new-to-STT-button">Register</button>
-        </div>
-
-        <form id="user-register-form">
-            <h2>Register new user</h2>
-            <input type="text" id="user-register-name" name="username" value="" placeholder="Your username" required>
-            <input type="email" id="user-register-email" name="email" value="" placeholder="Your e-mail address" required>
-            <input type="password" id="user-register-password" name="password" value="" minlength="6" maxlength="40" placeholder="Choose a password" required>
-            <input type="password" id="user-register-password-confirm" name="password-confirm" minlength="6" maxlength="40" value="" placeholder="Confirm password" required>
-            <div id="register-buttons">
-                <button id="user-register-submit">Register</button>
-                <button formnovalidate id="user-register-cancel">Cancel</button>
-            </div>
-        </form>
-
-        <div id="already-have-acc-container">
-            <span>Already have an account?</span>
-            <button id="already-have-acc-login-button">Log in</button>
-        </div>
-    </dialog>
-    <!-- Dialog for replying to a message or editing a messsage -->
-    <dialog id="message-editor-dialog">
-        <form id="message-editor-form">
-            <input type="hidden" id="message-editor-targetid" name="targetId">
-            <input type="hidden" id="message-editor-action" name="action">
-            <textarea id="message-editor-text" placeholder="Write your message here" name="message" minlength="2" maxlength="4000" required></textarea>
-            <div class="message-editor-buttons">
-                <button name="submit" value="save">Save</button>
-                <button name="submit" value="cancel" formnovalidate>Cancel</button>
-            </div>
-        </form>
-    </dialog>
-    <!-- Dialog for viewing and editing the logged-on user's profile -->
-    <dialog id="user-profile">
-        <form id="user-profile-form">
-            <img src="images/user-icon.png" id="user-profile-picture-view" alt="Profile picture">
-            <h2>User profile</h2>
-            <input type="text" id="user-profile-name" class="user-profile-input" name="username" value="" minlength="2" maxlength="20" placeholder="Your username" required>
-            <input type="email" id="user-profile-email" class="user-profile-input" name="email" value="" maxlength="128" placeholder="Your e-mail address" required>
-            <input type="password" id="user-profile-password" class="user-profile-input" name="password" value="" minlength="4" maxlength="40" placeholder="Change password">
-            <input type="password" id="user-profile-password-confirm" class="user-profile-input" name="password-confirm" value="" minlength="4" maxlength="40" placeholder="Confirm password">
-            <div id="user-profile-pic-wrapper">
-                <h4>Profile picture</h4>
-                <div id="def-pic-container">
-                    <input type="radio" id="def-pic-custom" name="defaultPicture" value="custom">
-                    <label for="def-pic-custom"><img src="./images/user-icon.png" alt="Custom picture" title="Custom profile picture"></label>
-                    <input type="radio" id="def-pic-1" name="defaultPicture" value="def-pic-1.png">
-                    <label for="def-pic-1"><img src="./images/def-pic-1.png" alt="Profile picture: Dog"></label>
-                    <input type="radio" id="def-pic-2" name="defaultPicture" value="def-pic-2.png">
-                    <label for="def-pic-2"><img src="./images/def-pic-2.png" alt="Profile picture: Fox"></label>
-                    <input type="radio" id="def-pic-3" name="defaultPicture" value="def-pic-3.png">
-                    <label for="def-pic-3"><img src="./images/def-pic-3.png" alt="Profile picture: Owl"></label>
-                </div>
-                <label for="user-profile-picture">Upload custom profile picture:</label>
-                <input type="file" id="user-profile-picture" name="picture" value="" accept="image/png, image/jpeg, image/gif, image/webp">
-            </div>
-            <div id="user-profile-button">
-                <button id="user-profile-submit">Save</button>
-                <button formnovalidate class="profile-buttons">Close</button>
-                <button formnovalidate id="user-profile-logout" class="profile-buttons">Log off</button>
-                <button formnovalidate id="user-delete-submit" class="profile-buttons">Delete user</button>
-            </div>
-        </form>
-    </dialog>
-</body>
-<!-- HTML TEMPLATES - USED BY SCRIPT TO DYNAMICALLY CREATE PAGE ELEMENTS -->
-<!-- Template for a forum picker button -->
-<template id="tpl-forum-button">
-    <button class="forum-button" data-forumid="0">
-        <img class="forum-icon-big" src="images/forum-icon.png" data-template="icon">
-        <div data-template="name"></div>
-    </button>
-</template>
-<!-- Template for a forum view (thread list) -->
-<template id="tpl-forum">
-    <section class="forum" data-forumid="0">
-        <div class="forum-header">
-            <img class="forum-icon" src="images/forum-icon.png" data-template="icon">
-            <h2 data-template="name"></h2>
-        </div>
-        <div class="forum-breadcrumb"></div>
-        <form class="forum-new-thread-form">
-            <input type="text" name="title" class="forum-new-thread-title" placeholder="Your new thread title here" minlength="2" maxlength="40" required>
-            <textarea name="message" class="forum-new-thread-message" placeholder="Message text" minlength="2" maxlength="4000" required></textarea>
-            <button class="forum-new-thread-submit">Create new thread</button>
-        </form>
-        <div class="forum-thread-list-hdr">
-            <div class="forum-thread-list-title-hdr">Thread</div>
-            <div class="forum-thread-list-lastby-hdr">Last post by</div>
-            <div class="forum-thread-list-updated-hdr">Last post on</div>
-            <div class="forum-thread-list-date-hdr">Created</div>
-            <div class="forum-thread-list-postcount-hdr">Posts</div>
-        </div>
-        <div class="forum-threads" data-template="threads">
-        </div>
-    </section>
-</template>
-<!-- Template for displaying content of a thread -->
-<template id="tpl-thread-forum">
-    <section class="forum" data-forumid="0">
-        <div class="forum-header">
-            <img class="forum-icon" src="images/forum-icon.png" data-template="icon">
-            <h2 data-template="name"></h2>
-        </div>
-        <div class="forum-breadcrumb"></div>
-        <div class="forum-thread" data-template="thread">
-        </div>
-    </section>
-</template>
-<!-- Template for a row in the forum threads list -->
-<template id="tpl-forum-thread-list">
-    <article class="forum-thread-list" data-threadid="0">
-        <div class="forum-thread-list-title"><a href="#" data-template="link" data-navigo><span data-template="title">Thread subject</span></a></div>
-        <div class="forum-thread-list-lastby" data-template="lastAuthor"></div>
-        <div class="forum-thread-list-updated" data-template="lastUpdated"></div>
-        <div class="forum-thread-list-date" data-template="date"></div>
-        <div class="forum-thread-list-postcount" data-template="postCount"></div>
-    </article>
-</template>
-<!-- Template for a forum thread view -->
-<template id="tpl-forum-thread">
-    <section class="forum-thread" data-threadid="0">
-        <form class="thread-new-post-form">
-            <textarea name="message" class="thread-new-post-message" placeholder="Message to add to the thread..." minlength="2" maxlength="4000" required></textarea>
-            <button class="thread-new-post-submit">New message</button>
-        </form>
-        <div class="forum-thread-wrapper">
-            <h3 data-template="title">Thread subject</h3>
-            <button class="forum-thread-edit hide" title="Edit thread"><img src="./images/icon-edit.png" alt="Edit thread"></button>
-            <div class="forum-thread-date" data-template="date"></div>
-            <div class="forum-thread-messages" data-template="posts"></div>
-        </div>
-    </section>
-</template>
-<!-- Template for a forum message shown in a thread view -->
-<template id="tpl-forum-message">
-    <article class="forum-message" data-messageid="0" data-authorid="0">
-        <div class="forum-message-wrapper">
-            <div class="forum-message-header">
-                <img class="author-picture" src="images/user-icon.png" data-template="authorPicture">
-                <a class="author-name" href="#" data-template="authorLink" data-navigo><span data-template="authorName"></span></a>
-                <div class="forum-message-date" data-template="date"></div>
-            </div>
-            <div class="forum-message-text" data-template="message"></div>
-            <form class="forum-message-buttons">
-                <div class="like-button-wrapper">
-                    <button name="submit" value="like">
-                        <img src="./images/icon-like.png" alt="Like">
-                        <span class="forum-message-likes" data-template="likes"></span>
+            <div id="mainmenu">
+                <h1>STT Forum</h1>
+                <form id="searchform">
+                    <input type="text" id="search-input" name="searchFor" placeholder="Search the forums..." minlength="2" maxlength="200" autocomplete="off" required />
+                    <select id="search-type" name="searchType">
+                        <option value="threads">Thread topics</option>
+                        <option value="messages">Message text</option>
+                    </select>
+                    <button id="search-button" title="Search">
+                        <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+                            <ellipse cx="6.16" cy="6.19" fill="#000000" fill-opacity="0" id="svg_1" rx="5.04" ry="5.04" stroke="#000000" stroke-width="2" transform="matrix(1 0 0 1 0 0)" />
+                            <line fill="none" fill-opacity="0" id="svg_2" stroke="#000000" stroke-width="2" x1="10.01" x2="16.93" y1="10.03" y2="16.95" />
+                        </svg>
                     </button>
+                </form>
+                <nav>
+                    <ul>
+                        <li><a href="/" data-navigo>Home</a></li>
+                        <li><a href="/forums" data-navigo>Forums</a></li>
+                        <li><a href="/users" data-navigo>Users</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+        <main>
+            <!-- Main container for page content inserted by the scripts -->
+            <div id="error">
+                <img src="./images/error-icon.png">
+                <div id="error-message"></div>
+                <div class="error-button"><button>X</button></div>
+            </div>
+            <div id="page-home">
+                <figure id="home-image">
+                    <img src="../src/images/background.png" alt="mixed collage of images" />
+                </figure>
+                <div id="home-text">
+                    <h2>STT Forum</h2>
+
+                    <p>Welcome to our forum, where freedom of expression is not just encouraged, it's celebrated! 😎 Here,
+                        we're all about fostering a cool and positive environment where you can share your thoughts, ideas,
+                        and interests with like-minded individuals.</p>
+                    <p> So kick back, relax, and let the fun begin! Whether you're here to discuss your favorite hobbies,
+                        share a cool new discovery, or simply connect with fellow members, you've come to the right place.
+                        Let's embrace the freedom to be ourselves and make this forum an awesome place to hang out! 🎉</p>
                 </div>
-                <div class="action-button-wrapper">
-                    <button name="submit" value="reply">Reply</button>
-                    <button name="submit" value="edit">Edit</button>
-                    <button name="submit" value="delete">Delete</button>
-                    <button name="submit" value="remove" class="forum-message-remove hide" title="Remove permanently"><img src="./images/icon-remove.png" alt="Permanently remove"></button>
+
+            </div>
+            <div id="page-forum">
+                <h2></h2>
+            </div>
+            <div id="page-users">
+                <h2></h2>
+            </div>
+            <form id="forum-editor-form" class="hide">
+                <input type="text" id="forum-editor-name" name="name" value="" placeholder="Forum name" minlength="2" maxlength="20" required>
+                <div id="forum-editor-icon-wrapper">
+                    <label for="forum-editor-icon">Upload forum icon (512x512px, JPG, PNG, GIF or WEBP):</label>
+                    <input type="file" id="forum-editor-icon" name="icon" value="" accept="image/png, image/jpeg, image/gif, image/webp">
+                </div>
+                <div class="forum-editor-buttons">
+                    <button name="submit" value="save">Save forum</button>
+                </div>
+            </form>
+        </main>
+        <footer>
+            <div class="footer-image-div"><a href="http://www.facebook.com" target="_blank">
+                    <img class="footer-image" src="https://upload.wikimedia.org/wikipedia/commons/c/cd/Facebook_logo_%28square%29.png" alt="facebook logo" /></a></div>
+
+            <div class="footer-image-div"><a href="http://www.x.com" target="_blank">
+                    <img class="footer-image" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/X_logo_2023_%28white%29.png/900px-X_logo_2023_%28white%29.png" alt="X logo" /></a></div>
+
+            <div class="footer-image-div-insta"><a href="http://www.instagram.com" target="_blank">
+                    <img class="footer-image" src="https://static.vecteezy.com/system/resources/previews/018/930/413/non_2x/instagram-logo-instagram-icon-transparent-free-png.png" alt="X logo" /></a></div>
+
+
+
+        </footer>
+        <!-- POPUP DIALOG BOXES - not in page flow -->
+        <!-- User Login / Register new user dialog -->
+        <dialog id="user-login">
+            <form id="login-form">
+                <h2>Log in</h2>
+                <input type="text" name="username" id="login-username" placeholder="User name" minlength="2" maxlength="20" autocomplete="off" required>
+                <input type="password" name="password" id="login-password" placeholder="Password" minlength="6" maxlength="40" required>
+                <div id="login-buttons"><button id="button-login">Log in</button><button id="button-cancel" formnovalidate>Cancel</button></div>
+            </form>
+            <div id="register-button-container">
+                <span>New to STT?</span>
+                <button id="new-to-STT-button">Register</button>
+            </div>
+
+            <form id="user-register-form">
+                <h2>Register new user</h2>
+                <input type="text" id="user-register-name" name="username" value="" placeholder="Your username" required>
+                <input type="email" id="user-register-email" name="email" value="" placeholder="Your e-mail address" required>
+                <input type="password" id="user-register-password" name="password" value="" minlength="6" maxlength="40" placeholder="Choose a password" required>
+                <input type="password" id="user-register-password-confirm" name="password-confirm" minlength="6" maxlength="40" value="" placeholder="Confirm password" required>
+                <div id="register-buttons">
+                    <button id="user-register-submit">Register</button>
+                    <button formnovalidate id="user-register-cancel">Cancel</button>
+                </div>
+            </form>
+
+            <div id="already-have-acc-container">
+                <span>Already have an account?</span>
+                <button id="already-have-acc-login-button">Log in</button>
+            </div>
+        </dialog>
+        <!-- Dialog for replying to a message or editing a messsage -->
+        <dialog id="message-editor-dialog">
+            <form id="message-editor-form">
+                <input type="hidden" id="message-editor-targetid" name="targetId">
+                <input type="hidden" id="message-editor-action" name="action">
+                <textarea id="message-editor-text" placeholder="Write your message here" name="message" minlength="2" maxlength="4000" required></textarea>
+                <div class="message-editor-buttons">
+                    <button name="submit" value="save">Save</button>
+                    <button name="submit" value="cancel" formnovalidate>Cancel</button>
+                </div>
+            </form>
+        </dialog>
+        <!-- Dialog for viewing and editing the logged-on user's profile -->
+        <dialog id="user-profile">
+            <form id="user-profile-form">
+                <img src="images/user-icon.png" id="user-profile-picture-view" alt="Profile picture">
+                <h2>User profile</h2>
+                <input type="text" id="user-profile-name" class="user-profile-input" name="username" value="" minlength="2" maxlength="20" placeholder="Your username" required>
+                <input type="email" id="user-profile-email" class="user-profile-input" name="email" value="" maxlength="128" placeholder="Your e-mail address" required>
+                <input type="password" id="user-profile-password" class="user-profile-input" name="password" value="" minlength="4" maxlength="40" placeholder="Change password">
+                <input type="password" id="user-profile-password-confirm" class="user-profile-input" name="password-confirm" value="" minlength="4" maxlength="40" placeholder="Confirm password">
+                <div id="user-profile-pic-wrapper">
+                    <h4>Profile picture</h4>
+                    <div id="def-pic-container">
+                        <input type="radio" id="def-pic-custom" name="defaultPicture" value="custom">
+                        <label for="def-pic-custom"><img src="./images/user-icon.png" alt="Custom picture" title="Custom profile picture"></label>
+                        <input type="radio" id="def-pic-1" name="defaultPicture" value="def-pic-1.png">
+                        <label for="def-pic-1"><img src="./images/def-pic-1.png" alt="Profile picture: Dog"></label>
+                        <input type="radio" id="def-pic-2" name="defaultPicture" value="def-pic-2.png">
+                        <label for="def-pic-2"><img src="./images/def-pic-2.png" alt="Profile picture: Fox"></label>
+                        <input type="radio" id="def-pic-3" name="defaultPicture" value="def-pic-3.png">
+                        <label for="def-pic-3"><img src="./images/def-pic-3.png" alt="Profile picture: Owl"></label>
+                    </div>
+                    <label for="user-profile-picture">Upload custom profile picture:</label>
+                    <input type="file" id="user-profile-picture" name="picture" value="" accept="image/png, image/jpeg, image/gif, image/webp">
+                </div>
+                <div id="user-profile-button">
+                    <button id="user-profile-submit">Save</button>
+                    <button formnovalidate class="profile-buttons">Close</button>
+                    <button formnovalidate id="user-profile-logout" class="profile-buttons">Log off</button>
+                    <button formnovalidate id="user-delete-submit" class="profile-buttons">Delete user</button>
+                </div>
+            </form>
+        </dialog>
+    </body>
+    <!-- HTML TEMPLATES - USED BY SCRIPT TO DYNAMICALLY CREATE PAGE ELEMENTS -->
+    <!-- Template for a forum picker button -->
+    <template id="tpl-forum-button">
+        <button class="forum-button" data-forumid="0">
+            <img class="forum-icon-big" src="images/forum-icon.png" data-template="icon">
+            <div data-template="name"></div>
+        </button>
+    </template>
+    <!-- Template for a forum view (thread list) -->
+    <template id="tpl-forum">
+        <section class="forum" data-forumid="0">
+            <div class="forum-header">
+                <img class="forum-icon" src="images/forum-icon.png" data-template="icon">
+                <h2 data-template="name"></h2>
+            </div>
+            <div class="forum-breadcrumb"></div>
+            <form class="forum-new-thread-form">
+                <input type="text" name="title" class="forum-new-thread-title" placeholder="Your new thread title here" minlength="2" maxlength="40" required>
+                <textarea name="message" class="forum-new-thread-message" placeholder="Message text" minlength="2" maxlength="4000" required></textarea>
+                <div class="editor-buttons">
+                    <button class="forum-new-thread-submit">Create new thread</button>
+                </div>
+            </form>
+            <div class="forum-thread-list-hdr">
+                <div class="forum-thread-list-title-hdr">Thread</div>
+                <div class="forum-thread-list-lastby-hdr">Last post by</div>
+                <div class="forum-thread-list-updated-hdr">Last post on</div>
+                <div class="forum-thread-list-date-hdr">Created</div>
+                <div class="forum-thread-list-postcount-hdr">Posts</div>
+            </div>
+            <div class="forum-threads" data-template="threads">
+            </div>
+        </section>
+    </template>
+    <!-- Template for displaying content of a thread -->
+    <template id="tpl-thread-forum">
+        <section class="forum" data-forumid="0">
+            <div class="forum-header">
+                <img class="forum-icon" src="images/forum-icon.png" data-template="icon">
+                <h2 data-template="name"></h2>
+            </div>
+            <div class="forum-breadcrumb"></div>
+            <div class="forum-thread" data-template="thread">
+            </div>
+        </section>
+    </template>
+    <!-- Template for a row in the forum threads list -->
+    <template id="tpl-forum-thread-list">
+        <article class="forum-thread-list" data-threadid="0">
+            <div class="forum-thread-list-title"><a href="#" data-template="link" data-navigo><span data-template="title">Thread subject</span></a></div>
+            <div class="forum-thread-list-lastby" data-template="lastAuthor"></div>
+            <div class="forum-thread-list-updated" data-template="lastUpdated"></div>
+            <div class="forum-thread-list-date" data-template="date"></div>
+            <div class="forum-thread-list-postcount" data-template="postCount"></div>
+        </article>
+    </template>
+    <!-- Template for a forum thread view -->
+    <template id="tpl-forum-thread">
+        <section class="forum-thread" data-threadid="0">
+            <form class="thread-new-post-form">
+                <textarea name="message" class="thread-new-post-message" placeholder="Message to add to the thread..." minlength="2" maxlength="4000" required></textarea>
+                <div class="editor-buttons"><button class="thread-new-post-submit">New message</button></div>
+            </form>
+            <div class="forum-thread-wrapper">
+                <h3 data-template="title">Thread subject</h3>
+                <button class="forum-thread-edit hide" title="Edit thread"><img src="./images/icon-edit.png" alt="Edit thread"></button>
+                <div class="forum-thread-date" data-template="date"></div>
+                <div class="forum-thread-messages" data-template="posts"></div>
+            </div>
+        </section>
+    </template>
+    <!-- Template for a forum message shown in a thread view -->
+    <template id="tpl-forum-message">
+        <article class="forum-message" data-messageid="0" data-authorid="0">
+            <div class="forum-message-wrapper">
+                <div class="forum-message-header">
+                    <img class="author-picture" src="images/user-icon.png" data-template="authorPicture">
+                    <a class="author-name" href="#" data-template="authorLink" data-navigo><span data-template="authorName"></span></a>
+                    <div class="forum-message-date" data-template="date"></div>
+                </div>
+                <div class="forum-message-text" data-template="message"></div>
+                <form class="forum-message-buttons">
+                    <div class="like-button-wrapper">
+                        <button name="submit" value="like">
+                            <img src="./images/icon-like.png" alt="Like">
+                            <span class="forum-message-likes" data-template="likes"></span>
+                        </button>
+                    </div>
+                    <div class="action-button-wrapper">
+                        <button name="submit" value="reply">Reply</button>
+                        <button name="submit" value="edit">Edit</button>
+                        <button name="submit" value="delete">Delete</button>
+                        <button name="submit" value="remove" class="forum-message-remove hide" title="Remove permanently"><img src="./images/icon-remove.png" alt="Permanently remove"></button>
+                    </div>
+                </form>
+            </div>
+            <div class="forum-message-replies" data-template="replies"></div>
+        </article>
+    </template>
+    <!-- Templates for the user list -->
+    <template id="tpl-user-list">
+        <section class="section-user-list">
+            <h2 data-template="Users">User list</h2>
+            <div class="user-container" data-template="userList"></div>
+        </section>
+    </template>
+    <template id="tpl-user-list-user">
+        <article class="article-user-list" data-userid="0">
+            <a href class="user-link" data-template="userLink" data-navigo>
+                <img class="profile-icon" data-template="profilePic">
+                <div class="user-profile-name" data-template="username"></div>
+            </a>
+        </article>
+    </template>
+    <!-- Templates for the public user profile -->
+    <template id="tpl-user">
+        <section class="section-user" data-userid="0">
+            <h2 data-template="UserProfile">User Profile</h2>
+            <img class="users-profile-icon" data-template="profilePic">
+            <div class="users-profile-name" data-template="username"></div>
+            <div class="users-profile-post-counter" data-template="postCounter"></div>
+            <div class="users-profile-admin" data-template="profileAdmin"></div>
+            <div class="users-profile-posts" data-template="postContainer"></div>
+        </section>
+    </template>
+    <template id="tpl-user-posts">
+        <article class="users-profile-post-entry" data-messageid="0" data-threadid="0">
+            <div class="users-profile-post-title"> <a data-template="postLink" data-navigo><span data-template="threadTitle"></span></a></div>
+            <div class="users-profile-post-date" data-template="postDate"></div>
+            <div class="users-profile-post-text" data-template="message"></div>
+        </article>
+    </template>
+    <template id="tpl-user-admin-edit">
+        <div id="user-profile-editor">
+            <h3>Admin - Edit user</h3>
+            <form id="users-profile-edit" class="users-profile-edit" data-userid="0">
+                <input type="text" data-template="name" class="users-profile-edit-name" name="userName" value="" minlength="2" maxlength="20" placeholder="Username" required>
+                <input type="email" data-template="email" class="users-profile-edit-email" name="email" value="" maxlength="128" placeholder="E-mail address" required>
+                <div class="users-profile-edit-wrapper">
+                    <input type="password" class="users-profile-edit-pwd" name="password" value="" minlength="4" maxlength="40" placeholder="Change password">
+                    <input type="password" class="users-profile-edit-pwd-confirm" name="password-confirm" value="" minlength="4" maxlength="40" placeholder="Confirm new password">
+                </div>
+                <div class="users-profile-edit-wrapper"><input type="checkbox" data-template="resetPicture" id="users-profile-edit-picture" name="resetPicture" value="user-icon.png"><label for="users-profile-edit-picture">Reset profile picture</label></div>
+                <div class="users-profile-edit-wrapper"><input type="checkbox" data-template="admin" id="users-profile-edit-admin" name="admin" value="true"><label for="users-profile-edit-admin">Is
+                        administrator</label></div>
+                <div class="users-profile-edit-buttons">
+                    <button name="submit" value="save">Save</button>
+                    <button name="submit" value="delete" formnovalidate>Delete user</button>
                 </div>
             </form>
         </div>
-        <div class="forum-message-replies" data-template="replies"></div>
-    </article>
-</template>
-<!-- Templates for the user list -->
-<template id="tpl-user-list">
-    <section class="section-user-list">
-        <h2 data-template="Users">User list</h2>
-        <div class="user-container" data-template="userList"></div>
-    </section>
-</template>
-<template id="tpl-user-list-user">
-    <article class="article-user-list" data-userid="0">
-        <a href class="user-link" data-template="userLink" data-navigo>
-            <img class="profile-icon" data-template="profilePic">
-            <div class="user-profile-name" data-template="username"></div>
-        </a>
-    </article>
-</template>
-<!-- Templates for the public user profile -->
-<template id="tpl-user">
-    <section class="section-user" data-userid="0">
-        <h2 data-template="UserProfile">User Profile</h2>
-        <img class="users-profile-icon" data-template="profilePic">
-        <div class="users-profile-name" data-template="username"></div>
-        <div class="users-profile-post-counter" data-template="postCounter"></div>
-        <div class="users-profile-admin" data-template="profileAdmin"></div>
-        <div class="users-profile-posts" data-template="postContainer"></div>
-    </section>
-</template>
-<template id="tpl-user-posts">
-    <article class="users-profile-post-entry" data-messageid="0" data-threadid="0">
-        <div class="users-profile-post-title"> <a data-template="postLink" data-navigo><span data-template="threadTitle"></span></a></div>
-        <div class="users-profile-post-date" data-template="postDate"></div>
-        <div class="users-profile-post-text" data-template="message"></div>
-    </article>
-</template>
-<template id="tpl-user-admin-edit">
-    <div id="user-profile-editor">
-        <h3>Admin - Edit user</h3>
-        <form id="users-profile-edit" class="users-profile-edit" data-userid="0">
-            <input type="text" data-template="name" class="users-profile-edit-name" name="userName" value="" minlength="2" maxlength="20" placeholder="Username" required>
-            <input type="email" data-template="email" class="users-profile-edit-email" name="email" value="" maxlength="128" placeholder="E-mail address" required>
-            <div class="users-profile-edit-wrapper">
-                <input type="password" class="users-profile-edit-pwd" name="password" value="" minlength="4" maxlength="40" placeholder="Change password">
-                <input type="password" class="users-profile-edit-pwd-confirm" name="password-confirm" value="" minlength="4" maxlength="40" placeholder="Confirm new password">
+    </template>
+    <!-- Templates for presenting search results -->
+    <template id="tpl-search-result">
+        <article class="search-result">
+            <div class="search-result-title">
+                <a data-template="threadLink" data-navigo><span data-template="threadTitle"></span></a>
             </div>
-            <div class="users-profile-edit-wrapper"><input type="checkbox" data-template="resetPicture" id="users-profile-edit-picture" name="resetPicture" value="user-icon.png"><label for="users-profile-edit-picture">Reset profile picture</label></div>
-            <div class="users-profile-edit-wrapper"><input type="checkbox" data-template="admin" id="users-profile-edit-admin" name="admin" value="true"><label for="users-profile-edit-admin">Is
-                    administrator</label></div>
-            <div class="users-profile-edit-buttons">
-                <button name="submit" value="save">Save</button>
-                <button name="submit" value="delete" formnovalidate>Delete user</button>
+            <div class="search-result-date" data-template="messageDate"></div>
+            <div class="search-result-text" data-template="messageText"></div>
+        </article>
+    </template>
+    <template id="tpl-search-result-thread">
+        <article class="search-result">
+            <div class="search-result-title">
+                <a data-template="threadLink" data-navigo><span data-template="threadTitle"></span></a>
             </div>
+            <div class="search-result-date" data-template="threadDate"></div>
+            <div class="search-result-author" data-template="threadLastBy"></div>
+        </article>
+    </template>
+    <!-- Template for form editing a thread -->
+    <template id="tpl-thread-edit">
+        <form id="thread-edit-form" data-threadid="0">
+            <input type="text" name="title" class="thread-edit-title" placeholder="Thread title here" minlength="2" maxlength="40" data-template="title" required>
+            <div class="thread-edit-active-wrapper">
+                <input type="checkbox" name="active" value="true" id="thread-edit-active" data-template="active">
+                <label for="thread-edit-active">Open</label>
+            </div>
+            <button class="thread-edit-submit" value="save">Save</button>
+            <button class="thread-edit-cancel" value="cancel" formnovalidate>Cancel</button>
+            <button class="thread-edit-delete" value="delete" formnovalidate>Delete</button>
         </form>
-    </div>
-</template>
-<!-- Templates for presenting search results -->
-<template id="tpl-search-result">
-    <article class="search-result">
-        <div class="search-result-title">
-            <a data-template="threadLink" data-navigo><span data-template="threadTitle"></span></a>
+    </template>
+    <template id="tpl-formatting-buttons">
+        <div class="formatting-buttons">
+            <button type="button" class="format-button-bold" name="formatting" value="bold">B</button>
+            <button type="button" class="format-button-italic" name="formatting" value="italic">i</button>
+            <button type="button" class="format-button-underline" name="formatting" value="underline">u</button>
         </div>
-        <div class="search-result-date" data-template="messageDate"></div>
-        <div class="search-result-text" data-template="messageText"></div>
-    </article>
-</template>
-<template id="tpl-search-result-thread">
-    <article class="search-result">
-        <div class="search-result-title">
-            <a data-template="threadLink" data-navigo><span data-template="threadTitle"></span></a>
-        </div>
-        <div class="search-result-date" data-template="threadDate"></div>
-        <div class="search-result-author" data-template="threadLastBy"></div>
-    </article>
-</template>
-<!-- Template for form editing a thread -->
-<template id="tpl-thread-edit">
-    <form id="thread-edit-form" data-threadid="0">
-        <input type="text" name="title" class="thread-edit-title" placeholder="Thread title here" minlength="2" maxlength="40" data-template="title" required>
-        <div class="thread-edit-active-wrapper">
-            <input type="checkbox" name="active" value="true" id="thread-edit-active" data-template="active">
-            <label for="thread-edit-active">Open</label>
-        </div>
-        <button class="thread-edit-submit" value="save">Save</button>
-        <button class="thread-edit-cancel" value="cancel" formnovalidate>Cancel</button>
-        <button class="thread-edit-delete" value="delete" formnovalidate>Delete</button>
-    </form>
-</template>
-
+    </template>
 </html>

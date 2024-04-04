@@ -26,6 +26,13 @@ const defaultPictureNames = ['def-pic-1.png', 'def-pic-2.png', 'def-pic-3.png'];
 // Initialize the forums and load current user (if there is an active session)
 forumApp.load().then(() => {
     console.log("DEBUG: ForumApp loaded!");
+    const msgEditor = document.querySelector("#message-editor-form") as HTMLFormElement;
+    if (msgEditor) {
+        const formButtons = msgEditor.querySelector(".message-editor-buttons") as HTMLFormElement;
+        if (formButtons) {
+            formButtons.prepend(htmlUtilities.buildEditorFormatButtons(msgEditor.querySelector("textarea") as HTMLTextAreaElement));
+        }
+    }
 }).catch((error) => {
     alert("Forum init error: " + error.message);
 });

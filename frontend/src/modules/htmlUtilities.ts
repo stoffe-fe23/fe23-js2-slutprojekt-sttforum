@@ -253,6 +253,25 @@ export function wrapSelectedTextAreaString(textArea: HTMLTextAreaElement, htmlTa
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Function providing the HTML DOM element for editor formatting buttons for the specified textarea. 
+export function buildEditorFormatButtons(editorTextArea: HTMLTextAreaElement): HTMLElement {
+    const buttons = createHTMLFromTemplate("tpl-formatting-buttons");
+    buttons.addEventListener("click", (event) => {
+        console.log("CLICKED", (event.target as HTMLButtonElement).value);
+        if ((event.target as HTMLElement).tagName == "BUTTON") {
+            switch ((event.target as HTMLButtonElement).value) {
+                case "bold": wrapSelectedTextAreaString(editorTextArea, "b"); break;
+                case "italic": wrapSelectedTextAreaString(editorTextArea, "i"); break;
+                case "underline": wrapSelectedTextAreaString(editorTextArea, "u"); break;
+            }
+        }
+    });
+
+    return buttons;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Set the content of an element to a string that may only contain whitelisted HTML elements
 // contentString = string with the content to assign to the element
 // contentElement = the HTML element to assign the content to

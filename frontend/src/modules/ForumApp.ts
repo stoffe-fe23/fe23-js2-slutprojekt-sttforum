@@ -348,7 +348,7 @@ export default class ForumApp {
                     // Allow whitelisted HTML tags in message text.
                     const messageTextElem = resultRow.querySelector(".search-result-text") as HTMLElement;
                     messageTextElem.innerHTML = "";
-                    htmlUtilities.setContentWithTagFilter(values.messageText, messageTextElem, ['b', 'i', 'u', 'a', 'blockquote'], ['href']);
+                    htmlUtilities.setContentWithTagFilter(values.messageText, messageTextElem, ['b', 'i', 'u', 'a'], ['href']);
                 }
             }
             else {

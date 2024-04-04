@@ -149,7 +149,7 @@ export default class Message {
         // Allow whitelisted HTML tags in message text.
         const messageTextElem = thisMessageElem.querySelector(".forum-message-text") as HTMLElement;
         messageTextElem.innerHTML = "";
-        htmlUtilities.setContentWithTagFilter(values.message, messageTextElem, ['b', 'i', 'u', 'a', 'blockquote'], ['href']);
+        htmlUtilities.setContentWithTagFilter(values.message, messageTextElem, ['b', 'i', 'u', 'a'], ['href']);
 
         const repliesElement = thisMessageElem.querySelector(`.forum-message-replies`) as HTMLElement;
         const replyBtns = thisMessageElem.querySelector(".forum-message-buttons") as HTMLFormElement;

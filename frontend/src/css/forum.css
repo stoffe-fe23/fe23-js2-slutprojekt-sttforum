@@ -625,3 +625,48 @@ a.author-name span.admin::after {
     content: " → ";
     font-size: 1rem;
 }
+
+
+.formatting-buttons .format-button-bold,
+.formatting-buttons .format-button-italic,
+.formatting-buttons .format-button-underline {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+    border-radius: 50%;
+    width: 32px;
+    height: 30px;
+    color: white;
+    background-color: black;
+    cursor: pointer;
+}
+
+.formatting-buttons .format-button-bold:focus,
+.formatting-buttons .format-button-italic:focus,
+.formatting-buttons .format-button-underline:focus,
+.formatting-buttons .format-button-bold:hover,
+.formatting-buttons .format-button-italic:hover,
+.formatting-buttons .format-button-underline:hover {
+    color: yellow;
+}
+
+.format-button-bold {
+    font-weight: 700;
+}
+
+.format-button-italic {
+    font-style: italic;
+}
+
+.format-button-underline {
+    text-decoration: underline;
+}
+
+.formatting-buttons {
+    display: inline-flex;
+    gap: 0.1rem;
+    align-items: center;
+    justify-content: center;
+    margin-right: 4rem;
+}

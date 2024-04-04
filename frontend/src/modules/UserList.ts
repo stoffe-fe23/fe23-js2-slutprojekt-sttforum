@@ -83,7 +83,7 @@ export default class UserList {
                         // Allow whitelisted HTML tags in message text.
                         const messageTextElem = postrow.querySelector(".users-profile-post-text") as HTMLElement;
                         messageTextElem.innerHTML = "";
-                        htmlUtilities.setContentWithTagFilter(postvalues.message, messageTextElem, ['b', 'i', 'u', 'a', 'blockquote'], ['href']);
+                        htmlUtilities.setContentWithTagFilter(postvalues.message, messageTextElem, ['b', 'i', 'u', 'a'], ['href']);
                     }
                 }
                 else {

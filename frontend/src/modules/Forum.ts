@@ -81,6 +81,11 @@ export default class Forum {
         const forumElement = htmlUtilities.createHTMLFromTemplate("tpl-forum", targetContainer, values, { "data-forumid": this.id });
         const threadsElement = forumElement.querySelector(`.forum-threads`) as HTMLElement;
         const newThreadForm = forumElement.querySelector(`.forum-new-thread-form`) as HTMLFormElement;
+        const formButtons = newThreadForm.querySelector(".editor-buttons") as HTMLFormElement;
+
+        if (formButtons) {
+            formButtons.prepend(htmlUtilities.buildEditorFormatButtons(newThreadForm.querySelector("textarea") as HTMLTextAreaElement));
+        }
 
         newThreadForm.addEventListener("submit", this.onNewThreadFormSubmit.bind(this));
 

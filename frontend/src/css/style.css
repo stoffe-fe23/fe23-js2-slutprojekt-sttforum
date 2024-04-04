@@ -147,12 +147,12 @@ main {
     max-width: 40%;
     font-size: 1.3em;
     background-color: rgba(144, 175, 185, 0.5);
-    padding: 1rem;
+    padding: 1.5rem;
     border-radius: 12px;
 }
 
 #home-text p:first-of-type {
-    font-weight: 700;
+    background-color: rgba(172, 144, 185, 0.5);
 }
 
 footer {

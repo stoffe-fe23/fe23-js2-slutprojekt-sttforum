@@ -101,6 +101,11 @@ export default class Thread {
         const threadElement = htmlUtilities.createHTMLFromTemplate("tpl-forum-thread", targetContainer, values, attributes);
         const messagesElement = threadElement.querySelector(`.forum-thread-messages`) as HTMLElement;
         const newPostForm = threadElement.querySelector(`.thread-new-post-form`) as HTMLFormElement;
+        const formButtons = newPostForm.querySelector(".editor-buttons") as HTMLFormElement;
+
+        if (formButtons) {
+            formButtons.prepend(htmlUtilities.buildEditorFormatButtons(newPostForm.querySelector("textarea") as HTMLTextAreaElement));
+        }
 
         // Prevent new posts if the thread is locked and show indicator. 
         if (this.active) {
