@@ -33,10 +33,12 @@ npm start
 node ./dist/index.js (or: npm run dev)
 ```
 ### Client server
-To run the client server, navigater into the "frontend" directory in the terminal and type:
+To run the client server, navigate into the "frontend" directory in the terminal and type:
 ```
 npm install
 npm run dev
 ```
-Then go to http://localhost:1234 in your web browser to visit the site. Click the User button in the upper left corner of the page to create a user account. To test admin functionality you can use
+Then go to http://localhost:1234 in your web browser to visit the site. Click the User button in the upper left corner of the page to create a user account. 
+
+To test admin functionality you can log in with username "Tess Testare" and password "testare".
 
