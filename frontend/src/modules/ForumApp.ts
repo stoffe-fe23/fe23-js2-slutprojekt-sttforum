@@ -99,6 +99,7 @@ export default class ForumApp {
 
         const forumList: ForumInfoAPI[] = await this.api.getJson(`forum/list`);
         if (forumList && forumList.length) {
+            forumList.sort((a: ForumInfoAPI, b: ForumInfoAPI) => a.name.localeCompare(b.name));
             for (const forum of forumList) {
                 const forumData = {
                     id: forum.id,
@@ -359,7 +360,7 @@ export default class ForumApp {
                     // Allow whitelisted HTML tags in message text.
                     const messageTextElem = resultRow.querySelector(".search-result-text") as HTMLElement;
                     messageTextElem.innerHTML = "";
-                    htmlUtilities.setContentWithTagFilter(values.messageText, messageTextElem, ['b', 'i', 'a', 'blockquote'], ['href']);
+                    htmlUtilities.setContentWithTagFilter(values.messageText, messageTextElem, ['b', 'i', 'u', 'a', 'blockquote'], ['href']);
                 }
             }
             else {
