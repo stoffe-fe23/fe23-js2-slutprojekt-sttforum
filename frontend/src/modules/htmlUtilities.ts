@@ -257,7 +257,6 @@ export function wrapSelectedTextAreaString(textArea: HTMLTextAreaElement, htmlTa
 export function buildEditorFormatButtons(editorTextArea: HTMLTextAreaElement): HTMLElement {
     const buttons = createHTMLFromTemplate("tpl-formatting-buttons");
     buttons.addEventListener("click", (event) => {
-        console.log("CLICKED", (event.target as HTMLButtonElement).value);
         if ((event.target as HTMLElement).tagName == "BUTTON") {
             switch ((event.target as HTMLButtonElement).value) {
                 case "bold": wrapSelectedTextAreaString(editorTextArea, "b"); break;
