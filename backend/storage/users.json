@@ -67,8 +67,17 @@
         "name": "Ton2",
         "email": "tonskater@hotmail.com",
         "picture": "user-icon.png",
-        "password": "8a0e09ccca6228df23cdf282a69a4c45957bd534de015e95b1d4982cad8470aa6f80b29dcdf084a1c775dbc3ca583c0f69c2b72d88ba7be6a03a14e951860047",
+        "password": "37378d26d5d5812476540f36de4e66a799c45d302c9052495ad2553488a14dd8e546da225e98f85a14de33f0486f2b25e917f9ecc1c46eb3a500f6d02451e76b",
         "token": "9f94138c2a1a50293472f9a8445f0733089e9c85e3550cdd2fd06a7ab78a885e",
+        "admin": false
+    },
+    {
+        "id": "30094a06-61af-43fb-a117-4e4fc6af40be",
+        "name": "Tobbe2",
+        "email": "tobias.hurtig@gritacademy.se",
+        "picture": "user-icon.png",
+        "password": "8efdf7313ee551d0ceb6678d7341d1cec0aae62b4515ecf33015e4d29a2f15c54eaec89ec9408fd98507ba33a8cb1f1194f255bbc76df9eff452248e8b4193e7",
+        "token": "925cd8e4e231f9861d091c829331c51d59a3f2359bc5961c3eda1bc3253a0e67",
         "admin": false
     }
 ]

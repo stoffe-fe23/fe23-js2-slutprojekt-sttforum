@@ -90,6 +90,38 @@ main {
     margin-top: 100px;
 }
 
+.home-image{
+  content-fit:cover;
+  padding: 0;
+    
+}
+
+
+#home-image{
+    grid-area: home-image;
+    width:100%;
+    opacity: 20%;
+    display: block;
+    grid-row-start: 1;
+    grid-column-start: -1;
+    grid-row-end: auto;
+    grid-column-end: auto;
+    border: 1px solid red;
+}
+
+
+#home-text{
+    grid-area: home-text;
+    width:100%;
+    opacity: 20%;
+    display: block;
+    grid-row-start: 1;
+    grid-column-start: -1;
+    grid-row-end: auto;
+    grid-column-end: auto;
+    border: 1px solid green;
+}
+
 footer {
     grid-area: footer;
     display: flex;
@@ -122,15 +154,39 @@ footer {
 }
 
 
-#page-home.show,
+
 #page-forum.show,
 #page-users.show {
     display: block;
 }
 
+#page-home.show{
+    display: grid;
+}
+
 .hide {
     display: none !important;
 }
+
+#page-home{
+    grid-template-areas: "home-text" "home-image";
+    min-height: 600px;
+}
+
+
+
+/* #page-home::before{
+    display: block;
+    content: ;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    opacity: 0.3;
+    content-fit: cover;
+} */
 
 #page-home h2 {
     font-size: 5em;
