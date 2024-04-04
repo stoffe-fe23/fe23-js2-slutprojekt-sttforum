@@ -52,7 +52,6 @@ export default class UpdateNoticeSocket {
 
             // Socket connection is closed, attempt to reconnect. 
             this.socketClient.addEventListener("close", (event) => {
-                console.log("SOCKET CONNECTION CLOSED");
                 setTimeout(this.reEstablishSocketConnection.bind(this), 4000);
             });
         }
