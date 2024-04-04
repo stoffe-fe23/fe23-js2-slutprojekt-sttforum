@@ -73,7 +73,23 @@
                         "message": "Nu ska vi se här...",
                         "deleted": false,
                         "date": 1711353851308,
-                        "replies": []
+                        "replies": [
+                            {
+                                "id": "5bbef0d5-b9ac-449a-a239-caf50b705d9f",
+                                "author": {
+                                    "id": "69333cc1-43bc-48d0-8a81-f119d1dd5366",
+                                    "userName": "Kalle Anka",
+                                    "picture": "69333cc1-43bc-48d0-8a81-f119d1dd5366-1712146773132.png",
+                                    "admin": false
+                                },
+                                "message": "Vi kom, vi såg... resten återstår att se.",
+                                "deleted": false,
+                                "date": 1712241341828,
+                                "replies": [],
+                                "likes": []
+                            }
+                        ],
+                        "threadId": "77589c0b-0e91-4589-9c79-0e552b51f02b"
                     },
                     {
                         "id": "9c24eab1-1b93-4cb3-8895-8653e2877f0c",
@@ -637,7 +653,23 @@
                                                                 "message": "nä men skippa det då!",
                                                                 "deleted": false,
                                                                 "date": 1712230605483,
-                                                                "replies": [],
+                                                                "replies": [
+                                                                    {
+                                                                        "id": "4161188f-9538-4fb7-aeaf-7025dcae84f0",
+                                                                        "author": {
+                                                                            "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                                                                            "userName": "Stoffe",
+                                                                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96-1711901300396.png",
+                                                                            "admin": true
+                                                                        },
+                                                                        "message": "Livets hårda skola.",
+                                                                        "deleted": false,
+                                                                        "date": 1712240817823,
+                                                                        "replies": [],
+                                                                        "likes": [],
+                                                                        "threadId": "9c6be3ec-7d2c-471b-b8e4-761140a65c01"
+                                                                    }
+                                                                ],
                                                                 "likes": [],
                                                                 "threadId": "9c6be3ec-7d2c-471b-b8e4-761140a65c01"
                                                             }
@@ -646,7 +678,9 @@
                                                         "threadId": "9c6be3ec-7d2c-471b-b8e4-761140a65c01"
                                                     }
                                                 ],
-                                                "likes": [],
+                                                "likes": [
+                                                    "f9258ea6-89c5-46b6-8577-9df9c343dc96"
+                                                ],
                                                 "threadId": "9c6be3ec-7d2c-471b-b8e4-761140a65c01"
                                             }
                                         ],
@@ -702,8 +736,40 @@
                         "message": "vilka är de bästa surfspotsen i Indonesien?",
                         "deleted": false,
                         "date": 1712230679751,
+                        "replies": [
+                            {
+                                "id": "bbfd44e9-8a25-4b74-9d7d-aae5f8dd1ec0",
+                                "author": {
+                                    "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                                    "userName": "Stoffe",
+                                    "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96-1711901300396.png",
+                                    "admin": true
+                                },
+                                "message": "De där man inte blir brutalt mördad av den lokala faunan (eller floran), förslagsvis.",
+                                "deleted": false,
+                                "date": 1712240943960,
+                                "replies": [],
+                                "likes": [],
+                                "threadId": "1f328cde-44f4-4414-abf9-9b85009f215e"
+                            }
+                        ],
+                        "likes": [],
+                        "threadId": "1f328cde-44f4-4414-abf9-9b85009f215e"
+                    },
+                    {
+                        "id": "c16f2cc1-f56c-4962-9095-715e2cb0ca7e",
+                        "author": {
+                            "id": "69333cc1-43bc-48d0-8a81-f119d1dd5366",
+                            "userName": "Kalle Anka",
+                            "picture": "69333cc1-43bc-48d0-8a81-f119d1dd5366-1712146773132.png",
+                            "admin": false
+                        },
+                        "message": "Kan bekräfta att vattnet är vått.",
+                        "deleted": false,
+                        "date": 1712241019401,
                         "replies": [],
-                        "likes": []
+                        "likes": [],
+                        "threadId": "1f328cde-44f4-4414-abf9-9b85009f215e"
                     }
                 ],
                 "forum": {
@@ -751,6 +817,21 @@
                                 "replies": [],
                                 "likes": [],
                                 "threadId": "dbc627b1-7af4-47bf-9db9-7c0b5b785bfe"
+                            },
+                            {
+                                "id": "310bf984-e678-423f-9c16-6d501dd281ae",
+                                "author": {
+                                    "id": "69333cc1-43bc-48d0-8a81-f119d1dd5366",
+                                    "userName": "Kalle Anka",
+                                    "picture": "69333cc1-43bc-48d0-8a81-f119d1dd5366-1712146773132.png",
+                                    "admin": false
+                                },
+                                "message": "Verkar så, får massvis med meningslösa \"nyhets\"-artiklar om det i min feed dagligen.",
+                                "deleted": false,
+                                "date": 1712241246448,
+                                "replies": [],
+                                "likes": [],
+                                "threadId": "dbc627b1-7af4-47bf-9db9-7c0b5b785bfe"
                             }
                         ],
                         "likes": [],
@@ -780,8 +861,25 @@
                         "message": "Kan någon tips mig om openwolrd spel.",
                         "deleted": false,
                         "date": 1712231120044,
-                        "replies": [],
-                        "likes": []
+                        "replies": [
+                            {
+                                "id": "537ab7e8-a03a-47cf-8924-82d8861b0bee",
+                                "author": {
+                                    "id": "69333cc1-43bc-48d0-8a81-f119d1dd5366",
+                                    "userName": "Kalle Anka",
+                                    "picture": "69333cc1-43bc-48d0-8a81-f119d1dd5366-1712146773132.png",
+                                    "admin": false
+                                },
+                                "message": "Skyrim, det går att spela på allt, till och med smart fridges, tydligen. :)",
+                                "deleted": false,
+                                "date": 1712241159666,
+                                "replies": [],
+                                "likes": [],
+                                "threadId": "671403b6-20fa-4904-9eb1-3534780a09d3"
+                            }
+                        ],
+                        "likes": [],
+                        "threadId": "671403b6-20fa-4904-9eb1-3534780a09d3"
                     },
                     {
                         "id": "ef6ee8f3-d83b-405a-a73f-42c51ccd2689",

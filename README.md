@@ -21,7 +21,18 @@ Simple discussion forum with a node.js backend. Random feature list:
 * Admins can edit/delete any user account, reset the profile picture of a user, and grant users Admin privileges. 
 * A search functionality allows searching for text in thread titles or message text.
 * Users can like messages (and then unlike previously liked messages).
+* Message text can have simple formatting (bold, italics, underline).
 * Any changes in the forum (new posts, edited/deleted posts, user profile changes) are reflected in real time to all connected users.
+
+### Assignment specifics:
+* Uses the Parcel bundler to build frontend client. 
+* Using node.js with Express for the backend server.
+* Uses Navigo.js for client side routing.
+* Uses Passport.js/express-session for server side authentication and session handling. 
+* Using html templates to generate client side UI elements.
+* Uses websocket connection to allow client to live update changes to forums and users notified by the server. 
+* Using local file storage for forum and user databases and session data. 
+
 
 ## How to test
 To run and test the forum locally follow these steps.
@@ -32,7 +43,7 @@ npm install
 npm start
 node ./dist/index.js (or: npm run dev)
 ```
-### Client server
+### Frontend server
 To run the client server, navigate into the "frontend" directory in the terminal and type:
 ```
 npm install

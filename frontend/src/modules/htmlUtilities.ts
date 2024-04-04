@@ -240,6 +240,19 @@ export function getTruncatedString(truncText: string, maxLength: number): string
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Wrap the selected text in the specified text area in the specified HTML tag type (without <> or attributes)
+export function wrapSelectedTextAreaString(textArea: HTMLTextAreaElement, htmlTag: string): void {
+    const startIdx = textArea.selectionStart;
+    const endIdx = textArea.selectionEnd;
+    if (startIdx != endIdx) {
+        const textContent = textArea.value;
+        const selText = textContent.substring(startIdx, endIdx);
+        textArea.value = textContent.substring(0, startIdx) + `<${htmlTag}>${selText}</${htmlTag}>` + textContent.substring(endIdx, textContent.length);
+    }
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Set the content of an element to a string that may only contain whitelisted HTML elements
 // contentString = string with the content to assign to the element
 // contentElement = the HTML element to assign the content to

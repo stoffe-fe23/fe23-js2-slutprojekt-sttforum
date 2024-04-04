@@ -188,7 +188,7 @@ footer {
 #page-forum.show,
 #page-users.show {
     display: block;
-    padding: 1rem;
+    padding: 1rem 1rem 0px 1rem;
 }
 
 #page-home.show {
