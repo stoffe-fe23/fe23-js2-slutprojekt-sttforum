@@ -535,7 +535,71 @@
                                 "message": "När man har pengar.",
                                 "deleted": false,
                                 "date": 1712145347408,
-                                "replies": [],
+                                "replies": [
+                                    {
+                                        "id": "a5ae6e19-b5b7-4581-996d-b30de689b5fc",
+                                        "author": {
+                                            "id": "30094a06-61af-43fb-a117-4e4fc6af40be",
+                                            "userName": "Tobbe2",
+                                            "picture": "30094a06-61af-43fb-a117-4e4fc6af40be-1712230401085.jpg",
+                                            "admin": false
+                                        },
+                                        "message": "men om man inte har pengar då?",
+                                        "deleted": false,
+                                        "date": 1712230436837,
+                                        "replies": [
+                                            {
+                                                "id": "252d3f92-a5c4-4b5a-aa33-56b1bb283a46",
+                                                "author": {
+                                                    "id": "c9a041d0-f39a-4d5f-94d1-d2920721ca22",
+                                                    "userName": "tobbe",
+                                                    "picture": "def-pic-1.png",
+                                                    "admin": "true"
+                                                },
+                                                "message": "då får man stanna hemma!",
+                                                "deleted": false,
+                                                "date": 1712230463884,
+                                                "replies": [
+                                                    {
+                                                        "id": "f746697b-6204-45f4-a469-fa6575960918",
+                                                        "author": {
+                                                            "id": "30094a06-61af-43fb-a117-4e4fc6af40be",
+                                                            "userName": "Tobbe2",
+                                                            "picture": "30094a06-61af-43fb-a117-4e4fc6af40be-1712230401085.jpg",
+                                                            "admin": false
+                                                        },
+                                                        "message": "ja men det är ju inte så roligt",
+                                                        "deleted": false,
+                                                        "date": 1712230576275,
+                                                        "replies": [
+                                                            {
+                                                                "id": "acb469b6-d33f-463b-91cc-0aed1ae16eca",
+                                                                "author": {
+                                                                    "id": "c9a041d0-f39a-4d5f-94d1-d2920721ca22",
+                                                                    "userName": "tobbe",
+                                                                    "picture": "def-pic-1.png",
+                                                                    "admin": "true"
+                                                                },
+                                                                "message": "nä men skippa det då!",
+                                                                "deleted": false,
+                                                                "date": 1712230605483,
+                                                                "replies": [],
+                                                                "likes": [],
+                                                                "threadId": "9c6be3ec-7d2c-471b-b8e4-761140a65c01"
+                                                            }
+                                                        ],
+                                                        "likes": [],
+                                                        "threadId": "9c6be3ec-7d2c-471b-b8e4-761140a65c01"
+                                                    }
+                                                ],
+                                                "likes": [],
+                                                "threadId": "9c6be3ec-7d2c-471b-b8e4-761140a65c01"
+                                            }
+                                        ],
+                                        "likes": [],
+                                        "threadId": "9c6be3ec-7d2c-471b-b8e4-761140a65c01"
+                                    }
+                                ],
                                 "likes": [
                                     "04866ffe-c4e9-46b1-a151-6bfffc77aeda",
                                     "2dc97fbd-92bc-474e-8146-d3851624d111"
@@ -560,6 +624,33 @@
                         "replies": [],
                         "likes": [],
                         "threadId": "9c6be3ec-7d2c-471b-b8e4-761140a65c01"
+                    }
+                ],
+                "forum": {
+                    "id": "08abb7d4-dd64-4eff-bd10-93ec2f902ba4",
+                    "name": "Travel",
+                    "icon": "forum-1711977112500.png"
+                }
+            },
+            {
+                "id": "1f328cde-44f4-4414-abf9-9b85009f215e",
+                "title": "Surf trip Indo",
+                "date": 1712230679751,
+                "active": true,
+                "posts": [
+                    {
+                        "id": "552fd216-27bc-4bfc-9ea4-15fc5b262bb7",
+                        "author": {
+                            "id": "c9a041d0-f39a-4d5f-94d1-d2920721ca22",
+                            "userName": "tobbe",
+                            "picture": "def-pic-1.png",
+                            "admin": "true"
+                        },
+                        "message": "vilka är de bästa surfspotsen i Indonesien?",
+                        "deleted": false,
+                        "date": 1712230679751,
+                        "replies": [],
+                        "likes": []
                     }
                 ],
                 "forum": {
