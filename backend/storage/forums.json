@@ -683,8 +683,25 @@
                         "message": "Själv tycker jag att det är det.",
                         "deleted": false,
                         "date": 1712230637839,
-                        "replies": [],
-                        "likes": []
+                        "replies": [
+                            {
+                                "id": "69b9a124-cc8e-4dcd-94d0-7ce28eeb3cc4",
+                                "author": {
+                                    "id": "c9a041d0-f39a-4d5f-94d1-d2920721ca22",
+                                    "userName": "tobbe",
+                                    "picture": "def-pic-1.png",
+                                    "admin": "true"
+                                },
+                                "message": "jag har ingen aning om vad det är?\nförstår egentligen inte vad jag gör på detta forumet?",
+                                "deleted": false,
+                                "date": 1712230846881,
+                                "replies": [],
+                                "likes": [],
+                                "threadId": "dbc627b1-7af4-47bf-9db9-7c0b5b785bfe"
+                            }
+                        ],
+                        "likes": [],
+                        "threadId": "dbc627b1-7af4-47bf-9db9-7c0b5b785bfe"
                     }
                 ],
                 "forum": {
@@ -717,6 +734,33 @@
                         "message": "Deep purple är mitt favorit band.",
                         "deleted": false,
                         "date": 1712217433942,
+                        "replies": [],
+                        "likes": []
+                    }
+                ],
+                "forum": {
+                    "id": "c419dc01-c07c-4d28-9609-a11ff89ee286",
+                    "name": "Music",
+                    "icon": "forum-1712213369262.png"
+                }
+            },
+            {
+                "id": "80866560-f0bf-4766-917a-68e18af3b8f4",
+                "title": "Vilket är det coolaste instrumentet?",
+                "date": 1712230989323,
+                "active": true,
+                "posts": [
+                    {
+                        "id": "6d13afdd-3f90-4203-bf11-aacd4b4765c3",
+                        "author": {
+                            "id": "c9a041d0-f39a-4d5f-94d1-d2920721ca22",
+                            "userName": "tobbe",
+                            "picture": "def-pic-1.png",
+                            "admin": "true"
+                        },
+                        "message": "självklart gitarr!\n\nvi behöver inget forum för att fastställa det!",
+                        "deleted": false,
+                        "date": 1712230989323,
                         "replies": [],
                         "likes": []
                     }
