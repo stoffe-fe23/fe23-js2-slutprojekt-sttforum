@@ -145,6 +145,10 @@ main {
     max-width: 40%;
 }
 
+#home-text p:first-of-type {
+    font-weight: 700;
+}
+
 footer {
     grid-area: footer;
     display: flex;
