@@ -692,6 +692,75 @@
                     "name": "Gaming",
                     "icon": "forum-1712048429831.png"
                 }
+            },
+            {
+                "id": "671403b6-20fa-4904-9eb1-3534780a09d3",
+                "title": "Tips för openworld spel.",
+                "date": 1712231120044,
+                "active": true,
+                "posts": [
+                    {
+                        "id": "7a2fbc61-e027-4b04-95a6-806bbfcc9a32",
+                        "author": {
+                            "id": "9dc31ecd-206b-4344-9cb1-ccf8d9aafaf7",
+                            "userName": "Ton",
+                            "picture": "def-pic-1.png",
+                            "admin": true
+                        },
+                        "message": "Kan någon tips mig om openwolrd spel.",
+                        "deleted": false,
+                        "date": 1712231120044,
+                        "replies": [],
+                        "likes": []
+                    },
+                    {
+                        "id": "ef6ee8f3-d83b-405a-a73f-42c51ccd2689",
+                        "author": {
+                            "id": "9dc31ecd-206b-4344-9cb1-ccf8d9aafaf7",
+                            "userName": "Ton",
+                            "picture": "def-pic-1.png",
+                            "admin": true
+                        },
+                        "message": "Nej, det kan jag inte.",
+                        "deleted": false,
+                        "date": 1712231380440,
+                        "replies": [],
+                        "likes": [],
+                        "threadId": "671403b6-20fa-4904-9eb1-3534780a09d3"
+                    }
+                ],
+                "forum": {
+                    "id": "edfb0014-3138-4c6a-b93d-b9eae2a0db4a",
+                    "name": "Gaming",
+                    "icon": "forum-1712048429831.png"
+                }
+            },
+            {
+                "id": "3ea664d8-fc6a-41b9-8e0a-fd4f900cf3b3",
+                "title": "Favorit spel.",
+                "date": 1712231533856,
+                "active": true,
+                "posts": [
+                    {
+                        "id": "2005b316-a416-472c-8c4d-6b3a568b7ae6",
+                        "author": {
+                            "id": "9dc31ecd-206b-4344-9cb1-ccf8d9aafaf7",
+                            "userName": "Ton",
+                            "picture": "def-pic-1.png",
+                            "admin": true
+                        },
+                        "message": "Gta",
+                        "deleted": false,
+                        "date": 1712231533856,
+                        "replies": [],
+                        "likes": []
+                    }
+                ],
+                "forum": {
+                    "id": "edfb0014-3138-4c6a-b93d-b9eae2a0db4a",
+                    "name": "Gaming",
+                    "icon": "forum-1712048429831.png"
+                }
             }
         ]
     },
