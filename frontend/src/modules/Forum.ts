@@ -87,7 +87,7 @@ export default class Forum {
         const breadcrumb = forumElement.querySelector(".forum-breadcrumb") as HTMLElement;
         if (breadcrumb) {
             htmlUtilities.createHTMLElement("a", "Forums", breadcrumb, "breadcrumb-link", { href: `/forums`, "data-navigo": "true" });
-            htmlUtilities.createHTMLElement("a", this.name, breadcrumb, "breadcrumb-link", { href: `/forum/${this.id}`, "data-navigo": "true" });
+            htmlUtilities.createHTMLElement("a", this.name, breadcrumb, "breadcrumb-link", { href: `/forum/${this.id}`, "data-navigo": "true", "data-forumid": this.id });
         }
 
         // Sorts threads in falling chronological order by last update

@@ -171,7 +171,7 @@ export default class ForumApp {
                 if (breadcrumb) {
                     htmlUtilities.createHTMLElement("a", "Forums", breadcrumb, "breadcrumb-link", { href: `/forums`, "data-navigo": "true" });
                     htmlUtilities.createHTMLElement("a", foundThread.forumInfo.name, breadcrumb, "breadcrumb-link", { href: `/forum/${foundThread.forumInfo.id}`, "data-navigo": "true" });
-                    htmlUtilities.createHTMLElement("a", foundThread.title, breadcrumb, "breadcrumb-link", { href: `/thread/${foundThread.id}`, "data-navigo": "true" });
+                    htmlUtilities.createHTMLElement("a", foundThread.title, breadcrumb, "breadcrumb-link", { href: `/thread/${foundThread.id}`, "data-threadid": foundThread.id, "data-navigo": "true" });
                     this.router.updatePageLinks();
                 }
             }
@@ -207,7 +207,7 @@ export default class ForumApp {
                 if (breadcrumb) {
                     htmlUtilities.createHTMLElement("a", "Forums", breadcrumb, "breadcrumb-link", { href: `/forums`, "data-navigo": "true" });
                     htmlUtilities.createHTMLElement("a", parentThread.forumInfo.name, breadcrumb, "breadcrumb-link", { href: `/forum/${parentThread.forumInfo.id}`, "data-navigo": "true" });
-                    htmlUtilities.createHTMLElement("a", parentThread.title, breadcrumb, "breadcrumb-link", { href: `/thread/${parentThread.id}`, "data-navigo": "true" });
+                    htmlUtilities.createHTMLElement("a", parentThread.title, breadcrumb, "breadcrumb-link", { href: `/thread/${parentThread.id}`, "data-threadid": parentThread.id, "data-navigo": "true" });
                     htmlUtilities.createHTMLElement("a", "Message", breadcrumb, "breadcrumb-link", { href: `/message/${parentThread.id}/${messageId}`, "data-navigo": "true" });
                     this.router.updatePageLinks();
                 }

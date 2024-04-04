@@ -226,6 +226,12 @@ export default class Thread {
             const threadHTML = this.getThreadListEntry();
             updateThreadList.replaceWith(threadHTML);
         }
+
+        // Thread tite in breadcrumb
+        const updateBreadcrumb = document.querySelector(`a[data-threadid="${this.id}"].breadcrumb-link`) as HTMLAnchorElement;
+        if (updateBreadcrumb) {
+            updateBreadcrumb.innerText = this.title;
+        }
     }
 
 
