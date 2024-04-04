@@ -130,6 +130,7 @@ export default class Forum {
         const formData = new FormData(form);
 
         this.newThread(formData.get("title") as string, formData.get("message") as string).catch(this.app.showError);
+        form.reset();
     }
 
 
