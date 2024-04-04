@@ -98,7 +98,7 @@ footer {
     margin: 3rem 0 0 0;
     background-color: black;
     color: white;
-    padding: 1rem;
+    padding: 0.5rem;
     padding-left:20vw;
     padding-right:20vw;
 
@@ -106,6 +106,9 @@ footer {
 
 .footer-image-div{
     width: 25px;
+}
+.footer-image-div-insta{
+    width: 35px;
 }
 
 .footer-image{
