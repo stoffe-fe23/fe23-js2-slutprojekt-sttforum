@@ -145,6 +145,10 @@ main {
 
 #home-text p {
     max-width: 40%;
+    font-size: 1.3em;
+    background-color: rgba(144, 175, 185, 0.5);
+    padding: 1rem;
+    border-radius: 12px;
 }
 
 #home-text p:first-of-type {
@@ -200,7 +204,7 @@ footer {
 }
 
 #page-home h2 {
-    font-size: 5em;
+    font-size: 7em;
     text-align: center;
     margin: 0;
 }
