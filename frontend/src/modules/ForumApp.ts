@@ -69,17 +69,14 @@ export default class ForumApp {
     public async loadCurrentUser(): Promise<void> {
         this.user = null;
         const apiResponse: StatusResponseAPI = await this.api.getJson("user/current");
-        console.log("DEBUG: Load current user info.")
 
         if (apiResponse.data && apiResponse.message == "User") {
             this.user = new User(this, apiResponse.data as UserData);
             this.userLoginInit = true;
             this.displayCurrentUser();
             this.serverUpdates.establishSocketConnection();
-            console.log("DEBUG: User is logged in: ", this.user.userName);
         }
         else if (apiResponse.message == "No User") {
-            console.log("DEBUG: User not logged in.");
             this.userLoginInit = true;
         }
         else {
@@ -225,7 +222,6 @@ export default class ForumApp {
         const userName = userBox.querySelector("#user-name") as HTMLDivElement;
 
         this.userLoginCheck().then((isLoggedIn: boolean) => {
-            console.log("DEBUG: Update current user display.");
             if (isLoggedIn && this.user && userBox) {
                 userName.innerText = this.user.userName ?? "Username";
                 userImage.src = this.user.picture;
@@ -273,7 +269,7 @@ export default class ForumApp {
                 await this.loadCurrentUser();
             }
             else {
-                console.log("Login failed! ", response);
+                this.showError(`Login error: Login failed!`);
             }
         }
         catch (error) {
@@ -289,7 +285,6 @@ export default class ForumApp {
             const response: StatusResponseAPI = await this.api.getJson("user/logout");
             this.user = null;
             this.displayCurrentUser();
-            console.log("DEBUG: User logoff", response);
         }
     }
 
@@ -306,8 +301,6 @@ export default class ForumApp {
             }
             const response: StatusResponseAPI = await this.api.postJson("user/register", newUserData);
             if (response && response.message && response.data) {
-                // Maybe require account confirmation first before allowing full access? 
-                console.log("DEBUG: User Register", response.data);
             }
         }
         else {
@@ -340,7 +333,6 @@ export default class ForumApp {
     // Search forums for message text.
     public async searchMessages(searchForText: string, resultsTarget: HTMLElement): Promise<void> {
         const response = await this.api.postJson("forum/search/messages", { searchFor: searchForText }) as StatusResponseAPI;
-        console.log("DEBUG: Message search result", response);
         if (response && response.data) {
             const results = response.data as ForumMessageContextAPI[];
 
@@ -374,7 +366,6 @@ export default class ForumApp {
     // Search forums for thread topics.
     public async searchThreads(searchForText: string, resultsTarget: HTMLElement): Promise<void> {
         const response = await this.api.postJson("forum/search/threads", { searchFor: searchForText }) as StatusResponseAPI;
-        console.log("DEBUG: Thread search result", response);
         if (response && response.data) {
             const results = response.data as ForumThreadInfoAPI[];
 

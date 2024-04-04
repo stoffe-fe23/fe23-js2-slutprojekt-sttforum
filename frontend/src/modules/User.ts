@@ -34,7 +34,6 @@ export default class User {
             const result = await this.app.api.postFile("user/profile/update", profileData);
             this.app.userLoginInit = false;
             this.app.displayCurrentUser();
-            console.log("Profile update");
         }
         catch (error) {
             this.app.showError(`Error updating user profile: ${error.message}`)

@@ -27,7 +27,6 @@ export function validationErrorHandler(req: Request, res: Response, next: NextFu
     try {
         const errorList = validationResult(req);
         if (!errorList.isEmpty()) {
-            console.log("DEBUG: VALIDATOR", errorList.array());
             res.status(400);
             res.json({ error: 'Validation error', data: errorList.array() });
         }
@@ -45,7 +44,6 @@ export function validationErrorHandler(req: Request, res: Response, next: NextFu
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Called if multer's file type filter for profile picture uploads fails. Display validation error. 
 export function fileErrorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
-    console.log("DEBUG: File Validation Error");
     res.status(400);
     res.json({
         error: 'Validation error', data: [{
@@ -61,7 +59,6 @@ export function fileErrorHandler(err: Error, req: Request, res: Response, next: 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Called if multer's file type filter for forum ucons fails. Display validation error. 
 export function forumIconErrorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
-    console.log("DEBUG: File Validation Error");
     res.status(400);
     res.json({
         error: 'Validation error', data: [{
@@ -314,7 +311,7 @@ function validateNewPassword(value: string, { req }): boolean {
     if ((value.length == 0) && (req.body['password-confirm'].length == 0)) {
         return true;
     }
-    console.log("DEBUG: Validate password", value, req.body['password-confirm']);
+
     // Password and repeat confirm password do not match.
     if (value != req.body['password-confirm']) {
         return false;

@@ -23,8 +23,6 @@ const loginDialog = document.querySelector("#user-login") as HTMLDialogElement;
 // Names of default user profile pictures.
 const defaultPictureNames = ['def-pic-1.png', 'def-pic-2.png', 'def-pic-3.png'];
 
-console.log("DEBUG: PAGE LOADED!", htmlUtilities.dateTimeToString(Date.now()));
-
 // Initialize the forums and load current user (if there is an active session)
 forumApp.load().then(() => {
     console.log("DEBUG: ForumApp loaded!");
@@ -41,7 +39,6 @@ forumApp.router.on("/", () => {
     pageHome.classList.add("show");
     pageForum.classList.remove("show");
     pageUsers.classList.remove("show");
-    console.log("DEBUG: Show start page!");
 });
 
 
@@ -52,7 +49,6 @@ forumApp.router.on("/forums", () => {
     pageHome.classList.remove("show");
     pageUsers.classList.remove("show");
     forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
-        console.log("DEBUG: Show forum buttons!");
         if (isLoggedIn) {
             forumApp.showForumPicker(pageForum);
         }
@@ -70,7 +66,6 @@ forumApp.router.on('/forum/:forumId', (route) => {
     pageHome.classList.remove("show");
     pageUsers.classList.remove("show");
     forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
-        console.log("DEBUG: Show Forum threads!");
         if (isLoggedIn) {
             if (route && route.data && route.data.forumId) {
                 forumApp.showForum(route.data.forumId, pageForum);
@@ -89,7 +84,6 @@ forumApp.router.on("/thread/:threadId", (route) => {
     forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
         if (isLoggedIn) {
             if (route && route.data && route.data.threadId) {
-                console.log("DEBUG: Show threads displaying: ", route.data.threadId);
                 forumApp.showThread(route.data.threadId, pageForum);
             }
         }
@@ -106,7 +100,6 @@ forumApp.router.on("/message/:threadId/:messageId", (route) => {
     pageForum.classList.add("show");
     pageHome.classList.remove("show");
     pageUsers.classList.remove("show");
-    console.log("DEBUG: Show message and replies...");
     forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
         if (isLoggedIn) {
             if (route && route.data && route.data.threadId && route.data.messageId) {
@@ -128,8 +121,6 @@ forumApp.router.on("/users", () => {
     pageUsers.classList.add("show");
 
     forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
-        console.log("DEBUG: Show user list!");
-
         if (isLoggedIn) {
             forumApp.showUserList(pageUsers);
         }
@@ -149,7 +140,6 @@ forumApp.router.on("/user/profile/:userid", (routeInfo) => {
     pageUsers.classList.add("show");
 
     forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
-        console.log("DEBUG: Show public user profile!");
         try {
             if (isLoggedIn) {
                 if (routeInfo && routeInfo.data) {
@@ -175,7 +165,6 @@ forumApp.router.on("/user/profile/:userid", (routeInfo) => {
 // Used for links in messages, clicking the User button in upper left does the same
 // but does not use this route. 
 forumApp.router.on("/login", () => {
-    console.log("DEBUG: Show login screen!");
     showLoginDialog();
 });
 
@@ -192,13 +181,11 @@ forumApp.router.resolve();
     if ((event.submitter as HTMLButtonElement).id == "button-login") {
         const formData = new FormData(event.currentTarget as HTMLFormElement);
         forumApp.userLogin(formData.get("username") as string, formData.get("password") as string).then(() => {
-            console.log("DEBUG: User Login");
             (document.querySelector("#login-username") as HTMLInputElement).value = "";
             (document.querySelector("#login-password") as HTMLInputElement).value = "";
             forumApp.router.navigate('/');
         }).catch((error) => {
             if ((error instanceof ApiError) && (error.errorCode == 401)) {
-                console.log("DEBUG: login error", error);
                 forumApp.showError("Invalid username or password.");
             }
         });
@@ -291,7 +278,6 @@ forumApp.router.resolve();
     // Log off button
     else if ((event.submitter as HTMLButtonElement).id == "user-profile-logout") {
         forumApp.userLogoff().then(() => {
-            console.log("DEBUG: User logged off!");
             forumApp.router.navigate('/');
             pageForum.innerHTML = "";
             htmlUtilities.createHTMLElement("div", `You must be <a href="/login" data-navigo>logged in</a> to view the forums.`, pageForum, 'error-not-logged-in', null, true);
@@ -299,7 +285,6 @@ forumApp.router.resolve();
     }
     // Delete account button
     else if ((event.submitter as HTMLButtonElement).id == "user-delete-submit") {
-        console.log("DEBUG: User Delete!!!");
         forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
             if (isLoggedIn) {
                 if (confirm("Are you sure you wish to delete your user account?")) {
@@ -324,7 +309,6 @@ forumApp.router.resolve();
 // New user registration form submit
 (document.querySelector("#user-register-form") as HTMLFormElement).addEventListener("submit", (event) => {
     event.preventDefault();
-    console.log("Register form submit");
 
     if ((event.submitter as HTMLButtonElement).id == "user-register-submit") {
         const formData = new FormData(event.currentTarget as HTMLFormElement);

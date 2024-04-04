@@ -314,7 +314,6 @@ forumAPI.post('/message/reply', isLoggedIn, validateNewReply, validationErrorHan
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Edit (the title of) the specified thread
 forumAPI.patch('/thread/edit/:threadId', isAdmin, validateEditThread, validationErrorHandler, (req: Request, res: Response) => {
-    console.log("DEBUG: Edit thread: ", req.params.threadId);
     try {
         const editedThread = dataStorage.editThread(req.params.threadId, req.body.title, !(req.body.active == "false"));
         sendClientUpdate({ action: "edit", type: "thread", data: editedThread }, req);
@@ -331,8 +330,6 @@ forumAPI.patch('/thread/edit/:threadId', isAdmin, validateEditThread, validation
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Delete the specified thread
 forumAPI.delete('/thread/delete/:threadId', isAdmin, validateThreadId, validationErrorHandler, (req: Request, res: Response) => {
-    console.log("DEBUG: Delete thread", req.params.threadId);
-
     try {
         const parentItem = dataStorage.findContainerElement(req.params.threadId);
         dataStorage.deleteThread(req.params.threadId);
@@ -340,7 +337,6 @@ forumAPI.delete('/thread/delete/:threadId', isAdmin, validateThreadId, validatio
         res.json({ message: `Deleted thread`, data: parentItem.id });
     }
     catch (error) {
-        console.log("DEBUG: DELETE THREAD ERROR: ", error);
         res.status(500);
         res.json({ error: `An error occured when deleting thread ${req.params.threadId}.`, data: error.message });
     }
@@ -350,8 +346,6 @@ forumAPI.delete('/thread/delete/:threadId', isAdmin, validateThreadId, validatio
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Edit (the message text of) the specified message
 forumAPI.patch('/message/edit', isOwner, validateEditMessage, validationErrorHandler, (req: Request, res: Response) => {
-    console.log("DEBUG: Edit message", req.body.messageId);
-
     try {
         const editedMessage = dataStorage.editMessage(req.body.messageId, req.body.message);
         sendClientUpdate({ action: "edit", type: "message", data: editedMessage }, req);
@@ -367,8 +361,6 @@ forumAPI.patch('/message/edit', isOwner, validateEditMessage, validationErrorHan
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Toggle the "like" marker of the specified message by the current user. 
 forumAPI.patch('/message/like/:messageId', isLoggedIn, validateLikeMessage, validationErrorHandler, (req: Request, res: Response) => {
-    console.log("DEBUG: Like message", req.params.messageId);
-
     try {
         const user = (req.user as ForumUser);
         if (user) {
@@ -391,8 +383,6 @@ forumAPI.patch('/message/like/:messageId', isLoggedIn, validateLikeMessage, vali
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Soft-Delete the specified message (it is kept in the DB but marked as deleted)
 forumAPI.delete('/message/delete/:messageId', isOwner, validateMessageId, validationErrorHandler, (req: Request, res: Response) => {
-    console.log("Delete message", req.params.messageId);
-
     try {
         const parentItem = dataStorage.findContainerElement(req.params.messageId);
         const deletedMessage = dataStorage.softDeleteMessage(req.params.messageId, true);
@@ -411,8 +401,6 @@ forumAPI.delete('/message/delete/:messageId', isOwner, validateMessageId, valida
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Hard-Delete the specified message, and any replies to it. (They are removed from the DB)
 forumAPI.delete('/message/remove/:messageId', isAdmin, validateMessageId, validationErrorHandler, (req: Request, res: Response) => {
-    console.log("Delete message", req.params.messageId);
-
     try {
         const parentThread = dataStorage.getMessageThread(req.params.messageId);
 

@@ -41,7 +41,6 @@ const POST_HISTORY_MAX = 5;
 userAPI.get('/list', isLoggedIn, (req: Request, res: Response) => {
     const userList = dataStorage.getUserList();
     if (userList) {
-        console.log("DEBUG: Users list");
         res.json({ message: `User list`, data: userList });
     }
     else {
@@ -260,8 +259,6 @@ userAPI.delete('/delete/:userId', isCurrentUser, validateUserId, validationError
         const currentUser = dataStorage.getUser(userId);
 
         if (currentUser) {
-            console.log("DEBUG: DELETE ACCOUNT", userId);
-
             // Remove uploaded custom profile picture
             if (!defaultPictureNames.includes(currentUser.picture) && (currentUser.picture != "user-icon.png")) {
                 try {
@@ -332,7 +329,6 @@ function configureFileUpload() {
             // Set name of uploaded picture to <UserId>.<file extension>, i.e. f9258ea6-89c5-46b6-8577-9df9c343dc96.png
             let extension: string = (Object.keys(validFileTypes).includes(file.mimetype) ? validFileTypes[file.mimetype] : '');
             if (req.user && (req.user as ForumUser).id) {
-                console.log("Multer Filename", file, req.user);
                 const userId = (req.user as ForumUser).id;
                 returnCallback(null, `${userId}-${Date.now()}${extension}`);
             }

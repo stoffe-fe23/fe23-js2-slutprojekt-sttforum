@@ -50,18 +50,15 @@ export function isAdmin(req: Request, res: Response, next: NextFunction) {
 export function isCurrentUser(req: Request, res: Response, next: NextFunction) {
     try {
         const currentUser = req.user as ForumUser;
-        console.log("IS CURRENT USER?", req.isAuthenticated(), currentUser ?? "No current user!", req.params.userId ?? "No user id!");
         if (req.isAuthenticated()
             && currentUser
             && req.params.userId
             && (currentUser.admin || (currentUser.id == req.params.userId))) {
-            console.log("isCurrentUser: YES");
             return next();
         }
-        console.log("isCurrentUser: NO");
     }
     catch (error) {
-        console.log("isCurrentUser error", error);
+        console.log("Current User check error: ", error);
     }
 
     res.status(401);
@@ -75,7 +72,6 @@ export function isOwner(req: Request, res: Response, next: NextFunction) {
     try {
         if (req.isAuthenticated()) {
             if (req.user && (req.user as ForumUser).admin) {
-                console.log("DEBUG: Delete message as Admin");
                 return next();
             }
 
@@ -83,7 +79,6 @@ export function isOwner(req: Request, res: Response, next: NextFunction) {
                 const msg = dataStorage.getMessage(req.body.messageId ?? req.params.messageId);
                 if (msg) {
                     if (msg.author.id == (req.user as ForumUser).id) {
-                        console.log("DEBUG: Delete message as Author");
                         return next();
                     }
                 }
@@ -91,7 +86,7 @@ export function isOwner(req: Request, res: Response, next: NextFunction) {
         }
     }
     catch (error) {
-        console.log("IsOwner error", error);
+        console.log("IsOwner error: ", error);
     }
 
     res.status(401);

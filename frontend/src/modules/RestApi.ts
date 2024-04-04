@@ -253,7 +253,6 @@ export default class RestApi {
             }
         }
         else if ((response.status == 401)) {
-            console.log("DEBUG: Authentication error ", result);
             throw new ApiError(response.status, `Unauthorized: ${result.error ?? ""}  (${response.statusText})`);
         }
         // Server errors - show the error message from API

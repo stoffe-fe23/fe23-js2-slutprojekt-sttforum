@@ -74,7 +74,7 @@ export default class Message {
             const newMessageData: StatusResponseAPI = await app.api.postJson(apiPath, postData);
 
             if (newMessageData.message != (messageType == 'reply' ? "New reply added" : "New post added")) {
-                console.log("DEBUG: Invalid response to new message request.", newMessageData);
+                // console.log("DEBUG: Invalid response to new message request.", newMessageData);
             }
             return new Message(app, newMessageData.data as ForumMessageAPI);
         }
@@ -104,7 +104,7 @@ export default class Message {
         const deleteResponse: StatusResponseAPI = await this.app.api.deleteJson(`forum/message/delete/${this.id}`);
         if (deleteResponse && deleteResponse.message) {
             if (deleteResponse.message != "Deleted message") {
-                console.log("DEBUG: Incorrect response from Message Delete call");
+                // console.log("DEBUG: Incorrect response from Message Delete call");
             }
         }
     }
@@ -113,10 +113,7 @@ export default class Message {
     /////////////////////////////////////////////////////////////////////////////////////////////////
     // Completely remove this message, and all replies to it. (admin-only)
     public async remove(): Promise<void> {
-        const deleteResponse: StatusResponseAPI = await this.app.api.deleteJson(`forum/message/remove/${this.id}`);
-        if (deleteResponse) {
-            console.log("DEBUG: Remove message", deleteResponse);
-        }
+        await this.app.api.deleteJson(`forum/message/remove/${this.id}`);
     }
 
 
@@ -126,7 +123,7 @@ export default class Message {
         const editedMessage: StatusResponseAPI = await this.app.api.updateJson("forum/message/edit", { messageId: this.id, message: messageText });
         if (editedMessage && editedMessage.data) {
             if (editedMessage.message && (editedMessage.message != "Edited message")) {
-                console.log("DEBUG: Incorrect response from Message Edit call");
+                // console.log("DEBUG: Incorrect response from Message Edit call");
             }
             this.message = (editedMessage.data as ForumMessageAPI).message;
         }
@@ -243,7 +240,6 @@ export default class Message {
         // The post in a forum
         const updateMessage = document.querySelector(`article[data-messageid="${this.id}"].forum-message`);
         if (updateMessage) {
-            console.log("Message - found Update Element!");
             const messageHTML = this.display();
             updateMessage.replaceWith(messageHTML);
         }
