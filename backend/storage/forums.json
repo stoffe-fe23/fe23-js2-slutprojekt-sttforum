@@ -673,6 +673,20 @@
                                                                 ],
                                                                 "likes": [],
                                                                 "threadId": "9c6be3ec-7d2c-471b-b8e4-761140a65c01"
+                                                            },
+                                                            {
+                                                                "id": "d3458516-f193-4f22-8708-bb1f3077038f",
+                                                                "author": {
+                                                                    "id": "69333cc1-43bc-48d0-8a81-f119d1dd5366",
+                                                                    "userName": "Kalle Anka",
+                                                                    "picture": "69333cc1-43bc-48d0-8a81-f119d1dd5366-1712146773132.png",
+                                                                    "admin": false
+                                                                },
+                                                                "message": "Eller åka på semester till <i>Pildammsparken </i>istället...",
+                                                                "deleted": false,
+                                                                "date": 1712248089315,
+                                                                "replies": [],
+                                                                "likes": []
                                                             }
                                                         ],
                                                         "likes": [],
@@ -934,7 +948,8 @@
                                 "deleted": false,
                                 "date": 1712247339314,
                                 "replies": [],
-                                "likes": []
+                                "likes": [],
+                                "threadId": "3ea664d8-fc6a-41b9-8e0a-fd4f900cf3b3"
                             }
                         ],
                         "likes": [],
