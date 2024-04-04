@@ -921,8 +921,24 @@
                         "message": "Gta",
                         "deleted": false,
                         "date": 1712231533856,
-                        "replies": [],
-                        "likes": []
+                        "replies": [
+                            {
+                                "id": "f51b1c49-ebe2-41fe-8711-f2f5b4bf7b32",
+                                "author": {
+                                    "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                                    "userName": "Stoffe",
+                                    "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96-1711901300396.png",
+                                    "admin": true
+                                },
+                                "message": "A <b>bold</b> move.",
+                                "deleted": false,
+                                "date": 1712247339314,
+                                "replies": [],
+                                "likes": []
+                            }
+                        ],
+                        "likes": [],
+                        "threadId": "3ea664d8-fc6a-41b9-8e0a-fd4f900cf3b3"
                     }
                 ],
                 "forum": {

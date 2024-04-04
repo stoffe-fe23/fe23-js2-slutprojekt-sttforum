@@ -21,7 +21,7 @@ Simple discussion forum with a node.js backend. Random feature list:
 * Admins can edit/delete any user account, reset the profile picture of a user, and grant users Admin privileges. 
 * A search functionality allows searching for text in thread titles or message text.
 * Users can like messages (and then unlike previously liked messages).
-* Message text can have simple formatting (bold, italics, underline).
+* Message text can have simple formatting (bold, italics, underline) applied to parts of it.
 * Any changes in the forum (new posts, edited/deleted posts, user profile changes) are reflected in real time to all connected users.
 
 ### Assignment specifics:
@@ -57,5 +57,5 @@ npm run dev
 ```
 Then go to http://localhost:1234 in your web browser to visit the site. Click the User button in the upper left corner of the page to create a user account. 
 
-To test admin functionality you can log in with username "Tess Testare" and password "testare".
+To test admin functionality you can log in with username _Tess Testare_ and password _testare_.
 
