@@ -508,7 +508,7 @@
         "threads": [
             {
                 "id": "9c6be3ec-7d2c-471b-b8e4-761140a65c01",
-                "title": "Thailand semester?",
+                "title": "Thailand semester.",
                 "date": 1712144701214,
                 "active": true,
                 "posts": [
@@ -579,6 +579,34 @@
         "id": "c419dc01-c07c-4d28-9609-a11ff89ee286",
         "name": "Music",
         "icon": "forum-1712213369262.png",
-        "threads": []
+        "threads": [
+            {
+                "id": "32a37d2e-10d3-41d5-affc-639ba01d3694",
+                "title": "Vilket är ditt favorit band?",
+                "date": 1712217433941,
+                "active": true,
+                "posts": [
+                    {
+                        "id": "df5092dc-9368-478c-9ad4-f5e662b52cdf",
+                        "author": {
+                            "id": "9dc31ecd-206b-4344-9cb1-ccf8d9aafaf7",
+                            "userName": "Ton",
+                            "picture": "def-pic-1.png",
+                            "admin": true
+                        },
+                        "message": "Deep purple är mitt favorit band.",
+                        "deleted": false,
+                        "date": 1712217433942,
+                        "replies": [],
+                        "likes": []
+                    }
+                ],
+                "forum": {
+                    "id": "c419dc01-c07c-4d28-9609-a11ff89ee286",
+                    "name": "Music",
+                    "icon": "forum-1712213369262.png"
+                }
+            }
+        ]
     }
 ]
