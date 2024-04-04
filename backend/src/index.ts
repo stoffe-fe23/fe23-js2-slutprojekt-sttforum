@@ -66,9 +66,9 @@ app.ws("/api/updates", (ws, req: Request) => {
         ws.close();
     }
 
-    ws.on("close", (socket: WebSocket) => {
-        console.log(`SOCKET CLOSED: `, (socket as any).userId ?? "No user ID");
-    });
+    /*     ws.on("close", (socket: WebSocket) => {
+            console.log(`SOCKET CLOSED: `, (socket as any).userId ?? "No user ID");
+        }); */
 
     ws.on("error", (error) => {
         console.log("SOCKET ERROR: ", error);
@@ -78,7 +78,7 @@ app.ws("/api/updates", (ws, req: Request) => {
 
 // General error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    console.log("Server error:", err);
+    // console.log("Server error:", err);
     res.status(500);
     res.json({ error: err.message });
 })

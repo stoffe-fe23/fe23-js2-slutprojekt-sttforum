@@ -147,7 +147,6 @@ export default class Thread {
     private onEditThreadClick(event) {
         const thread = document.querySelector(`section[data-threadid="${this.id}"].forum-thread`) as HTMLElement;
         if (thread) {
-            console.log("DEBUG: ACTIVE IS", this.active);
             const editButton = thread.querySelector(".forum-thread-edit") as HTMLButtonElement;
             const threadTitle = thread.querySelector(".forum-thread-wrapper h3") as HTMLElement;
             const threadEditor = htmlUtilities.createHTMLFromTemplate("tpl-thread-edit", null, { title: this.title, active: this.active }, { "data-threadid": this.id });
@@ -172,13 +171,11 @@ export default class Thread {
                     this.title = newTitle;
                     this.active = newActive;
                     this.save();
-                    console.log("DEBUG: Thread title edited: ", this.title);
                 }
                 break;
             case "delete":
                 if (confirm("Are you sure you wish to delete this tread? All its messages will be permanently removed.")) {
                     this.delete();
-                    console.log("DEBUG: Thread deleted!");
                 }
                 break;
         }
@@ -212,7 +209,6 @@ export default class Thread {
     // If this message is currently displayed on the page, update its info to match the content
     // of this object. 
     public update() {
-        console.log("DEBUG: Update parent thread.", this.id);
         // Thread page, displaying its messages
         const updateThread = document.querySelector(`section[data-threadid="${this.id}"].forum-thread`);
         if (updateThread) {
@@ -258,7 +254,7 @@ export default class Thread {
         try {
             const response: StatusResponseAPI = await this.app.api.updateJson(`forum/thread/edit/${this.id}`, { title: this.title, active: this.active });
             if (response.message && (response.message == "Edited thread")) {
-                console.log("DEBUG: Thread title edited: " + this.title);
+                // OK. visa meddelande?
             }
         }
         catch (error) {

@@ -34,7 +34,6 @@ export default class User {
             const result = await this.app.api.postFile("user/profile/update", profileData);
             this.app.userLoginInit = false;
             this.app.displayCurrentUser();
-            console.log("Profile update");
         }
         catch (error) {
             this.app.showError(`Error updating user profile: ${error.message}`)
@@ -52,7 +51,4 @@ export default class User {
         }
     }
 
-    // TODO: Methods for viewing and editing the user profile
-
-    // TODO: Methods for logging on/off, and checking if logged in
 }

@@ -126,20 +126,10 @@ export default class Forum {
     private onNewThreadFormSubmit(event) {
         event.preventDefault();
 
-        console.log("DEBUG: Creating new thread...");
         const form = event.currentTarget as HTMLFormElement;
         const formData = new FormData(form);
 
-        this.newThread(formData.get("title") as string, formData.get("message") as string).then((newThread: Thread | undefined) => {
-            if (newThread) {
-                // TODO: Update forum display list to show new message
-                console.log("DEBUG: New thread created", newThread.id);
-            }
-            else {
-                console.log("DEBUG: Error creating new thread...");
-            }
-
-        });
+        this.newThread(formData.get("title") as string, formData.get("message") as string).catch(this.app.showError);
     }
 
 

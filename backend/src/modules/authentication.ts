@@ -96,7 +96,6 @@ userAPI.post("/login", passport.authenticate('local', { failWithError: true }), 
         picture: sessionUser.picture,
         admin: sessionUser.admin
     }
-    console.log("DEBUG: LOGIN", currentUser);
     res.json({ message: `Login successful`, data: currentUser });
 });
 
@@ -107,7 +106,6 @@ userAPI.get("/logout", isLoggedIn, (req: Request, res: Response, next: NextFunct
     const userId = (req.user as ForumUser).id;
     req.logout((error) => {
         closeClientSocket(userId);
-        console.log("LOGOFF", req.user);
         if (error) {
             return next(error);
         }
@@ -121,7 +119,6 @@ userAPI.get("/logout", isLoggedIn, (req: Request, res: Response, next: NextFunct
 function verifyLogin(username: string, password: string, returnCallback: Function) {
     try {
         const user = dataStorage.getUserByName(username);
-        //        console.log("VERIFY", username, user);
         if (user) {
             try {
                 if (user.password != generatePasswordHash(password, user.token)) {
@@ -146,7 +143,6 @@ function verifyLogin(username: string, password: string, returnCallback: Functio
 ////////////////////////////////////////////////////////////////////////////////////
 // Handle user login errors. 
 function loginAuthenticationError(err: Error, req: Request, res: Response, next: NextFunction) {
-    console.log("DEBUG: LOGIN ERROR");
     res.status(401);
     res.json({ error: `Login failed`, data: err });
 }
