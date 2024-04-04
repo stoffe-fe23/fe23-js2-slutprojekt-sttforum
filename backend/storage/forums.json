@@ -574,7 +574,35 @@
         "id": "edfb0014-3138-4c6a-b93d-b9eae2a0db4a",
         "name": "Gaming",
         "icon": "forum-1712048429831.png",
-        "threads": []
+        "threads": [
+            {
+                "id": "dbc627b1-7af4-47bf-9db9-7c0b5b785bfe",
+                "title": "Är Helldivers 2 överhypad?",
+                "date": 1712230637839,
+                "active": true,
+                "posts": [
+                    {
+                        "id": "76b88157-2dfb-4fd0-ad76-aa7298980db1",
+                        "author": {
+                            "id": "9dc31ecd-206b-4344-9cb1-ccf8d9aafaf7",
+                            "userName": "Ton",
+                            "picture": "def-pic-1.png",
+                            "admin": true
+                        },
+                        "message": "Själv tycker jag att det är det.",
+                        "deleted": false,
+                        "date": 1712230637839,
+                        "replies": [],
+                        "likes": []
+                    }
+                ],
+                "forum": {
+                    "id": "edfb0014-3138-4c6a-b93d-b9eae2a0db4a",
+                    "name": "Gaming",
+                    "icon": "forum-1712048429831.png"
+                }
+            }
+        ]
     },
     {
         "id": "c419dc01-c07c-4d28-9609-a11ff89ee286",
