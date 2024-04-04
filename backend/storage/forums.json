@@ -169,7 +169,7 @@
                 "id": "60f67210-4b5d-44a7-9742-862aaa82203e",
                 "title": "En ny tråd!?",
                 "date": 1711196509336,
-                "active": true,
+                "active": false,
                 "posts": [
                     {
                         "id": "c212f8ae-fecc-47fb-8e90-3f55d9ee667d",
@@ -514,60 +514,6 @@
                     "name": "Forum romanum",
                     "icon": "forumromanum.png"
                 }
-            },
-            {
-                "id": "856302a7-1f65-4f63-b1d2-5904be53bfef",
-                "title": "Nu ska vi se här vad som händer?",
-                "date": 1712231701119,
-                "active": true,
-                "posts": [
-                    {
-                        "id": "a28b33eb-d11f-40c3-80fa-1aa1e7826499",
-                        "author": {
-                            "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
-                            "userName": "Stoffe",
-                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96-1711901300396.png",
-                            "admin": true
-                        },
-                        "message": "Det funkar?",
-                        "deleted": false,
-                        "date": 1712231701119,
-                        "replies": [],
-                        "likes": []
-                    }
-                ],
-                "forum": {
-                    "id": "fb9b4cd4-bb09-4649-b8b0-502e06c03125",
-                    "name": "Forum romanum",
-                    "icon": "forumromanum.png"
-                }
-            },
-            {
-                "id": "ef256e64-2ae3-4345-af8a-86b5911dcfeb",
-                "title": "Testar igen.",
-                "date": 1712231790405,
-                "active": true,
-                "posts": [
-                    {
-                        "id": "620e812b-67aa-4a67-82f2-4f6fafb33bec",
-                        "author": {
-                            "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
-                            "userName": "Stoffe",
-                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96-1711901300396.png",
-                            "admin": true
-                        },
-                        "message": "Fungerar det nu då?",
-                        "deleted": false,
-                        "date": 1712231790405,
-                        "replies": [],
-                        "likes": []
-                    }
-                ],
-                "forum": {
-                    "id": "fb9b4cd4-bb09-4649-b8b0-502e06c03125",
-                    "name": "Forum romanum",
-                    "icon": "forumromanum.png"
-                }
             }
         ]
     },
@@ -689,7 +635,8 @@
                                     }
                                 ],
                                 "likes": [
-                                    "04866ffe-c4e9-46b1-a151-6bfffc77aeda"
+                                    "04866ffe-c4e9-46b1-a151-6bfffc77aeda",
+                                    "2dc97fbd-92bc-474e-8146-d3851624d111"
                                 ],
                                 "threadId": "9c6be3ec-7d2c-471b-b8e4-761140a65c01"
                             }
@@ -951,54 +898,12 @@
                             "picture": "def-pic-1.png",
                             "admin": true
                         },
-                        "message": "Deep purple är mitt favorit band.",
+                        "message": "Deep <b>purple</b> är mitt favorit band.",
                         "deleted": false,
                         "date": 1712217433942,
-                        "replies": [
-                            {
-                                "id": "26734e42-86d2-4b4f-a3e8-f97c95157958",
-                                "author": {
-                                    "id": "c9a041d0-f39a-4d5f-94d1-d2920721ca22",
-                                    "userName": "tobbe",
-                                    "picture": "def-pic-1.png",
-                                    "admin": "true"
-                                },
-                                "message": "Mitt favoritband är Red hot chili peppers",
-                                "deleted": false,
-                                "date": 1712218351721,
-                                "replies": [],
-                                "likes": []
-                            }
-                        ],
+                        "replies": [],
                         "likes": [],
                         "threadId": "32a37d2e-10d3-41d5-affc-639ba01d3694"
-                    }
-                ],
-                "forum": {
-                    "id": "c419dc01-c07c-4d28-9609-a11ff89ee286",
-                    "name": "Music",
-                    "icon": "forum-1712213369262.png"
-                }
-            },
-            {
-                "id": "80866560-f0bf-4766-917a-68e18af3b8f4",
-                "title": "Vilket är det coolaste instrumentet?",
-                "date": 1712230989323,
-                "active": true,
-                "posts": [
-                    {
-                        "id": "6d13afdd-3f90-4203-bf11-aacd4b4765c3",
-                        "author": {
-                            "id": "c9a041d0-f39a-4d5f-94d1-d2920721ca22",
-                            "userName": "tobbe",
-                            "picture": "def-pic-1.png",
-                            "admin": "true"
-                        },
-                        "message": "självklart gitarr!\n\nvi behöver inget forum för att fastställa det!",
-                        "deleted": false,
-                        "date": 1712230989323,
-                        "replies": [],
-                        "likes": []
                     }
                 ],
                 "forum": {
