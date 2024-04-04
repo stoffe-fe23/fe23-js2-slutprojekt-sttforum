@@ -537,7 +537,8 @@
                                 "date": 1712145347408,
                                 "replies": [],
                                 "likes": [
-                                    "04866ffe-c4e9-46b1-a151-6bfffc77aeda"
+                                    "04866ffe-c4e9-46b1-a151-6bfffc77aeda",
+                                    "2dc97fbd-92bc-474e-8146-d3851624d111"
                                 ],
                                 "threadId": "9c6be3ec-7d2c-471b-b8e4-761140a65c01"
                             }
@@ -597,24 +598,8 @@
                         "message": "Deep purple är mitt favorit band.",
                         "deleted": false,
                         "date": 1712217433942,
-                        "replies": [
-                            {
-                                "id": "26734e42-86d2-4b4f-a3e8-f97c95157958",
-                                "author": {
-                                    "id": "c9a041d0-f39a-4d5f-94d1-d2920721ca22",
-                                    "userName": "tobbe",
-                                    "picture": "def-pic-1.png",
-                                    "admin": "true"
-                                },
-                                "message": "Mitt favoritband är Red hot chili peppers",
-                                "deleted": false,
-                                "date": 1712218351721,
-                                "replies": [],
-                                "likes": []
-                            }
-                        ],
-                        "likes": [],
-                        "threadId": "32a37d2e-10d3-41d5-affc-639ba01d3694"
+                        "replies": [],
+                        "likes": []
                     }
                 ],
                 "forum": {
