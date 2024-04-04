@@ -29,6 +29,9 @@ export default class User {
         }
     }
 
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Save changed profile data to server.
     public async updateUserProfile(profileData: FormData): Promise<void> {
         try {
             const result = await this.app.api.postFile("user/profile/update", profileData);
@@ -40,6 +43,9 @@ export default class User {
         }
     }
 
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Delete this user from the server.
     public async deleteUser(): Promise<void> {
         try {
             const res = await this.app.api.deleteJson(`user/delete/${this.id}`);

@@ -51,6 +51,8 @@ app.use('/api/forum', forumAPI);
 app.ws("/api/updates", (ws, req: Request) => {
     const userId = (req.user && (req.user as ForumUser).id ? (req.user as ForumUser).id : "0");
     if ((userId != "0") && req.isAuthenticated()) {
+        // Store associated user/session info on the socket.
+        // Typescript makes this overly complicated, so just bypass for now. 
         (ws as any).sessionId = req.session.id;
         (ws as any).userId = userId;
         console.log("SOCKET ESTABLISHED: ", (ws as any).userId, req.session.id);
@@ -65,10 +67,6 @@ app.ws("/api/updates", (ws, req: Request) => {
         ws.send(JSON.stringify(response));
         ws.close();
     }
-
-    /*     ws.on("close", (socket: WebSocket) => {
-            console.log(`SOCKET CLOSED: `, (socket as any).userId ?? "No user ID");
-        }); */
 
     ws.on("error", (error) => {
         console.log("SOCKET ERROR: ", error);
