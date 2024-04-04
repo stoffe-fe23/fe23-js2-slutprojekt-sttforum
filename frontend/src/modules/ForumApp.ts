@@ -255,7 +255,6 @@ export default class ForumApp {
 
     ////////////////////////////////////////////////////////////////////////////////////////////
     // Attempt to log in to the server with the specified username and password. 
-    // TODO: Need exception handling here
     // 401 - login invalid (user,pass is wrong, user does not exist etc)
     public async userLogin(loginName: string, loginPass: string): Promise<void> {
         try {
@@ -291,7 +290,6 @@ export default class ForumApp {
 
     ////////////////////////////////////////////////////////////////////////////////////////////
     // Register a new user account on the server. 
-    // TODO: Need exception/validation handling here
     public async userRegister(username: string, password: string, passwordConfirm: string, email: string): Promise<void> {
         if (password.length && passwordConfirm.length && (password == passwordConfirm)) {
             const newUserData = {
@@ -299,9 +297,7 @@ export default class ForumApp {
                 password: password,
                 email: email
             }
-            const response: StatusResponseAPI = await this.api.postJson("user/register", newUserData);
-            if (response && response.message && response.data) {
-            }
+            await this.api.postJson("user/register", newUserData).catch(this.showError);
         }
         else {
             throw new Error("The passwords do not match. Try again.");

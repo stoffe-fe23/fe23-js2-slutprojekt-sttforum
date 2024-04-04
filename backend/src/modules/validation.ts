@@ -125,7 +125,6 @@ function validateMessageIdExists(value: string): boolean {
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Validate New Forum input
-// TODO: Change icon to a file upload from the form instead.... 
 export const validateNewForum = [
     /*    body("icon")
             .exists().withMessage('The forum icon must be set.').bail()

@@ -51,7 +51,4 @@ export default class User {
         }
     }
 
-    // TODO: Methods for viewing and editing the user profile
-
-    // TODO: Methods for logging on/off, and checking if logged in
 }

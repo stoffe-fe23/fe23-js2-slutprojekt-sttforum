@@ -32,8 +32,6 @@ import {
 } from "./TypeDefs.js";
 
 
-// TODO: Better error handling and parameter validation. 
-
 class Database {
     public storage: DataStore;
 
