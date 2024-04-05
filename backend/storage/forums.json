@@ -82,7 +82,7 @@
                                     "picture": "69333cc1-43bc-48d0-8a81-f119d1dd5366-1712146773132.png",
                                     "admin": false
                                 },
-                                "message": "Vi kom, vi såg... resten återstår att se.",
+                                "message": "Vi kom, vi såg... vi slutade på <i>oavgjort</i>.",
                                 "deleted": false,
                                 "date": 1712241341828,
                                 "replies": [],
@@ -764,7 +764,23 @@
                                 "message": "De där man inte blir brutalt mördad av den lokala faunan (eller floran), förslagsvis.",
                                 "deleted": false,
                                 "date": 1712240943960,
-                                "replies": [],
+                                "replies": [
+                                    {
+                                        "id": "712568fc-6b20-4f98-98bb-4bb618a3af27",
+                                        "author": {
+                                            "id": "46cbc728-4e68-4458-b930-6cd94000f92c",
+                                            "userName": "Torsten Testare",
+                                            "picture": "def-pic-3.png",
+                                            "admin": false
+                                        },
+                                        "message": "Ständig optimist, eller?",
+                                        "deleted": false,
+                                        "date": 1712312115679,
+                                        "replies": [],
+                                        "likes": [],
+                                        "threadId": "1f328cde-44f4-4414-abf9-9b85009f215e"
+                                    }
+                                ],
                                 "likes": [],
                                 "threadId": "1f328cde-44f4-4414-abf9-9b85009f215e"
                             }
@@ -846,7 +862,9 @@
                                 "deleted": false,
                                 "date": 1712241246448,
                                 "replies": [],
-                                "likes": [],
+                                "likes": [
+                                    "46cbc728-4e68-4458-b930-6cd94000f92c"
+                                ],
                                 "threadId": "dbc627b1-7af4-47bf-9db9-7c0b5b785bfe"
                             }
                         ],
@@ -1030,6 +1048,33 @@
                         "message": "självklart gitarr!\n\nvi behöver inget forum för att fastställa det!",
                         "deleted": false,
                         "date": 1712230989323,
+                        "replies": [],
+                        "likes": []
+                    }
+                ],
+                "forum": {
+                    "id": "c419dc01-c07c-4d28-9609-a11ff89ee286",
+                    "name": "Music",
+                    "icon": "forum-1712213369262.png"
+                }
+            },
+            {
+                "id": "e0dcb428-3dec-41b0-af31-cc5a62d1c57d",
+                "title": "En låst tråd.",
+                "date": 1712311216093,
+                "active": false,
+                "posts": [
+                    {
+                        "id": "97774e9c-70cd-4bf1-a8ad-e6369204cbbd",
+                        "author": {
+                            "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                            "userName": "Stoffe",
+                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96-1711901300396.png",
+                            "admin": true
+                        },
+                        "message": "Denna tråd kommer att bli <b>låst</b> om ett ögonblick, för att testa :)",
+                        "deleted": false,
+                        "date": 1712311216093,
                         "replies": [],
                         "likes": []
                     }

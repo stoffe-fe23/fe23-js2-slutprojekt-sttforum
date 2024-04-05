@@ -79,5 +79,14 @@
         "password": "8efdf7313ee551d0ceb6678d7341d1cec0aae62b4515ecf33015e4d29a2f15c54eaec89ec9408fd98507ba33a8cb1f1194f255bbc76df9eff452248e8b4193e7",
         "token": "925cd8e4e231f9861d091c829331c51d59a3f2359bc5961c3eda1bc3253a0e67",
         "admin": false
+    },
+    {
+        "id": "46cbc728-4e68-4458-b930-6cd94000f92c",
+        "name": "Torsten Testare",
+        "email": "tt@test.com",
+        "picture": "def-pic-3.png",
+        "password": "d66e7309db012c892e225769a7d16e00989390cb976d1da49e0257a595ccd7a41c8d8d1229d4e49622195dad6b960cedf5ffae48357bc9cee1e05a06c1e56a80",
+        "token": "5da75851c166e274a96111e7f3715ceb65cc4aa057e9d442a72743dc006365be",
+        "admin": false
     }
 ]

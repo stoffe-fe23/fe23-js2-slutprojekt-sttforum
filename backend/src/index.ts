@@ -55,7 +55,7 @@ app.ws("/api/updates", (ws, req: Request) => {
         // Typescript makes this overly complicated, so just bypass for now. 
         (ws as any).sessionId = req.session.id;
         (ws as any).userId = userId;
-        console.log("SOCKET ESTABLISHED: ", (ws as any).userId, req.session.id);
+        console.log("Websocket connection established: ", (ws as any).userId, req.session.id);
     }
     else {
         // Close connection if it is not by an authenticated user. 
@@ -69,16 +69,20 @@ app.ws("/api/updates", (ws, req: Request) => {
     }
 
     ws.on("error", (error) => {
-        console.log("SOCKET ERROR: ", error);
+        console.log("Websocket error: ", error);
     });
 });
 
 
 // General error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    // console.log("Server error:", err);
-    res.status(500);
-    res.json({ error: err.message });
+    if (!res.headersSent) {
+        res.status(500);
+        res.json({ error: err.message });
+    }
+    else {
+        console.log("Server error, headers already sent: ", err);
+    }
 })
 
 
