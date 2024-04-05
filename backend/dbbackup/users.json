@@ -30,36 +30,63 @@
         "id": "69333cc1-43bc-48d0-8a81-f119d1dd5366",
         "name": "Kalle Anka",
         "email": "ka@example.com",
-        "picture": "def-pic-2.png",
+        "picture": "69333cc1-43bc-48d0-8a81-f119d1dd5366-1712146773132.png",
         "password": "f7bdfab9488034db3aed95c8183abcb2da3111bb0c90944af88d8bbdf0f98403126610dc87c8a7a0f6a407c86c8d3dba222fff513736a91713a40a6699a385b3",
         "token": "22378c33a08209846bfcc21fb64d8ba4d24a3876a953232e24f8d6398094e792",
         "admin": false
     },
     {
         "id": "04866ffe-c4e9-46b1-a151-6bfffc77aeda",
-        "name": "Testaren",
-        "email": "test@test.com",
-        "picture": "user-icon.png",
-        "password": "2f5ba11864a1ef586473f9b0f5c8f4e5a0b145e6e505485250252d07f85535feb46c39c94b2a54df77e5bb52e2336f3f58d891065ea1f84fb3abbc22d5a9297e",
+        "name": "Tess Testare",
+        "email": "testare@test.com",
+        "picture": "def-pic-2.png",
+        "password": "ab10901322a5d5f13931732f8d7bfda257e079cc4e7a8fc4e47bf8cf00db70db37c797cc7057c1373817fbff4bfc0a4af6fe7d80f8a33af45994eba5dae42b39",
         "token": "6bacca88b7a68f239b625d5ae7d03f67988e476383e30eda367fec615ed309f3",
-        "admin": false
+        "admin": "true"
     },
     {
         "id": "c9a041d0-f39a-4d5f-94d1-d2920721ca22",
         "name": "tobbe",
         "email": "tobias.hurtig@gritacademy.se",
-        "picture": "c9a041d0-f39a-4d5f-94d1-d2920721ca22.jpg",
-        "password": "e688235ced42708bd3e062231085f07418ab0ad3c948ea0d5f909e424c68d94474c95891e3c204fb4b831ee4aa097f412fa540c403edec98c7f2898f7e0c158c",
+        "picture": "def-pic-1.png",
+        "password": "01fd4723c7a187d3972138c64fbff83a26ce85fd16ac74b907df3b8e23480a0acad0c493ebfcfed04ed3b4fc58dbea2f3f857e2e06977ce7f97d9ed76a96c87f",
         "token": "d02e4fc9f23720eb70fcd10ca12a5e4f348f2e236fc2c135ccb203f486ffb39e",
-        "admin": false
+        "admin": "true"
     },
     {
         "id": "9dc31ecd-206b-4344-9cb1-ccf8d9aafaf7",
         "name": "Ton",
         "email": "tonskater@hotmail.com",
-        "picture": "def-pic-3.png",
-        "password": "59e17fe431fe9c19efa810f9142e3615974b0aa2cc658bbc9e414714966cd0221d860b19a0ab032081d55f73d11449225d23bc51ec4b533bbb5047b89d93cce9",
+        "picture": "def-pic-1.png",
+        "password": "b8bfe18b4b585a366697d22c842e4a44fa6b437064b38d85dd60ea604edc33db0c4149ab019125ce691ab3ed07209533c30f3804cf9666ef84d4441a0ce4b948",
         "token": "94411fb89f77bddb6374f122a343c70a31b5d9d7fcbbed6f98fe46181864468d",
+        "admin": true
+    },
+    {
+        "id": "2dc97fbd-92bc-474e-8146-d3851624d111",
+        "name": "Ton2",
+        "email": "tonskater@hotmail.com",
+        "picture": "user-icon.png",
+        "password": "37378d26d5d5812476540f36de4e66a799c45d302c9052495ad2553488a14dd8e546da225e98f85a14de33f0486f2b25e917f9ecc1c46eb3a500f6d02451e76b",
+        "token": "9f94138c2a1a50293472f9a8445f0733089e9c85e3550cdd2fd06a7ab78a885e",
+        "admin": false
+    },
+    {
+        "id": "30094a06-61af-43fb-a117-4e4fc6af40be",
+        "name": "Tobbe2",
+        "email": "tobias.hurtig@gritacademy.se",
+        "picture": "30094a06-61af-43fb-a117-4e4fc6af40be-1712230401085.jpg",
+        "password": "8efdf7313ee551d0ceb6678d7341d1cec0aae62b4515ecf33015e4d29a2f15c54eaec89ec9408fd98507ba33a8cb1f1194f255bbc76df9eff452248e8b4193e7",
+        "token": "925cd8e4e231f9861d091c829331c51d59a3f2359bc5961c3eda1bc3253a0e67",
+        "admin": false
+    },
+    {
+        "id": "46cbc728-4e68-4458-b930-6cd94000f92c",
+        "name": "Torsten Testare",
+        "email": "tt@test.com",
+        "picture": "def-pic-3.png",
+        "password": "d66e7309db012c892e225769a7d16e00989390cb976d1da49e0257a595ccd7a41c8d8d1229d4e49622195dad6b960cedf5ffae48357bc9cee1e05a06c1e56a80",
+        "token": "5da75851c166e274a96111e7f3715ceb65cc4aa057e9d442a72743dc006365be",
         "admin": false
     }
 ]
