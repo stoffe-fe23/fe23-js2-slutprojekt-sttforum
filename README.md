@@ -59,3 +59,8 @@ Then go to http://localhost:1234 in your web browser to visit the site. Click th
 
 To test admin functionality you can log in with username _Tess Testare_ and password _testare_.
 
+## Known issue:
+Occasionally express-session using session-file-store will crash with permission error on the server while trying to rename one of the session data files, similar to these issues. It happens fairly rarely and seemingly at random. Using a proper database to store session data would mitigate the issue. 
+https://github.com/valery-barysok/session-file-store/issues/69
+https://github.com/valery-barysok/session-file-store/issues/58
+https://stackoverflow.com/questions/57745991/eperm-operation-not-permitted-rename-when-using-express-session-with-session
