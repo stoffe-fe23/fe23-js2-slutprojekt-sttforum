@@ -51,7 +51,7 @@ class Database {
     /************************************* USERS **************************************/
 
     ////////////////////////////////////////////////////////////////////////////////////
-    // Find the user with the specified userid
+    // Get an array with public info about all users.
     public getUserList(): ForumAuthor[] {
         const userList: ForumAuthor[] = [];
         for (const user of this.storage.userDB) {
@@ -67,7 +67,7 @@ class Database {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
-    // Find the user with the specified userid
+    // Get public user profile data for the user with the specified ID.
     public getPublicUserProfile(userId: string): PublicUserProfile | null {
 
         const user = this.getUser(userId);
