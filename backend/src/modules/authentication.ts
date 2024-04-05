@@ -69,13 +69,18 @@ passport.serializeUser((user: ForumUser, done) => {
 // Fetch the full user object based on the UID stored in the session. 
 // Accessed via req.user in middleware. 
 passport.deserializeUser((userId: string, done) => {
-    const user: ForumUser = dataStorage.getUser(userId);
-    if (user) {
-        done(null, user);
+    try {
+        const user: ForumUser = dataStorage.getUser(userId);
+        if (user) {
+            done(null, user);
+        }
+        else {
+            // done(new Error("User not found!"));
+            done(null, null);
+        }
     }
-    else {
-        // done(new Error("User not found!"));
-        done(null, null);
+    catch (error) {
+        console.log("Error deserializing user: ", error.message);
     }
 });
 

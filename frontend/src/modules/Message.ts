@@ -73,9 +73,6 @@ export default class Message {
             const postData = (messageType == 'reply' ? { message: messageText, messageId: targetId } : { message: messageText, threadId: targetId }) as APIQueryData;
             const newMessageData: StatusResponseAPI = await app.api.postJson(apiPath, postData);
 
-            if (newMessageData.message != (messageType == 'reply' ? "New reply added" : "New post added")) {
-                // console.log("DEBUG: Invalid response to new message request.", newMessageData);
-            }
             return new Message(app, newMessageData.data as ForumMessageAPI);
         }
         return null;
@@ -102,11 +99,6 @@ export default class Message {
     // Soft delete this message (replies to it are kept and it is still shown but marked as deleted)
     public async delete(): Promise<void> {
         const deleteResponse: StatusResponseAPI = await this.app.api.deleteJson(`forum/message/delete/${this.id}`);
-        if (deleteResponse && deleteResponse.message) {
-            if (deleteResponse.message != "Deleted message") {
-                // console.log("DEBUG: Incorrect response from Message Delete call");
-            }
-        }
     }
 
 
@@ -122,9 +114,6 @@ export default class Message {
     public async editMessage(messageText: string): Promise<void> {
         const editedMessage: StatusResponseAPI = await this.app.api.updateJson("forum/message/edit", { messageId: this.id, message: messageText });
         if (editedMessage && editedMessage.data) {
-            if (editedMessage.message && (editedMessage.message != "Edited message")) {
-                // console.log("DEBUG: Incorrect response from Message Edit call");
-            }
             this.message = (editedMessage.data as ForumMessageAPI).message;
         }
     }

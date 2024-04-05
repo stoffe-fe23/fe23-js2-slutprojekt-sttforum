@@ -25,7 +25,6 @@ const defaultPictureNames = ['def-pic-1.png', 'def-pic-2.png', 'def-pic-3.png'];
 
 // Initialize the forums and load current user (if there is an active session)
 forumApp.load().then(() => {
-    console.log("DEBUG: ForumApp loaded!");
     const msgEditor = document.querySelector("#message-editor-form") as HTMLFormElement;
     if (msgEditor) {
         const formButtons = msgEditor.querySelector(".message-editor-buttons") as HTMLFormElement;
@@ -60,7 +59,7 @@ forumApp.router.on("/forums", () => {
             forumApp.showForumPicker(pageForum);
         }
         else {
-            forumApp.showError(`You must be <a href="/login" data-navigo>logged in</a> to view the forums.`);
+            forumApp.showError(`You must be logged in to view the forums.`);
         }
     });
 });
@@ -271,7 +270,6 @@ forumApp.router.resolve();
 (document.querySelector("#user-profile-form") as HTMLFormElement).addEventListener("submit", (event) => {
     event.preventDefault();
     const profileDialog = document.querySelector("#user-profile") as HTMLDialogElement;
-
     // Update profile button
     if ((event.submitter as HTMLButtonElement).id == "user-profile-submit") {
         forumApp.userLoginCheck().then((isLoggedIn: boolean) => {
@@ -287,7 +285,7 @@ forumApp.router.resolve();
         forumApp.userLogoff().then(() => {
             forumApp.router.navigate('/');
             pageForum.innerHTML = "";
-            htmlUtilities.createHTMLElement("div", `You must be <a href="/login" data-navigo>logged in</a> to view the forums.`, pageForum, 'error-not-logged-in', null, true);
+            htmlUtilities.createHTMLElement("div", `You must be logged in to view the forums.`, pageForum, 'error-not-logged-in', null, true);
         });
     }
     // Delete account button

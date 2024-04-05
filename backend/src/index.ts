@@ -88,7 +88,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 // Start the server
 app.listen(3000, () => {
-    console.log('Server listening on port 3000: http://localhost:3000/');
+    console.log('Server running on port 3000...');
 
     // Cache forum and user data from disk storage files. 
     dataStorage.initialize();

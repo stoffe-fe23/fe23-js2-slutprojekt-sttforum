@@ -1,3 +1,10 @@
+/*
+    Slutprojekt Javascript 2 (FE23 Grit Academy)
+    Grupp : STTForum
+
+    search.css
+    Styling for the search form and search result. 
+*/
 #searchform {
     display: flex;
     justify-content: space-between;

@@ -10,7 +10,7 @@ import Forum from "./Forum.ts";
 import Thread from "./Thread.ts";
 import Message from "./Message.ts";
 import User from "./User.ts";
-import RestApi from "./RestApi.ts";
+import RestApi, { ApiError } from "./RestApi.ts";
 import UserList from "./UserList.ts";
 import UpdateNoticeSocket from "./UpdateNoticeSocket.ts";
 import * as htmlUtilities from "./htmlUtilities";
@@ -272,7 +272,12 @@ export default class ForumApp {
             }
         }
         catch (error) {
-            this.showError(`Login error: ${error.message}`);
+            if ((error as ApiError).errorCode == 401) {
+                this.showError(`Login failed. Check your username and password and try again?`);
+            }
+            else {
+                this.showError(`Login error: ${error.message}`);
+            }
         }
     }
 

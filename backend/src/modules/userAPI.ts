@@ -254,7 +254,6 @@ userAPI.post("/admin/profile/update/:userId", isAdmin, validateUserProfileAdmin,
 // Delete the specified user from the system.
 userAPI.delete('/delete/:userId', isCurrentUser, validateUserId, validationErrorHandler, (req: Request, res: Response) => {
     if (req.params && req.params.userId) {
-        let responseSent: boolean = false;
         const userId = req.params.userId;
         const currentUser = dataStorage.getUser(userId);
 
@@ -281,12 +280,7 @@ userAPI.delete('/delete/:userId', isCurrentUser, validateUserId, validationError
                 req.session.destroy((sessionError) => {
                     req.logout((error) => {
                         closeClientSocket(userId);
-
-                        if (error || sessionError) {
-                            responseSent = true;
-                            res.status(500);
-                            res.json({ error: `Error logging out deleted user.`, data: userId });
-                        }
+                        res.json({ message: `User Deleted.` });
                     });
                 });
             }
@@ -294,22 +288,7 @@ userAPI.delete('/delete/:userId', isCurrentUser, validateUserId, validationError
             // Remove the user from the DB
             if (dataStorage.deleteUser(userId)) {
                 sendClientUpdate({ action: "delete", type: "user", data: { id: userId } }, req);
-                if (!responseSent) {
-                    responseSent = true;
-                    res.json({ message: `User deleted`, data: userId });
-                }
             }
-            else {
-                if (!responseSent) {
-                    responseSent = true;
-                    res.status(404);
-                    res.json({ error: `User not found.`, data: userId });
-                }
-            }
-        }
-        else {
-            res.status(404);
-            res.json({ error: `User not found.`, data: userId });
         }
     }
 });

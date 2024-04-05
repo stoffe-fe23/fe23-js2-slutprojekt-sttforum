@@ -19,7 +19,7 @@ export function isLoggedIn(req: Request, res: Response, next: NextFunction) {
         }
     }
     catch (error) {
-        console.log("isLoggedIn error", error);
+        console.log("Error checking logged in permission.", error);
     }
 
     res.status(401);
@@ -37,7 +37,7 @@ export function isAdmin(req: Request, res: Response, next: NextFunction) {
         }
     }
     catch (error) {
-        console.log("isAdmin error", error);
+        console.log("Error checking admin permission.", error);
     }
 
     res.status(401);
@@ -86,7 +86,7 @@ export function isOwner(req: Request, res: Response, next: NextFunction) {
         }
     }
     catch (error) {
-        console.log("IsOwner error: ", error);
+        console.log("Resource owner permission error: ", error);
     }
 
     res.status(401);

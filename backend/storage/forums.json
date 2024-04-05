@@ -769,12 +769,12 @@
                                         "id": "712568fc-6b20-4f98-98bb-4bb618a3af27",
                                         "author": {
                                             "id": "46cbc728-4e68-4458-b930-6cd94000f92c",
-                                            "userName": "Torsten Testare",
-                                            "picture": "def-pic-3.png",
+                                            "userName": "Deleted user",
+                                            "picture": "user-icon.png",
                                             "admin": false
                                         },
-                                        "message": "Ständig optimist, eller?",
-                                        "deleted": false,
+                                        "message": "(This message has been deleted.)",
+                                        "deleted": true,
                                         "date": 1712312115679,
                                         "replies": [],
                                         "likes": [],
