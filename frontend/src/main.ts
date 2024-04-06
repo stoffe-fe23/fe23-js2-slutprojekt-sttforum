@@ -40,7 +40,7 @@ forumApp.load().then(() => {
 /*** ROUTES *********************************************************************/
 
 //////////////////////////////////////////////////////////////////////////////////
-// Start page - show info about the forum etc? 
+// Start page - show info about the forum
 forumApp.router.on("/", () => {
     pageHome.classList.add("show");
     pageForum.classList.remove("show");
@@ -49,7 +49,7 @@ forumApp.router.on("/", () => {
 
 
 //////////////////////////////////////////////////////////////////////////////////
-// Show the forum list page
+// Show the forum buttons/list page
 forumApp.router.on("/forums", () => {
     pageForum.classList.add("show");
     pageHome.classList.remove("show");
@@ -230,7 +230,7 @@ forumApp.router.resolve();
                 }
             }
 
-            // These should only have a value when changing what is already set. 
+            // These should only have a value when the user is changing their previously set picture or password. Start empty. 
             (document.querySelector("#user-profile-picture") as HTMLInputElement).value = "";
             (document.querySelector("#user-profile-password") as HTMLInputElement).value = "";
             (document.querySelector("#user-profile-password-confirm") as HTMLInputElement).value = "";
@@ -238,7 +238,7 @@ forumApp.router.resolve();
             profileDialog.showModal();
         }
         else {
-            // User not logged in, show the login dialog box. 
+            // User not logged in, show the login dialog box.
             showLoginDialog();
             toggleLoginScreen(true);
         }
@@ -247,7 +247,7 @@ forumApp.router.resolve();
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Toggle between log in and register form on the dialog box
+// Toggle between the login or register new user forms in the Login dialog box. 
 (document.querySelector("#new-to-STT-button") as HTMLButtonElement).addEventListener("click", () => {
     toggleLoginScreen(false);
 });
@@ -259,7 +259,7 @@ forumApp.router.resolve();
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-// When clicking on the picture upload field on the user profile, select the "custom" portrait option. 
+// When clicking on the picture upload field on the edit user profile form, select the "custom" portrait option. 
 (document.querySelector("#user-profile-picture") as HTMLInputElement).addEventListener("click", (event) => {
     (document.querySelector("#def-pic-custom") as HTMLInputElement).checked = true;
 });
@@ -400,18 +400,17 @@ forumApp.router.resolve();
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Mark input field when click or tab 
+// Select current text in the search box when clicking/focusing the input field.  
 (document.querySelector("#search-input") as HTMLInputElement).addEventListener("focus", (event) => {
     (event.currentTarget as HTMLInputElement).select();
 });
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Close button in error message
+// Close button in error message box. 
 (document.querySelector("#error button") as HTMLButtonElement).addEventListener("click", (event) => {
     (document.querySelector("#error") as HTMLElement).classList.remove("show");
 });
-
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -456,7 +455,7 @@ function showLoginDialog() {
 }
 
 //////////////////////////////////////////////////////////////////////////////////
-// Add and remove class between log in form and register form. 
+// Switch between showing the Login or Register user forms in the Login dialog box. 
 function toggleLoginScreen(showLogin: boolean): void {
     const registerForm = document.querySelector("#user-register-form") as HTMLFormElement;
     const loginForm = document.querySelector("#login-form") as HTMLFormElement;

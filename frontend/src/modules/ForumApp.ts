@@ -138,7 +138,6 @@ export default class ForumApp {
     ////////////////////////////////////////////////////////////////////////////////////////////
     // Display a list of the threads in the specified forum.
     public async showForum(forumId: string, outBox: HTMLElement): Promise<void> {
-        // const foundForum = this.forums.find((forum) => forum.id == forumId);
         const foundForum = await Forum.create(this, forumId);
         if (foundForum) {
             outBox.innerHTML = "";
@@ -180,7 +179,7 @@ export default class ForumApp {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////
-    // Display all the posts/replies in the specified thread
+    // Display a message and all the replies to it. 
     public async showMessage(threadId: string, messageId: string, outBox: HTMLElement): Promise<void> {
 
         const parentThread = await Thread.create(this, threadId);
@@ -253,9 +252,9 @@ export default class ForumApp {
         return this.isLoggedIn();
     }
 
+
     ////////////////////////////////////////////////////////////////////////////////////////////
     // Attempt to log in to the server with the specified username and password. 
-    // 401 - login invalid (user,pass is wrong, user does not exist etc)
     public async userLogin(loginName: string, loginPass: string): Promise<void> {
         try {
             const postData = {
@@ -273,6 +272,7 @@ export default class ForumApp {
         }
         catch (error) {
             if ((error as ApiError).errorCode == 401) {
+                // Same message if account does not exist as if name/password is wrong, for security reasons. 
                 this.showError(`Login failed. Check your username and password and try again?`);
             }
             else {
@@ -283,7 +283,7 @@ export default class ForumApp {
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////
-    // Log off from the server. 
+    // Log off the current user. 
     public async userLogoff(): Promise<void> {
         if (this.isLoggedIn()) {
             const response: StatusResponseAPI = await this.api.getJson("user/logout");
@@ -294,7 +294,7 @@ export default class ForumApp {
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////
-    // Register a new user account on the server. 
+    // Register a new user account. 
     public async userRegister(username: string, password: string, passwordConfirm: string, email: string): Promise<void> {
         if (password.length && passwordConfirm.length && (password == passwordConfirm)) {
             const newUserData = {
@@ -327,9 +327,7 @@ export default class ForumApp {
         });
     }
 
-    /*
-    
-    */
+
     ////////////////////////////////////////////////////////////////////////////////////////////
     // Search forums for message text.
     public async searchMessages(searchForText: string, resultsTarget: HTMLElement): Promise<void> {
@@ -393,7 +391,7 @@ export default class ForumApp {
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////
-    // Display error messages to the user
+    // Display error messages to the user in a red popup box.
     public showError(errorText: string) {
         const errorDiv = document.querySelector("#error") as HTMLElement;
         const errorMsg = errorDiv.querySelector("#error-message") as HTMLElement;
@@ -404,7 +402,7 @@ export default class ForumApp {
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////
-    // Add a new forum to the server. 
+    // Add a new forum to the server (admin). 
     public async createForum(forumData: FormData) {
         try {
             const result = await this.api.postFile("forum/create", forumData);
@@ -419,7 +417,7 @@ export default class ForumApp {
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////
-    // Get a full URL to the user profile picture specified. 
+    // Get a full URL to the user profile picture specified, or placeholder if none is specified.  
     public getUserPictureUrl(pictureName: string) {
         if (pictureName && (pictureName.length > 4)) {
             return `${this.mediaUrl}userpictures/${pictureName}`;
