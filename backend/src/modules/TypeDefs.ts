@@ -5,6 +5,14 @@
     TypeDefs.ts
     Type alias definitions. 
 */
+import * as ws from "ws";
+
+
+// Allow storing associated user id and session id on websocket object.
+export interface UserWebSocket extends ws.WebSocket {
+    sessionId: string;
+    userId: string;
+}
 
 export type ForumMessageContext = {
     message: ForumMessage,

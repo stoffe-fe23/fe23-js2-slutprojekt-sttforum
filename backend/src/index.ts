@@ -8,13 +8,13 @@
 import express from "express";
 import { Request, Response, NextFunction } from 'express';
 import { app } from "./modules/server.js";
-import { WebSocket } from "ws";
+import * as ws from "ws";
 import cors from "cors";
 import forumAPI from "./modules/forumAPI.js";
 import userAPI from "./modules/userAPI.js";
 import dataStorage from "./modules/Database.js";
 import { sessionSetup, passport } from "./modules/authentication.js";
-import { ForumUser, SocketNotificationData } from "./modules/TypeDefs.js";
+import { ForumUser, SocketNotificationData, UserWebSocket } from "./modules/TypeDefs.js";
 
 
 // Note: Allow-Origin "*" will block fetch() calls on the client from sending cookies to server
@@ -48,14 +48,13 @@ app.use('/api/forum', forumAPI);
 
 // Route for establishing a websocket connection.
 // Clients get live-notified of changes to posts/threads/users via this connection.
-app.ws("/api/updates", (ws, req: Request) => {
+app.ws("/api/updates", (ws: ws.WebSocket, req: Request) => {
     const userId = (req.user && (req.user as ForumUser).id ? (req.user as ForumUser).id : "0");
     if ((userId != "0") && req.isAuthenticated()) {
         // Store associated user/session info on the socket.
-        // Typescript makes this overly complicated, so just bypass for now. 
-        (ws as any).sessionId = req.session.id;
-        (ws as any).userId = userId;
-        console.log("Websocket connection established: ", (ws as any).userId, req.session.id);
+        (ws as UserWebSocket).sessionId = req.session.id;
+        (ws as UserWebSocket).userId = userId;
+        console.log("Websocket connection established: ", (ws as UserWebSocket).userId, req.session.id);
     }
     else {
         // Close connection if it is not by an authenticated user. 

@@ -313,7 +313,7 @@ class Database {
 
 
     ////////////////////////////////////////////////////////////////////////////////////
-    // Edit the title of an existing thread.
+    // Edit the title and locked-status of an existing thread.
     public editThread(threadId: string, title: string, active: boolean): ForumThread | null {
         const thread = this.getThread(threadId);
         if (thread) {
@@ -436,7 +436,7 @@ class Database {
 
 
     ////////////////////////////////////////////////////////////////////////////////////
-    // Find the forum with the specified forum id.
+    // Get all info about the forum with the specified forum id.
     public getForum(forumId: string): Forum | null {
         const foundForum = this.storage.forumDB.find((checkForum) => checkForum.id == forumId);
         return foundForum ?? null;
