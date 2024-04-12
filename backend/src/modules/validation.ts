@@ -57,7 +57,7 @@ export function fileErrorHandler(err: Error, req: Request, res: Response, next: 
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-// Called if multer's file type filter for forum ucons fails. Display validation error. 
+// Called if multer's file type filter for forum icons fails. Display validation error. 
 export function forumIconErrorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
     res.status(400);
     res.json({
@@ -126,10 +126,6 @@ function validateMessageIdExists(value: string): boolean {
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Validate New Forum input
 export const validateNewForum = [
-    /*    body("icon")
-            .exists().withMessage('The forum icon must be set.').bail()
-            .trim().notEmpty().withMessage('An icon for this forum must be specified..').bail()
-            .isString().withMessage('The forum icon name must be a string.').bail(), */
     body("name")
         .exists().withMessage('The name of the new forum must be set.').bail()
         .trim().notEmpty().withMessage('A name of the new forum must be set.').bail()
@@ -324,7 +320,7 @@ function validateNewPassword(value: string, { req }): boolean {
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-// Validate User profile fields - "picture" field is validated in fileErrorHandler()
+// Validate User registration fields - "picture" field is validated in fileErrorHandler()
 export const validateUserRegister = [
     body("username")
         .exists().withMessage('A user name must be set.').bail()
@@ -377,7 +373,7 @@ function validateUserIdExists(value: string): boolean {
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-// Validate user ID parameter
+// Validate search form input
 export const validateSearchString = [
     body("searchFor")
         .exists().withMessage('A search criteria must be specified.').bail()
