@@ -973,6 +973,21 @@
                         ],
                         "likes": [],
                         "threadId": "3ea664d8-fc6a-41b9-8e0a-fd4f900cf3b3"
+                    },
+                    {
+                        "id": "58769e9e-3cbd-4564-9d15-6975a4846104",
+                        "author": {
+                            "id": "f9258ea6-89c5-46b6-8577-9df9c343dc96",
+                            "userName": "Stoffe",
+                            "picture": "f9258ea6-89c5-46b6-8577-9df9c343dc96-1711901300396.png",
+                            "admin": true
+                        },
+                        "message": "<b>Baldurs Gate 3</b> och en drös andra beroende på vad jag känner för...",
+                        "deleted": false,
+                        "date": 1713207839963,
+                        "replies": [],
+                        "likes": [],
+                        "threadId": "3ea664d8-fc6a-41b9-8e0a-fd4f900cf3b3"
                     }
                 ],
                 "forum": {

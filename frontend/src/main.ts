@@ -10,6 +10,7 @@ import ForumApp from "./modules/ForumApp";
 import Message from "./modules/Message.js";
 import * as htmlUtilities from "./modules/htmlUtilities.js";
 import { ApiError } from "./modules/RestApi.ts";
+import { BASE_ROUTE } from "./modules/constants.ts";
 
 
 const forumApp = new ForumApp('http://localhost:3000/api'); // https://localhost:3000/api
@@ -41,7 +42,7 @@ forumApp.load().then(() => {
 
 //////////////////////////////////////////////////////////////////////////////////
 // Start page - show info about the forum
-forumApp.router.on("/", () => {
+forumApp.router.on(BASE_ROUTE + "/", () => {
     pageHome.classList.add("show");
     pageForum.classList.remove("show");
     pageUsers.classList.remove("show");
@@ -50,7 +51,7 @@ forumApp.router.on("/", () => {
 
 //////////////////////////////////////////////////////////////////////////////////
 // Show the forum buttons/list page
-forumApp.router.on("/forums", () => {
+forumApp.router.on(BASE_ROUTE + "/forums", () => {
     pageForum.classList.add("show");
     pageHome.classList.remove("show");
     pageUsers.classList.remove("show");
@@ -67,7 +68,7 @@ forumApp.router.on("/forums", () => {
 
 //////////////////////////////////////////////////////////////////////////////////
 // Show the list of threads in a forum.
-forumApp.router.on('/forum/:forumId', (route) => {
+forumApp.router.on(BASE_ROUTE + '/forum/:forumId', (route) => {
     pageForum.classList.add("show");
     pageHome.classList.remove("show");
     pageUsers.classList.remove("show");
@@ -83,7 +84,7 @@ forumApp.router.on('/forum/:forumId', (route) => {
 
 //////////////////////////////////////////////////////////////////////////////////
 // Show the posts in a discussion thread. 
-forumApp.router.on("/thread/:threadId", (route) => {
+forumApp.router.on(BASE_ROUTE + "/thread/:threadId", (route) => {
     pageForum.classList.add("show");
     pageHome.classList.remove("show");
     pageUsers.classList.remove("show");
@@ -102,7 +103,7 @@ forumApp.router.on("/thread/:threadId", (route) => {
 
 //////////////////////////////////////////////////////////////////////////////////
 // Show a specified message and its replies. 
-forumApp.router.on("/message/:threadId/:messageId", (route) => {
+forumApp.router.on(BASE_ROUTE + "/message/:threadId/:messageId", (route) => {
     pageForum.classList.add("show");
     pageHome.classList.remove("show");
     pageUsers.classList.remove("show");
@@ -121,7 +122,7 @@ forumApp.router.on("/message/:threadId/:messageId", (route) => {
 
 //////////////////////////////////////////////////////////////////////////////////
 // Show a list of all the registered users
-forumApp.router.on("/users", () => {
+forumApp.router.on(BASE_ROUTE + "/users", () => {
     pageHome.classList.remove("show");
     pageForum.classList.remove("show");
     pageUsers.classList.add("show");
@@ -140,7 +141,7 @@ forumApp.router.on("/users", () => {
 
 //////////////////////////////////////////////////////////////////////////////////
 // Show the public profile for the user with the specified ID
-forumApp.router.on("/user/profile/:userid", (routeInfo) => {
+forumApp.router.on(BASE_ROUTE + "/user/profile/:userid", (routeInfo) => {
     pageHome.classList.remove("show");
     pageForum.classList.remove("show");
     pageUsers.classList.add("show");
@@ -170,7 +171,7 @@ forumApp.router.on("/user/profile/:userid", (routeInfo) => {
 // Route to directly display the user login dialog box.
 // Used for links in messages, clicking the User button in upper left does the same
 // but does not use this route. 
-forumApp.router.on("/login", () => {
+forumApp.router.on(BASE_ROUTE + "/login", () => {
     showLoginDialog();
 });
 
@@ -189,7 +190,7 @@ forumApp.router.resolve();
         forumApp.userLogin(formData.get("username") as string, formData.get("password") as string).then(() => {
             (document.querySelector("#login-username") as HTMLInputElement).value = "";
             (document.querySelector("#login-password") as HTMLInputElement).value = "";
-            forumApp.router.navigate('/');
+            forumApp.router.navigate(BASE_ROUTE + '/');
         }).catch((error) => {
             if ((error instanceof ApiError) && (error.errorCode == 401)) {
                 forumApp.showError("Invalid username or password.");
@@ -283,7 +284,7 @@ forumApp.router.resolve();
     // Log off button
     else if ((event.submitter as HTMLButtonElement).id == "user-profile-logout") {
         forumApp.userLogoff().then(() => {
-            forumApp.router.navigate('/');
+            forumApp.router.navigate(BASE_ROUTE + '/');
             pageForum.innerHTML = "";
             htmlUtilities.createHTMLElement("div", `You must be logged in to view the forums.`, pageForum, 'error-not-logged-in', null, true);
         });
@@ -297,7 +298,7 @@ forumApp.router.resolve();
                         if (forumApp.user) {
                             forumApp.user.deleteUser().then(() => {
                                 alert("Your user account has been deleted.");
-                                forumApp.router.navigate("/");
+                                forumApp.router.navigate(BASE_ROUTE + "/");
                             });
                         }
                     }
@@ -424,7 +425,7 @@ forumApp.router.resolve();
                 const formData = new FormData(event.currentTarget as HTMLFormElement);
                 forumApp.createForum(formData).catch(forumApp.showError);
                 (event.currentTarget as HTMLFormElement).classList.add("hide");
-                forumApp.router.navigate("/forums");
+                forumApp.router.navigate(BASE_ROUTE + "/forums");
             }
         }
         else {

@@ -5,7 +5,7 @@
     RestApi.ts
     Class for making requests to the server REST API endpoints. 
 */
-import { UserData, APIQueryParams, APIQueryValue, APIQueryData, APILastRequest, APIStatusResponse } from "./TypeDefs.js";
+import { APIQueryParams, APIQueryValue, APIQueryData, APILastRequest, APIStatusResponse } from "./TypeDefs.js";
 
 
 export default class RestApi {

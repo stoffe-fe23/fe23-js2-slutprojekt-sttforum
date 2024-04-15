@@ -21,7 +21,7 @@ import { ForumUser, SocketNotificationData, UserWebSocket } from "./modules/Type
 // and req.headers.origin is sometimes undefined for some reason, so have to hardcode an origin
 // for when that happens too, just in case, for testing... 
 app.use(cors({
-    origin: (origin, callback) => { callback(null, origin ?? 'http://localhost:1234'); }, // 'https://localhost:3000'
+    origin: (origin, callback) => { callback(null, origin ?? 'http://localhost:3000'); }, // 'https://localhost:1234'
     methods: 'GET,PUT,PATCH,POST,DELETE,OPTIONS,HEAD',
     allowedHeaders: 'Content-Type,X-Requested-With,Accept',
     credentials: true,
@@ -73,6 +73,19 @@ app.ws("/api/updates", (ws: ws.WebSocket, req: Request) => {
 });
 
 
+// Serve the frontend client at http://localhost:3000/
+app.use('/', express.static('../frontend/docs'));
+
+// Workaround to make client-side routes sort of work... serve the index file on all routes.
+// Page reloads if manually going to an URL but at least the correct page will show. 
+app.use('/forums', express.static('../frontend/docs', { index: 'index.html' }));
+app.use('/forum/:forumId', express.static('../frontend/docs', { index: 'index.html' }));
+app.use('/thread/:threadId', express.static('../frontend/docs', { index: 'index.html' }));
+app.use('/message/:threadId/:messageId', express.static('../frontend/docs', { index: 'index.html' }));
+app.use('/users', express.static('../frontend/docs', { index: 'index.html' }));
+app.use('/user/profile/:userid', express.static('../frontend/docs', { index: 'index.html' }));
+
+
 // General error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     if (!res.headersSent) {
@@ -87,7 +100,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 // Start the server
 app.listen(3000, () => {
-    console.log('Server running on port 3000...');
+    console.log('Server running on port 3000: http://localhost:3000/');
 
     // Cache forum and user data from disk storage files. 
     dataStorage.initialize();

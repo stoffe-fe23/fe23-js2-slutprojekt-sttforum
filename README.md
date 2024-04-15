@@ -49,13 +49,13 @@ npm install
 npm start
 node ./dist/index.js (or: npm run dev)
 ```
-### Frontend/client server
-To run the server serving the client frontend, navigate into the "frontend" directory in the terminal and type:
+### Frontend/client
+To set up the client frontend, navigate into the "frontend" directory in the terminal and type:
 ```
 npm install
-npm run dev
+npm run build
 ```
-Then go to http://localhost:1234 in your web browser to visit the site. Click the User button in the upper left corner of the page to create a user account. 
+Then go to http://localhost:3000 in your web browser to visit the site. Click the User button in the upper left corner of the page to create a user account. 
 
 To test admin functionality you can log in with username _Tess Testare_ and password _testare_.
 

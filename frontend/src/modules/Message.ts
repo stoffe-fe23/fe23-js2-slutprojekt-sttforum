@@ -5,13 +5,12 @@
     Message.ts
     Class for managing a message in either a thread or in the reply chain of another message. 
 */
-import User from "./User";
 import Thread from "./Thread.ts";
 import * as htmlUtilities from './htmlUtilities.ts';
 import ForumApp from "./ForumApp.ts";
 import { UserAuthor, MessageDisplayInfo, ForumMessageAPI, StatusResponseAPI, APIQueryData } from "./TypeDefs.ts";
+import { MAX_REPLY_CHAIN_DEPTH, BASE_ROUTE } from "./constants.ts";
 
-const MAX_REPLY_CHAIN_DEPTH = 4;
 
 export default class Message {
     public id: string;
@@ -216,7 +215,7 @@ export default class Message {
         }
         else if (this.replies.length > 0) {
             const wrapper = htmlUtilities.createHTMLElement("div", "", repliesElement, "replies-expand-wrapper");
-            htmlUtilities.createHTMLElement("a", `View ${this.replies.length} more replies to this message.`, wrapper, "replies-expand-link", { href: `/message/${this.threadId}/${this.id}`, "data-navigo": "true" });
+            htmlUtilities.createHTMLElement("a", `View ${this.replies.length} more replies to this message.`, wrapper, "replies-expand-link", { href: BASE_ROUTE + `/message/${this.threadId}/${this.id}`, "data-navigo": "true" });
         }
         return thisMessageElem;
     }

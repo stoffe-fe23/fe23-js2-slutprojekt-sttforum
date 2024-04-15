@@ -14,6 +14,7 @@ import RestApi, { ApiError } from "./RestApi.ts";
 import UserList from "./UserList.ts";
 import UpdateNoticeSocket from "./UpdateNoticeSocket.ts";
 import * as htmlUtilities from "./htmlUtilities";
+import { BASE_ROUTE } from "./constants.ts";
 import {
     ForumInfoAPI,
     UserData,
@@ -21,6 +22,7 @@ import {
     ForumMessageContextAPI,
     ForumThreadInfoAPI,
 } from "./TypeDefs.ts";
+
 
 export default class ForumApp {
     public api: RestApi;
@@ -165,9 +167,9 @@ export default class ForumApp {
 
                 const breadcrumb = forumElement.querySelector(".forum-breadcrumb") as HTMLElement;
                 if (breadcrumb) {
-                    htmlUtilities.createHTMLElement("a", "Forums", breadcrumb, "breadcrumb-link", { href: `/forums`, "data-navigo": "true" });
-                    htmlUtilities.createHTMLElement("a", foundThread.forumInfo.name, breadcrumb, "breadcrumb-link", { href: `/forum/${foundThread.forumInfo.id}`, "data-navigo": "true" });
-                    htmlUtilities.createHTMLElement("a", foundThread.title, breadcrumb, "breadcrumb-link", { href: `/thread/${foundThread.id}`, "data-threadid": foundThread.id, "data-navigo": "true" });
+                    htmlUtilities.createHTMLElement("a", "Forums", breadcrumb, "breadcrumb-link", { href: BASE_ROUTE + `/forums`, "data-navigo": "true" });
+                    htmlUtilities.createHTMLElement("a", foundThread.forumInfo.name, breadcrumb, "breadcrumb-link", { href: BASE_ROUTE + `/forum/${foundThread.forumInfo.id}`, "data-navigo": "true" });
+                    htmlUtilities.createHTMLElement("a", foundThread.title, breadcrumb, "breadcrumb-link", { href: BASE_ROUTE + `/thread/${foundThread.id}`, "data-threadid": foundThread.id, "data-navigo": "true" });
                     this.router.updatePageLinks();
                 }
             }
@@ -201,10 +203,10 @@ export default class ForumApp {
 
                 const breadcrumb = forumElement.querySelector(".forum-breadcrumb") as HTMLElement;
                 if (breadcrumb) {
-                    htmlUtilities.createHTMLElement("a", "Forums", breadcrumb, "breadcrumb-link", { href: `/forums`, "data-navigo": "true" });
-                    htmlUtilities.createHTMLElement("a", parentThread.forumInfo.name, breadcrumb, "breadcrumb-link", { href: `/forum/${parentThread.forumInfo.id}`, "data-navigo": "true" });
-                    htmlUtilities.createHTMLElement("a", parentThread.title, breadcrumb, "breadcrumb-link", { href: `/thread/${parentThread.id}`, "data-threadid": parentThread.id, "data-navigo": "true" });
-                    htmlUtilities.createHTMLElement("a", "Message", breadcrumb, "breadcrumb-link", { href: `/message/${parentThread.id}/${messageId}`, "data-navigo": "true" });
+                    htmlUtilities.createHTMLElement("a", "Forums", breadcrumb, "breadcrumb-link", { href: BASE_ROUTE + `/forums`, "data-navigo": "true" });
+                    htmlUtilities.createHTMLElement("a", parentThread.forumInfo.name, breadcrumb, "breadcrumb-link", { href: BASE_ROUTE + `/forum/${parentThread.forumInfo.id}`, "data-navigo": "true" });
+                    htmlUtilities.createHTMLElement("a", parentThread.title, breadcrumb, "breadcrumb-link", { href: BASE_ROUTE + `/thread/${parentThread.id}`, "data-threadid": parentThread.id, "data-navigo": "true" });
+                    htmlUtilities.createHTMLElement("a", "Message", breadcrumb, "breadcrumb-link", { href: BASE_ROUTE + `/message/${parentThread.id}/${messageId}`, "data-navigo": "true" });
                     this.router.updatePageLinks();
                 }
             }

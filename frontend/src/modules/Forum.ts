@@ -8,7 +8,8 @@
 import Thread from "./Thread";
 import ForumApp from "./ForumApp";
 import * as htmlUtilities from "./htmlUtilities";
-import { ForumDisplayInfo, ForumAPI, ForumThreadAPI, ForumContentInfo, ForumThreadInfoAPI } from "./TypeDefs.ts";
+import { ForumDisplayInfo, ForumAPI, ForumContentInfo, ForumThreadInfoAPI } from "./TypeDefs.ts";
+import { BASE_ROUTE } from "./constants.ts";
 
 
 export default class Forum {
@@ -91,8 +92,8 @@ export default class Forum {
 
         const breadcrumb = forumElement.querySelector(".forum-breadcrumb") as HTMLElement;
         if (breadcrumb) {
-            htmlUtilities.createHTMLElement("a", "Forums", breadcrumb, "breadcrumb-link", { href: `/forums`, "data-navigo": "true" });
-            htmlUtilities.createHTMLElement("a", this.name, breadcrumb, "breadcrumb-link", { href: `/forum/${this.id}`, "data-navigo": "true", "data-forumid": this.id });
+            htmlUtilities.createHTMLElement("a", "Forums", breadcrumb, "breadcrumb-link", { href: BASE_ROUTE + `/forums`, "data-navigo": "true" });
+            htmlUtilities.createHTMLElement("a", this.name, breadcrumb, "breadcrumb-link", { href: BASE_ROUTE + `/forum/${this.id}`, "data-navigo": "true", "data-forumid": this.id });
         }
 
         // Sorts threads in falling chronological order by last update
